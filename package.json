@@ -1,0 +1,15 @@
+{
+  "name": "project-i",
+  "version": "0.1.0",
+  "description": "Web based internship project for PT ATI",
+  "main": "server.js",
+  "author": "Alfi Maulana",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.21"
+  }
+}
