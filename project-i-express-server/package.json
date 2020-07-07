@@ -1,7 +1,7 @@
 {
-  "name": "project-i",
+  "name": "project-i-express-server",
   "version": "0.1.0",
-  "description": "Web based internship project for PT ATI",
+  "description": "Express server internship project for PT ATI",
   "main": "server.js",
   "author": "Alfi Maulana",
   "license": "MIT",
