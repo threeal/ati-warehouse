@@ -2,7 +2,9 @@
   "name": "project-i-express-server",
   "version": "0.1.0",
   "description": "Express server internship project for PT ATI",
-  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "author": "Alfi Maulana",
   "license": "MIT",
   "private": true,
