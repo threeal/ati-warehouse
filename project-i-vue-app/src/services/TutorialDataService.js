@@ -21,7 +21,7 @@ class TutorialDataService {
     return http.delete(`/tutorials/${id}`);
   }
 
-  deleteAll(id) {
+  deleteAll() {
     return http.delete('/tutorials');
   }
 

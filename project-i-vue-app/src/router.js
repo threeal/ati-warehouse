@@ -22,5 +22,10 @@ export default new Router({
       name: 'add',
       component: () => import('./components/AddTutorial'),
     },
+    {
+      path: '/main/1',
+      name: 'Halaman Pertama',
+      component: () => import('./components/Page1'),
+    },
   ],
 })
