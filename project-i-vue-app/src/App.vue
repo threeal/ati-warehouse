@@ -2,12 +2,12 @@
   <v-app>
     <v-app-bar @click="drawer = !drawer" app color="primary" dark>
       <v-app-bar-nav-icon app/>
-      <v-toolbar-title>Project I</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" absolute temporary>
     </v-navigation-drawer>
     <v-content>
-      <router-view/>
+      <router-view :app="this"/>
     </v-content>
   </v-app>
 </template>
@@ -17,6 +17,7 @@ export default {
   name: 'App',
   data() {
     return {
+      title: '',
       drawer: false,
     };
   },
