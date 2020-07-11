@@ -8,24 +8,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      alias: '/tutorials',
-      name: 'tutorials',
-      component: () => import('./components/TutorialList'),
-    },
-    {
-      path: '/tutorials/:id',
-      name: 'tutorial-details',
-      component: () => import('./components/Tutorial'),
-    },
-    {
-      path: '/add',
-      name: 'add',
-      component: () => import('./components/AddTutorial'),
-    },
-    {
-      path: '/main/1',
-      name: 'Halaman Pertama',
-      component: () => import('./components/Page1'),
+      name: 'document-list',
+      component: () => import('./views/DocumentList'),
     },
   ],
 })
