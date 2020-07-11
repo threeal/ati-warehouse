@@ -9,7 +9,7 @@ export default new Router({
     {
       path: '/',
       name: 'document-list',
-      component: () => import('./views/DocumentList'),
+      component: () => import('../views/DocumentList'),
     },
   ],
 })
