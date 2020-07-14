@@ -14,7 +14,7 @@ export default new Router({
     {
       path: '/bongkar-basket',
       name: 'bongkar-basket',
-      component: () => import('../components/BongkarBasket1'),
+      component: () => import('../components/BongkarBasket'),
     },
   ],
 })

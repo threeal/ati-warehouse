@@ -15,6 +15,30 @@
             required
             ></v-text-field>
 
+            <v-text-field
+            label="Kondisi"
+            v-model="kondisi"
+            required
+            ></v-text-field>
+
+            <v-text-field
+            label="Jumlah Tingkat"
+            v-model="jumlahtingkat"
+            required
+            ></v-text-field>
+
+            <v-text-field
+            label="Jumlah Rijek"
+            v-model="jumlahrijek"
+            required
+            ></v-text-field>
+
+            <v-text-field
+            label="Jenis Rijek"
+            v-model="jenisrijek"
+            required
+            ></v-text-field>
+
             <v-btn @click="addData" color="info"> Tambahkan </v-btn>
             <v-btn @click="clear">Hapus</v-btn>
         </v-form>
@@ -28,6 +52,10 @@
           <template slot="items" slot-scope="props">
               <td class="text-xs-left">{{ props.item.nobasket }}</td>
               <td class="text-xs-left">{{ props.item.idbasket }}</td>
+              <td class="text-xs-left">{{ props.item.kondisi }}</td>
+              <td class="text-xs-left">{{ props.item.jumlahtingkat }}</td>
+              <td class="text-xs-left">{{ props.item.jumlahrijek }}</td>
+              <td class="text-xs-left">{{ props.item.jenisrijek }}</td>
               <td class="text-xs-left"> 
                 <v-btn icon @click="removeData(props.item)">
                   <v-icon color="pink">delete</v-icon>
@@ -45,23 +73,40 @@ export default {
     headers: [
       { text: "No Basket", value: "nobasket" },
       { text: "ID Basket", value: "idbasket" },
+      { text: "Kondisi", value: "kondisi" },
+      { text: "Jumlah Tingkat", value: "jumlahtingkat" },
+      { text: "Jumlah Rijek", value: "jumlahrijek" },
+      { text: "Jenis Rijek", value: "jenisrijek" },
       { text: "Clear", value: "" }
     ],
     nobasket: "",
     idbasket: "",
+    kondisi: "",
+    jumlahtingkat: "",
+    jumlahrijek: "",
+    jenisrijek: "",
+
     Datas: []
   }),
   methods: {
     addData() {
-      if (this.nobasket.trim() === "" && this.idbasket.trim() === "") {
+      if (this.nobasket.trim() === "" && this.idbasket.trim() === "" && this.kondisi.trim() === "" && this.jumlahtingkat.trim() === "" && this.jumlahrijek.trim() === "" && this.jenisrijek.trim() === "") {
         alert("Data tidak boleh kosong!");
       } else {
         this.Datas.push({
           nobasket: this.nobasket,
-          idbasket: this.idbasket
+          idbasket: this.idbasket,
+          kondisi: this.kondisi,
+          jumlahtingkat: this.jumlahtingkat,
+          jumlahrijek: this.jumlahrijek,
+          jenisrijek: this.jenisrijek
         });
         this.nobasket = "";
         this.idbasket = "";
+        this.kondisi = "";
+        this.jumlahtingkat = "";
+        this.jumlahrijek = "";
+        this.jenisrijek = "";
       }
     },
     removeData(id) {
@@ -70,6 +115,10 @@ export default {
     clear() {
       this.nobasket = "";
       this.idbasket = "";
+      this.kondisi = "";
+      this.jumlahtingkat = "";
+      this.jumlahrijek = "";
+      this.jenisrijek = "";
     }
   }
 };
