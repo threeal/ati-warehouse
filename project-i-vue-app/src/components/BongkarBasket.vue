@@ -90,7 +90,8 @@ export default {
   }),
   methods: {
     addData() {
-      if (this.nobasket.trim() === "" && this.idbasket.trim() === "" && this.kondisi.trim() === "" && this.jumlahtingkat.trim() === "" && this.jumlahrijek.trim() === "" && this.jenisrijek.trim() === "") {
+      if (this.nobasket.trim() === "" && this.idbasket.trim() === "" && this.kondisi.trim() === "" 
+      && this.jumlahtingkat.trim() === "" && this.jumlahrijek.trim() === "" && this.jenisrijek.trim() === "") {
         alert("Data tidak boleh kosong!");
       } else {
         this.Datas.push({
