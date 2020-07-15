@@ -12,6 +12,11 @@ export default new Router({
       component: () => import('../views/DocumentList'),
     },
     {
+      path: '/document',
+      name: 'document',
+      component: () => import('../views/DocumentDetail'),
+    },
+    {
       path: '/bongkar-basket',
       name: 'bongkar-basket',
       component: () => import('../components/BongkarBasket'),

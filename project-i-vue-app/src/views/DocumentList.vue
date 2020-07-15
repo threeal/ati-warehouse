@@ -1,31 +1,38 @@
 <template>
   <v-container>
-    <div class="d-flex justify-space-between">
-      <v-select v-model="selectedFilter" :items="filters"
-        height="40" hide-details dense solo/>
-      <div class="ma-2"/>
-      <v-btn color="primary" height="40">+ Dokumen</v-btn>
-    </div>
-    <v-row>
-      <v-col>
-        <v-card>
-          <v-list>
-            <v-list-item-group>
-              <v-list-item v-for="(document, index) in documents" :key="index" two-line>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ document.product }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ document.productionDate}}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-card>
-      </v-col>
-    </v-row>
+    <v-container>
+      <v-row>
+        <v-select v-model="selectedFilter" :items="filters" label="Filter Dokumen"
+            hide-details outlined/>
+      </v-row>
+    </v-container>
+    <v-container>
+      <v-row>
+        <v-btn color="primary" block>Tambah Dokumen</v-btn>
+      </v-row>
+    </v-container>
+    <v-card>
+      <v-list two-line>
+        <v-list-group value="true">
+          <template v-slot:activator>
+            <v-list-item-title>
+              Daftar Dokumen
+            </v-list-item-title>
+          </template>
+          <v-list-item v-for="(document, index) in documents" :key="index"
+              href="/document" link>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ document.product }}
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                {{ document.productionDate}}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+      </v-list>
+    </v-card>
   </v-container>
 </template>
 
@@ -41,6 +48,8 @@ export default {
   data() {
     let filters = [
       { value: 'all', text: 'Tampilkan Semua' },
+      { value: 'day', text: 'Harian' },
+      { value: 'month', text: 'Bulanan' },
     ];
 
     return {
