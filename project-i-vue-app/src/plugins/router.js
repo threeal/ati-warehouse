@@ -21,5 +21,10 @@ export default new Router({
       name: 'bongkar-basket',
       component: () => import('../components/BongkarBasket'),
     },
+    {
+      path: '/muat-pallet',
+      name: 'muat-pallet',
+      component: () => import('../components/MuatPallet'),
+    },
   ],
 })
