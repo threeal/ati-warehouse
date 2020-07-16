@@ -8,7 +8,7 @@
     </v-container>
     <v-container>
       <v-row>
-        <v-btn color="primary" href="/document-add" block>Tambah Dokumen</v-btn>
+        <v-btn color="primary" @click="$router.push('document-add')" block>Tambah Dokumen</v-btn>
       </v-row>
     </v-container>
     <v-card>
@@ -67,8 +67,8 @@ export default {
       .then((res) => {
         this.documents = res.data;
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        this.app.log('Error: Gagal mengambil dokumen dari database');
       });
   },
 }

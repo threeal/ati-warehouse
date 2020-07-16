@@ -10,7 +10,7 @@
             dense outlined/>
       </v-row>
       <v-row>
-        <v-btn @click="onAdd()" :disabled="!productKind || !productionDate"
+        <v-btn @click="onAdd()" :disabled="submitting || !productKind || !productionDate"
             color="primary" block>
           Tambah Dokumen
         </v-btn>
@@ -35,22 +35,26 @@ export default {
     return {
       productKind: null,
       productionDate: (new Date()).toDateInput(),
+      submitting: false,
     };
   },
   methods: {
     onAdd() {
+      this.submitting = true;
+
       let data = {
         productKind: this.productKind,
         productionDate: this.productionDate,
       };
 
       DocumentService.create(data)
-        .then((res) => {
-          console.log(res.data);
+        .then(() => {
+          this.app.log('Dokumen berhasil ditambahkan');
           this.$router.push('document-list');
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
+          this.app.log('Dokumen gagal ditambahkan');
+          this.submitting = false;
         });
     },
   },
