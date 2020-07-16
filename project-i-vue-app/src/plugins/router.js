@@ -8,8 +8,19 @@ export default new Router({
   routes: [
     {
       path: '/',
+      alias: '/document',
       name: 'document-list',
       component: () => import('../views/DocumentList'),
+    },
+    {
+      path: '/document-add',
+      name: 'document-add',
+      component: () => import('../views/DocumentAdd'),
+    },
+    {
+      path: '/document/:id',
+      name: 'document-detail',
+      component: () => import('../views/DocumentDetail'),
     },
     {
       path: '/bongkar-basket',

@@ -4,9 +4,11 @@ mongoose.Promise = global.Promise;
 const dbConfig = require('../config/db.config.js');
 
 const tutorials = require('./tutorial.model.js');
+const document = require('./document.model.js');
 
 module.exports = {
   mongoose: mongoose,
   url: dbConfig.url,
   tutorials: tutorials(mongoose),
+  Document: document(mongoose),
 };

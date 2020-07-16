@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 const cors = require('cors');
-app.use(cors({ origin: 'http://localhost:8081' }));
+app.use(cors());
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -29,6 +29,9 @@ app.get('/', (req, res) => {
 
 const tutorialRoute = require('./app/routes/tutorial.route.js');
 tutorialRoute(app);
+
+const documentRoute = require('./app/routes/document.route.js');
+documentRoute(app);
 
 app.listen(8080, () => {
   console.log('server is running on port 8080');

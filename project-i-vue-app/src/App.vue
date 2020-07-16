@@ -6,6 +6,7 @@
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" absolute temporary>
     </v-navigation-drawer>
+    <Toast :app="this"/>
     <v-content>
       <router-view :app="this"/>
     </v-content>
@@ -13,13 +14,23 @@
 </template>
 
 <script>
+import Toast from './components/Toast'
+
 export default {
   name: 'App',
+  components: {
+    Toast
+  },
   data() {
     return {
       title: '',
       drawer: false,
     };
+  },
+  methods: {
+    log(message) {
+      console.log(message);
+    },
   },
 }
 </script>
