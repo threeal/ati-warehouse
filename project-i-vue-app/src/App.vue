@@ -6,10 +6,10 @@
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" absolute temporary>
     </v-navigation-drawer>
+    <Toast :app="this"/>
     <v-content>
       <router-view :app="this"/>
     </v-content>
-    <Toast :app="this"/>
   </v-app>
 </template>
 

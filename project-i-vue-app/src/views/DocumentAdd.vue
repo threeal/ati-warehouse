@@ -3,15 +3,15 @@
     <v-container>
       <v-row>
         <v-text-field v-model="productKind" label="Jenis Produk"
-            dense outlined/>
+            :disabled="submitting" dense outlined/>
       </v-row>
       <v-row>
         <v-text-field v-model="productionDate" label="Tanggal Produksi" type="date"
-            dense outlined/>
+            :disabled="submitting" dense outlined/>
       </v-row>
       <v-row>
         <v-btn @click="onAdd()" :disabled="submitting || !productKind || !productionDate"
-            color="primary" block>
+            :loading="submitting" color="success" block>
           Tambah Dokumen
         </v-btn>
       </v-row>
@@ -50,7 +50,9 @@ export default {
       DocumentService.create(data)
         .then(() => {
           this.app.log('Dokumen berhasil ditambahkan');
-          this.$router.push('document-list');
+          this.submitting = false;
+
+          this.productKind = null;
         })
         .catch(() => {
           this.app.log('Dokumen gagal ditambahkan');

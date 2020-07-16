@@ -8,7 +8,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      alias: '/document-list',
+      alias: '/document',
       name: 'document-list',
       component: () => import('../views/DocumentList'),
     },
@@ -18,7 +18,7 @@ export default new Router({
       component: () => import('../views/DocumentAdd'),
     },
     {
-      path: '/document-detail',
+      path: '/document/:id',
       name: 'document-detail',
       component: () => import('../views/DocumentDetail'),
     },

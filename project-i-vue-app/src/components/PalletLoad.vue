@@ -10,7 +10,7 @@
             :disabled="!edit" dense outlined/>
       </v-row>
       <v-row>
-        <v-btn v-if="!edit" @click="onEdit()" color="primary" block>Ubah Keterangan</v-btn>
+        <v-btn v-if="!edit" @click="onEdit()" color="primary" block>Ubah Detail</v-btn>
         <v-btn v-else @click="onSave()" color="primary" block>Simpan Perubahan</v-btn>
       </v-row>
     </v-container>

@@ -12,5 +12,5 @@ Date.prototype.toDateInput = function() {
   let month = this.getMonth() + 1;
   let date = this.getDate();
 
-  return year.pad(4) + '-' + month.pad(2) + '-' + date.pad(2);
+  return `${year.pad(4)}-${month.pad(2)}-${date.pad(2)}`;
 }
