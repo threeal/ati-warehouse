@@ -1,68 +1,105 @@
 <template>
   <v-container>
-    <v-container>
-      <v-row>
+    <v-row>
+      <v-col>
         <v-text-field v-model="loadDate" label="Tanggal Muat" type="date"
-            :disabled="!edit" dense outlined/>
-      </v-row>
-      <v-row>
+            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+            :filled="!edit" outlined dense hide-details/>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <v-text-field v-model="brand" label="Merk"
-            :disabled="!edit" dense outlined/>
-      </v-row>
-      <v-row>
-        <v-btn v-if="!edit" @click="onEdit()" color="primary" block>Ubah Detail</v-btn>
-        <v-btn v-else @click="onSave()" color="primary" block>Simpan Perubahan</v-btn>
-      </v-row>
-    </v-container>
-    <v-list two-line>
-      <v-list-group value="true">
-        <template v-slot:activator>
-          <v-list-item-title>
-            Daftar Data Pallet
-          </v-list-item-title>
-        </template>
-        <v-list-item v-for="(row, index) in rows" :key="index" link>
-          <v-list-item-content eager>
-            <v-list-item-title>
-              <div class="d-flex justify-space-between">
-                <div>
-                  Pallet {{ row.palletNumber }} (Basket {{ row.basketNumbers }})
-                </div>
-                <div>
-                  {{ row.quantity }}
-                </div>
+            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+            :filled="!edit" :clearable="edit" outlined dense hide-details/>
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col>
+        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
+            color="error" block>
+          Hapus Data
+        </v-btn>
+      </v-col>
+      <v-col>
+        <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
+          Ubah Detail
+        </v-btn>
+        <v-btn v-else @click="onSave()" :disabled="submitting" :loading="submitting"
+             color="success" block>
+          Simpan Perubahan
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col>
+        <v-btn color="primary" block>Tambah Data Palet</v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-card>
+          <v-list>
+            <v-list-group value="true">
+              <template v-slot:activator>
+                <v-list-item-title>
+                  Daftar Data Palet
+                </v-list-item-title>
+              </template>
+              <div v-for="(row, index) in rows" :key="index">
+                <v-divider/>
+                <v-list-item two-line link>
+                  <v-list-item-content eager>
+                    <v-list-item-title>
+                      <div class="d-flex justify-space-between">
+                        <div>
+                          Palet {{ row.palletNumber }} (Basket {{ row.basketNumbers }})
+                        </div>
+                        <div>
+                          {{ row.quantity }}
+                        </div>
+                      </div>
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      <div class="d-flex justify-space-between">
+                        <div>
+                          {{ row.startTime }} - {{ row.endTime }}
+                        </div>
+                        <div>
+                          Loader: {{ row.loader }}
+                        </div>
+                      </div>
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
               </div>
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              <div class="d-flex justify-space-between">
-                <div>
-                  {{ row.startTime }} - {{ row.endTime }}
-                </div>
-                <div>
-                  Loader: {{ row.loader }}
-                </div>
-              </div>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-group>
-    </v-list>
-    <v-container>
-      <v-row>
-        <v-btn color="primary" block>Tambah Data Pallet</v-btn>
-      </v-row>
-    </v-container>
+            </v-list-group>
+          </v-list>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
+import PalletLoadService from '../services/PalletLoadService'
+
 export default {
   name: 'pallet-load',
+  props: {
+    app: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
+      fetching: true,
+      submitting: false,
+      deleting: false,
       edit: false,
-      loadDate: '2020-03-03',
-      brand: 'SIRENA',
+      loadDate: null,
+      brand: null,
       panel: 0,
       rows: [
         {
@@ -89,8 +126,50 @@ export default {
       this.edit = true;
     },
     onSave() {
-      this.edit = false;
+      this.submitting = true;
+
+      let data = {
+        loadDate: this.loadDate,
+        brand: this.brand,
+      };
+
+      PalletLoadService.update(this.$route.params.id, data)
+        .then(() => {
+          this.app.log('Detail data muat palet berhasil diperbaharui');
+          this.edit = false;
+          this.submitting = false;
+        })
+        .catch(() => {
+          this.app.log('Detail data muat palet gagal diperbaharui');
+          this.submitting = false;
+        });
     },
+    onDelete() {
+      this.deleting = true;
+
+      PalletLoadService.remove(this.$route.params.id)
+        .then(() => {
+          this.app.log('Data muat palet berhasil dihapus');
+          this.deleting = false;
+
+          this.$router.go();
+        })
+        .catch(() => {
+          this.app.log('Data muat palet gagal dihapus');
+          this.deleting = false;
+        });
+    },
+  },
+  mounted() {
+    PalletLoadService.find(this.$route.params.id)
+      .then((res) => {
+        this.fetching = false;
+        this.loadDate = res.data.loadDate;
+        this.brand = res.data.brand;
+      })
+      .catch(() => {
+        this.app.log('Error: Gagal mengambil detail data muat palet dari database');
+      });
   },
 }
 </script>

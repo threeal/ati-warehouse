@@ -9,7 +9,7 @@ module.exports = (app) => {
 
   router.get('/:id', controller.findOne);
   router.put('/:id', controller.update);
-  router.delete('/:id', controller.delete);
+  router.delete('/:id', controller.remove);
 
   app.use('/api/document', router);
 };

@@ -8,9 +8,9 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const db = require('./app/models');
-db.mongoose
-  .connect(db.url, {
+const models = require('./app/models');
+models.mongoose
+  .connect(models.url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
@@ -23,15 +23,8 @@ db.mongoose
     process.exit();
   });
 
-app.get('/', (req, res) => {
-  res.json({ message: 'test message' });
-});
-
-const tutorialRoute = require('./app/routes/tutorial.route.js');
-tutorialRoute(app);
-
-const documentRoute = require('./app/routes/document.route.js');
-documentRoute(app);
+const routes = require('./app/routes');
+routes(app);
 
 app.listen(8080, () => {
   console.log('server is running on port 8080');

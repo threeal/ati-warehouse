@@ -1,21 +1,25 @@
 <template>
   <v-container>
-    <v-container>
-      <v-row>
+    <v-row>
+      <v-col>
         <v-text-field v-model="productKind" label="Jenis Produk"
-            :disabled="submitting" dense outlined/>
-      </v-row>
-      <v-row>
+            :disabled="submitting" hide-details dense outlined/>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <v-text-field v-model="productionDate" label="Tanggal Produksi" type="date"
-            :disabled="submitting" dense outlined/>
-      </v-row>
-      <v-row>
+            :disabled="submitting" hide-details dense outlined/>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <v-btn @click="onAdd()" :disabled="submitting || !productKind || !productionDate"
             :loading="submitting" color="success" block>
           Tambah Dokumen
         </v-btn>
-      </v-row>
-    </v-container>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -50,9 +54,7 @@ export default {
       DocumentService.create(data)
         .then(() => {
           this.app.log('Dokumen berhasil ditambahkan');
-          this.submitting = false;
-
-          this.productKind = null;
+          this.$router.push('/document');
         })
         .catch(() => {
           this.app.log('Dokumen gagal ditambahkan');

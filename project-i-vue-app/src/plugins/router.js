@@ -23,6 +23,11 @@ export default new Router({
       component: () => import('../views/DocumentDetail'),
     },
     {
+      path: '/document/:id/pallet-load-add',
+      name: 'pallet-load-add',
+      component: () => import('../views/PalletLoadAdd'),
+    },
+    {
       path: '/bongkar-basket',
       name: 'bongkar-basket',
       component: () => import('../components/BongkarBasket'),

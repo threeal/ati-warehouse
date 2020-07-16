@@ -1,24 +1,24 @@
 import http from '../plugins/http-common'
 
 class DocumentService {
+  findAll() {
+    return http.get('/api/document');
+  }
+
   create(data) {
-    return http.post('/document', data);
+    return http.post('/api/document', data);
   }
 
-  getAll() {
-    return http.get('/document');
-  }
-
-  get(id) {
-    return http.get(`/document/${id}`);
+  findOne(id) {
+    return http.get(`/api/document/${id}`);
   }
 
   update(id, data) {
-    return http.put(`/document/${id}`, data);
+    return http.put(`/api/document/${id}`, data);
   }
 
-  delete(id) {
-    return http.delete(`/document/${id}`);
+  remove(id) {
+    return http.delete(`/api/document/${id}`);
   }
 }
 

@@ -1,17 +1,27 @@
 <template>
   <v-container>
-    <v-container>
-      <v-row>
+    <v-row>
+      <v-col>
         <v-text-field v-model="productKind" label="Jenis Produk"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" outlined dense/>
-      </v-row>
-      <v-row>
+            :filled="!edit" :clearable="edit" outlined dense hide-details/>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <v-text-field v-model="productionDate" label="Tanggal Produksi" type="date"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" outlined dense/>
-      </v-row>
-      <v-row>
+            :filled="!edit" outlined dense hide-details/>
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col>
+        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
+            color="error" block>
+          Hapus Dokumen
+        </v-btn>
+      </v-col>
+      <v-col>
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
           Ubah Detail
         </v-btn>
@@ -19,34 +29,44 @@
              color="success" block>
           Simpan Perubahan
         </v-btn>
-      </v-row>
-    </v-container>
-    <v-card>
-      <v-tabs v-model="tab" background-color="primary" grow dark>
-        <v-tab href="#pallet-load">
-          Muat Pallet
-        </v-tab>
-        <v-tab href="#basket-unload">
-          Bongkar Basket
-        </v-tab>
-      </v-tabs>
-      <v-tabs-items v-model="tab">
-        <v-tab-item value="pallet-load">
-          <PalletLoad/>
-        </v-tab-item>
-        <v-tab-item value="basket-unload">
-          <BasketUnload/>
-        </v-tab-item>
-      </v-tabs-items>
-    </v-card>
-    <v-container>
-      <v-row>
-        <v-btn @click="onDelete()" :disabled="deleting" :loading="deleting"
-            color="error" block>
-          Hapus Dokumen
-        </v-btn>
-      </v-row>
-    </v-container>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-card>
+          <v-tabs v-model="tab" background-color="primary" grow dark>
+            <v-tab href="#pallet-load">
+              Muat Palet
+            </v-tab>
+            <v-tab href="#basket-unload">
+              Bongkar Basket
+            </v-tab>
+          </v-tabs>
+          <v-tabs-items v-model="tab">
+            <v-tab-item value="pallet-load">
+              <v-container v-if="palletLoadFetching">
+                <div class="d-flex justify-center">
+                  <v-progress-circular color="primary" indeterminate/>
+                </div>
+              </v-container>
+              <PalletLoad v-else-if="palletLoadExist" :app="app" :exist="palletLoadExist"/>
+              <v-container v-else>
+                <v-container>
+                  <v-row>
+                    <v-btn color="primary" @click="onPalletLoadAdd()" block>
+                      Tambah Data Muat Palet
+                    </v-btn>
+                  </v-row>
+                </v-container>
+              </v-container>
+            </v-tab-item>
+            <v-tab-item value="basket-unload">
+              <BasketUnload/>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -54,6 +74,7 @@
 import BasketUnload from '../components/BasketUnload'
 import PalletLoad from '../components/PalletLoad'
 import DocumentService from '../services/DocumentService'
+import PalletLoadService from '../services/PalletLoadService'
 
 export default {
   name: 'document-detail',
@@ -73,6 +94,8 @@ export default {
       submitting: false,
       deleting: false,
       edit: false,
+      palletLoadFetching: true,
+      palletLoadExist: false,
       productKind: null,
       productionDate: null,
       tab: null,
@@ -97,14 +120,14 @@ export default {
           this.submitting = false;
         })
         .catch(() => {
-          this.app.log('Detail Dokumen gagal diperbaharui');
+          this.app.log('Detail dokumen gagal diperbaharui');
           this.submitting = false;
         });
     },
     onDelete() {
       this.deleting = true;
 
-      DocumentService.delete(this.$route.params.id)
+      DocumentService.remove(this.$route.params.id)
         .then(() => {
           this.app.log('Dokumen berhasil dihapus');
           this.deleting = false;
@@ -116,15 +139,27 @@ export default {
           this.deleting = false;
         });
     },
+    onPalletLoadAdd() {
+      this.$router.push(`/document/${this.$route.params.id}/pallet-load-add`);
+    },
   },
   mounted() {
     this.app.title = 'Detail Dokumen';
 
-    DocumentService.get(this.$route.params.id)
+    DocumentService.findOne(this.$route.params.id)
       .then((res) => {
         this.fetching = false;
         this.productKind = res.data.productKind;
         this.productionDate = res.data.productionDate;
+
+        PalletLoadService.find(this.$route.params.id)
+          .then(() => {
+            this.palletLoadFetching = false;
+            this.palletLoadExist = true;
+          })
+          .catch(() => {
+            this.palletLoadFetching = false;
+          });
       })
       .catch(() => {
         this.app.log('Error: Gagal mengambil detail dokumen dari database');

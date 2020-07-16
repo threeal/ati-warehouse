@@ -1,5 +1,5 @@
-const db = require('../models');
-const Document = db.Document;
+const models = require('../models');
+const Document = models.Document;
 
 exports.findAll = (_, res) => {
   setTimeout(() => {
@@ -12,7 +12,7 @@ exports.findAll = (_, res) => {
           message: err.message || 'some error occured while retrieving documents',
         });
       });
-  }, 3000);
+  }, 1000);
 };
 
 exports.create = (req, res) => {
@@ -37,12 +37,14 @@ exports.create = (req, res) => {
           message: err.message || 'some error occured while creating the document',
         });
       });
-  }, 3000);
+  }, 1000);
 };
 
 exports.findOne = (req, res) => {
+  const id = req.params.id;
+
   setTimeout(() => {
-    Document.findById(req.params.id)
+    Document.findById(id)
       .then((data) => {
         if (data) {
           res.send(data);
@@ -58,10 +60,12 @@ exports.findOne = (req, res) => {
           message: err.message || `some error occured while retrieving document with id ${id}`,
         });
       });
-  }, 3000);
+  }, 1000);
 };
 
 exports.update = (req, res) => {
+  const id = req.params.id;
+
   if (!req.body) {
     return res.status(400).send({
       message: 'content could not be empty!',
@@ -69,7 +73,7 @@ exports.update = (req, res) => {
   }
 
   setTimeout(() => {
-    Document.findByIdAndUpdate(req.params.id, req.body, { useFindAndModify: false })
+    Document.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
       .then((data) => {
         if (data) {
           res.send({
@@ -87,28 +91,30 @@ exports.update = (req, res) => {
           message: err.message || `some error occured while updating document with id ${id}`,
         });
       });
-  }, 3000);
+  }, 1000);
 };
 
-exports.delete = (req, res) => {
+exports.remove = (req, res) => {
+  const id = req.params.id;
+
   setTimeout(() => {
-    Document.findByIdAndRemove(req.params.id)
+    Document.findByIdAndRemove(id)
       .then((data) => {
         if (data) {
           res.send({
-            message: 'document was deleted successfully',
+            message: 'document was removed successfully',
           });
         }
         else {
           res.status(404).send({
-            message: `cannot delete document with id ${id}`,
+            message: `cannot remove document with id ${id}`,
           });
         }
       })
       .catch((err) => {
         res.status(500).send({
-          message: err.message || `some error occured while deleting document with id ${id}`,
+          message: err.message || `some error occured while removing document with id ${id}`,
         });
       });
-  }, 3000);
+  }, 1000);
 };
