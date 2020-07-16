@@ -6,7 +6,7 @@
             :disabled="!edit" dense outlined/>
       </v-row>
       <v-row>
-        <v-text-field v-model="productDate" label="Tanggal Produksi" type="date"
+        <v-text-field v-model="productionDate" label="Tanggal Produksi" type="date"
             :disabled="!edit" dense outlined/>
       </v-row>
       <v-row>
@@ -60,7 +60,7 @@ export default {
     return {
       edit: false,
       productKind: 'T2 112 PR PCSD EO SA',
-      productDate: '2020-01-01',
+      productionDate: '2020-01-01',
       tab: null,
     };
   },

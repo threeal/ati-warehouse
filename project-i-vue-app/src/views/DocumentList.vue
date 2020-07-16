@@ -3,12 +3,12 @@
     <v-container>
       <v-row>
         <v-select v-model="selectedFilter" :items="filters" label="Filter Dokumen"
-            hide-details outlined/>
+            hide-details dense outlined/>
       </v-row>
     </v-container>
     <v-container>
       <v-row>
-        <v-btn color="primary" block>Tambah Dokumen</v-btn>
+        <v-btn color="primary" href="/document-add" block>Tambah Dokumen</v-btn>
       </v-row>
     </v-container>
     <v-card>
@@ -20,10 +20,10 @@
             </v-list-item-title>
           </template>
           <v-list-item v-for="(document, index) in documents" :key="index"
-              href="/document" link>
+              href="/document-detail" link>
             <v-list-item-content>
               <v-list-item-title>
-                {{ document.product }}
+                {{ document.productKind }}
               </v-list-item-title>
               <v-list-item-subtitle>
                 {{ document.productionDate}}
@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import DocumentService from '../services/DocumentService'
+
 export default {
   name: 'document-list',
   props: {
@@ -55,24 +57,19 @@ export default {
     return {
       filters: filters,
       selectedFilter: filters[0],
-      documents: [
-        {
-          product: 'T2 113 PR YNMDCP EO AU',
-          productionDate: '21 Juni 2020',
-        },
-        {
-          product: 'T2 113 PR YNMDCP EO AU',
-          productionDate: '21 Juni 2020',
-        },
-        {
-          product: 'T2 113 PR YNMDCP EO AU',
-          productionDate: '21 Juni 2020',
-        },
-      ],
+      documents: [],
     };
   },
   mounted() {
     this.app.title = 'Daftar Dokumen';
+
+    DocumentService.getAll()
+      .then((res) => {
+        this.documents = res.data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   },
 }
 </script>
