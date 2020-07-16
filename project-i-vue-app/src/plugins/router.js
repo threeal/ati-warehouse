@@ -21,5 +21,10 @@ export default new Router({
       name: 'muat-pallet',
       component: () => import('../components/MuatPallet'),
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../components/Login'),
+    },
   ],
 })
