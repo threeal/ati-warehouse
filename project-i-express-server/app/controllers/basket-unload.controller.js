@@ -1,28 +1,28 @@
 const models = require('../models');
-const PalletLoad = models.PalletLoad;
+const BasketUnload = models.BasketUnload;
 
 exports.find = (req, res) => {
   const documentId = req.params.documentId;
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
 
-  console.log(`finding pallet load with document id ${documentId}`);
+  console.log(`finding basket unload with document id ${documentId}`);
 
   setTimeout(() => {
-    PalletLoad.findOne(condition)
+    BasketUnload.findOne(condition)
       .then((data) => {
         if (data) {
           res.send(data);
         }
         else {
           res.status(404).send({
-            message: `pallet load with document id ${documentId} not found`,
+            message: `basket unload with document id ${documentId} not found`,
           });
         }
       })
       .catch((err) => {
         res.status(500).send({
           message: err.message
-            || `some error occured while retrieving pallet load with document id ${documentId}`,
+            || `some error occured while retrieving basket unload with document id ${documentId}`,
         });
       });
   }, 1000);
@@ -35,20 +35,20 @@ exports.create = (req, res) => {
     });
   }
 
-  const palletLoad = new PalletLoad({
+  const basketUnload = new BasketUnload({
     documentId: req.params.documentId,
-    loadDate: req.body.loadDate,
-    brand: req.body.brand,
+    unloadDate: req.body.unloadDate,
+    line: req.body.line,
   });
 
   setTimeout(() => {
-    palletLoad.save(palletLoad)
+    basketUnload.save(basketUnload)
       .then((data) => {
         res.send(data);
       })
       .catch((err) => {
         res.status(500).send({
-          message: err.message || 'some error occured while creating the pallet load',
+          message: err.message || 'some error occured while creating the basket unload',
         });
       });
   }, 1000);
@@ -65,23 +65,23 @@ exports.update = (req, res) => {
   }
 
   setTimeout(() => {
-    PalletLoad.findOneAndUpdate(condition, req.body, { useFindAndModify: false })
+    BasketUnload.findOneAndUpdate(condition, req.body, { useFindAndModify: false })
       .then((data) => {
         if (data) {
           res.send({
-            message: 'pallet load was updated successfully',
+            message: 'basket unload was updated successfully',
           });
         }
         else {
           res.status(404).send({
-            message: `cannot update pallet load with document id ${documentId}`,
+            message: `cannot update basket unload with document id ${documentId}`,
           });
         }
       })
       .catch((err) => {
         res.status(500).send({
           message: err.message
-            || `some error occured while updating pallet load with document id ${documentId}`,
+            || `some error occured while updating basket unload with document id ${documentId}`,
         });
       });
   }, 1000);
@@ -92,23 +92,23 @@ exports.remove = (req, res) => {
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
 
   setTimeout(() => {
-    PalletLoad.findOneAndRemove(condition)
+    BasketUnload.findOneAndRemove(condition)
       .then((data) => {
         if (data) {
           res.send({
-            message: 'pallet load was removed successfully',
+            message: 'basket unload was removed successfully',
           });
         }
         else {
           res.status(404).send({
-            message: `cannot remove pallet load with documentId ${documentId}`,
+            message: `cannot remove basket unload with document id ${documentId}`,
           });
         }
       })
       .catch((err) => {
         res.status(500).send({
           message: err.message
-            || `some error occured while removing pallet load with document id ${documentId}`,
+            || `some error occured while removing basket unload with document id ${documentId}`,
         });
       });
   }, 1000);

@@ -49,7 +49,8 @@
                   <v-progress-circular color="primary" indeterminate/>
                 </div>
               </v-container>
-              <PalletLoad v-else-if="palletLoadExist" :app="app" :exist="palletLoadExist"/>
+              <PalletLoad v-else-if="palletLoadExist" :app="app"
+                  :deleteCallback="onPalletLoadFetch"/>
               <v-container v-else>
                 <v-container>
                   <v-row>
@@ -61,7 +62,22 @@
               </v-container>
             </v-tab-item>
             <v-tab-item value="basket-unload">
-              <BasketUnload/>
+              <v-container v-if="basketUnloadFetching">
+                <div class="d-flex justify-center">
+                  <v-progress-circular color="primary" indeterminate/>
+                </div>
+              </v-container>
+              <BasketUnload v-else-if="basketUnloadExist" :app="app"
+                  :deleteCallback="onBasketUnloadFetch"/>
+              <v-container v-else>
+                <v-container>
+                  <v-row>
+                    <v-btn color="primary" @click="onBasketUnloadAdd()" block>
+                      Tambah Data Bongkar Basket
+                    </v-btn>
+                  </v-row>
+                </v-container>
+              </v-container>
             </v-tab-item>
           </v-tabs-items>
         </v-card>
@@ -75,6 +91,7 @@ import BasketUnload from '../components/BasketUnload'
 import PalletLoad from '../components/PalletLoad'
 import DocumentService from '../services/DocumentService'
 import PalletLoadService from '../services/PalletLoadService'
+import BasketUnloadService from '../services/BasketUnloadService'
 
 export default {
   name: 'document-detail',
@@ -96,6 +113,8 @@ export default {
       edit: false,
       palletLoadFetching: true,
       palletLoadExist: false,
+      basketUnloadFetching: true,
+      basketUnloadExist: false,
       productKind: null,
       productionDate: null,
       tab: null,
@@ -113,7 +132,7 @@ export default {
         productionDate: this.productionDate,
       };
 
-      DocumentService.update(this.$route.params.id, data)
+      DocumentService.update(this.$route.params.documentId, data)
         .then(() => {
           this.app.log('Detail dokumen berhasil diperbaharui');
           this.edit = false;
@@ -127,7 +146,7 @@ export default {
     onDelete() {
       this.deleting = true;
 
-      DocumentService.remove(this.$route.params.id)
+      DocumentService.remove(this.$route.params.documentId)
         .then(() => {
           this.app.log('Dokumen berhasil dihapus');
           this.deleting = false;
@@ -139,27 +158,50 @@ export default {
           this.deleting = false;
         });
     },
+    onPalletLoadFetch() {
+      this.palletLoadFetching = true;
+      this.palletLoadExist = false;
+
+      PalletLoadService.find(this.$route.params.documentId)
+        .then(() => {
+          this.palletLoadFetching = false;
+          this.palletLoadExist = true;
+        })
+        .catch(() => {
+          this.palletLoadFetching = false;
+        });
+    },
     onPalletLoadAdd() {
-      this.$router.push(`/document/${this.$route.params.id}/pallet-load-add`);
+      this.$router.push(`/document/${this.$route.params.documentId}/pallet-load-add`);
+    },
+    onBasketUnloadFetch() {
+      this.basketUnloadFetching = true;
+      this.basketUnloadExist = false;
+
+      BasketUnloadService.find(this.$route.params.documentId)
+        .then(() => {
+          this.basketUnloadFetching = false;
+          this.basketUnloadExist = true;
+        })
+        .catch(() => {
+          this.basketUnloadFetching = false;
+        });
+    },
+    onBasketUnloadAdd() {
+      this.$router.push(`/document/${this.$route.params.documentId}/basket-unload-add`);
     },
   },
   mounted() {
     this.app.title = 'Detail Dokumen';
 
-    DocumentService.findOne(this.$route.params.id)
+    DocumentService.findOne(this.$route.params.documentId)
       .then((res) => {
         this.fetching = false;
         this.productKind = res.data.productKind;
         this.productionDate = res.data.productionDate;
 
-        PalletLoadService.find(this.$route.params.id)
-          .then(() => {
-            this.palletLoadFetching = false;
-            this.palletLoadExist = true;
-          })
-          .catch(() => {
-            this.palletLoadFetching = false;
-          });
+        this.onPalletLoadFetch();
+        this.onBasketUnloadFetch();
       })
       .catch(() => {
         this.app.log('Error: Gagal mengambil detail dokumen dari database');

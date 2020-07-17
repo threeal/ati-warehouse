@@ -41,30 +41,31 @@ exports.create = (req, res) => {
 };
 
 exports.findOne = (req, res) => {
-  const id = req.params.id;
+  const documentId = req.params.documentId;
 
   setTimeout(() => {
-    Document.findById(id)
+    Document.findById(documentId)
       .then((data) => {
         if (data) {
           res.send(data);
         }
         else {
           res.status(404).send({
-            message: `document with id ${id} not found`,
+            message: `document with id ${documentId} not found`,
           });
         }
       })
       .catch((err) => {
         res.status(500).send({
-          message: err.message || `some error occured while retrieving document with id ${id}`,
+          message: err.message
+            || `some error occured while retrieving document with id ${documentId}`,
         });
       });
   }, 1000);
 };
 
 exports.update = (req, res) => {
-  const id = req.params.id;
+  const documentId = req.params.documentId;
 
   if (!req.body) {
     return res.status(400).send({
@@ -73,7 +74,7 @@ exports.update = (req, res) => {
   }
 
   setTimeout(() => {
-    Document.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+    Document.findByIdAndUpdate(documentId, req.body, { useFindAndModify: false })
       .then((data) => {
         if (data) {
           res.send({
@@ -82,23 +83,24 @@ exports.update = (req, res) => {
         }
         else {
           res.status(404).send({
-            message: `cannot update document with id ${id}`,
+            message: `cannot update document with id ${documentId}`,
           });
         }
       })
       .catch((err) => {
         res.status(500).send({
-          message: err.message || `some error occured while updating document with id ${id}`,
+          message: err.message
+            || `some error occured while updating document with id ${documentId}`,
         });
       });
   }, 1000);
 };
 
 exports.remove = (req, res) => {
-  const id = req.params.id;
+  const documentId = req.params.documentId;
 
   setTimeout(() => {
-    Document.findByIdAndRemove(id)
+    Document.findByIdAndRemove(documentId)
       .then((data) => {
         if (data) {
           res.send({
@@ -107,13 +109,14 @@ exports.remove = (req, res) => {
         }
         else {
           res.status(404).send({
-            message: `cannot remove document with id ${id}`,
+            message: `cannot remove document with id ${documentId}`,
           });
         }
       })
       .catch((err) => {
         res.status(500).send({
-          message: err.message || `some error occured while removing document with id ${id}`,
+          message: err.message
+            || `some error occured while removing document with id ${documentId}`,
         });
       });
   }, 1000);

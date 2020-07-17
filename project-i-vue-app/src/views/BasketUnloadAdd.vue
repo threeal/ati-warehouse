@@ -2,19 +2,19 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-text-field v-model="loadDate" label="Tanggal Muat" type="date"
+        <v-text-field v-model="unloadDate" label="Tanggal Bongkar" type="date"
             :disabled="submitting" dense hide-details outlined/>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-text-field v-model="brand" label="Merek"
+        <v-text-field v-model="line" label="Line"
             :disabled="submitting" dense hide-details outlined/>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-btn @click="onAdd()" :disabled="submitting || !loadDate || !brand"
+        <v-btn @click="onAdd()" :disabled="submitting || !unloadDate || !line"
             :loading="submitting" color="success" block>
           Submit Data
         </v-btn>
@@ -25,10 +25,10 @@
 
 <script>
 import '../plugins/utility'
-import PalletLoadService from '../services/PalletLoadService';
+import BasketUnloadService from '../services/BasketUnloadService';
 
 export default {
-  name: 'pallet-load-add',
+  name: 'basket-unload-add',
   props: {
     app: {
       type: Object,
@@ -37,8 +37,8 @@ export default {
   },
   data() {
     return {
-      loadDate: (new Date()).toDateInput(),
-      brand: null,
+      unloadDate: (new Date()).toDateInput(),
+      line: null,
       submitting: false,
     };
   },
@@ -47,23 +47,23 @@ export default {
       this.submitting = true;
 
       let data = {
-        loadDate: this.loadDate,
-        brand: this.brand,
+        unloadDate: this.unloadDate,
+        line: this.line,
       };
 
-      PalletLoadService.create(this.$route.params.documentId, data)
+      BasketUnloadService.create(this.$route.params.documentId, data)
         .then(() => {
-          this.app.log('Data muat palet berhasil ditambahkan');
+          this.app.log('Data bongkar basket berhasil ditambahkan');
           this.$router.push(`/document/${this.$route.params.documentId}`);
         })
         .catch(() => {
-          this.app.log('Data muat palet gagal ditambahkan');
+          this.app.log('Data bongkar basket gagal ditambahkan');
           this.submitting = false;
         });
     },
   },
   mounted() {
-    this.app.title = 'Tambah Data Muat Palet';
+    this.app.title = 'Tambah Data Bongkar Basket';
   },
 }
 </script>

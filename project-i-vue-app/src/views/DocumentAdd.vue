@@ -16,7 +16,7 @@
       <v-col>
         <v-btn @click="onAdd()" :disabled="submitting || !productKind || !productionDate"
             :loading="submitting" color="success" block>
-          Tambah Dokumen
+          Submit Dokumen
         </v-btn>
       </v-col>
     </v-row>

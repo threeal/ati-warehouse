@@ -4,10 +4,10 @@ module.exports = (app) => {
   const express = require('express');
   var router = express.Router();
 
-  router.get('/:id', controller.find);
-  router.post('/:id', controller.create);
-  router.put('/:id', controller.update);
-  router.delete('/:id', controller.remove);
+  router.get('/:documentId/pallet-load', controller.find);
+  router.post('/:documentId/pallet-load', controller.create);
+  router.put('/:documentId/pallet-load', controller.update);
+  router.delete('/:documentId/pallet-load', controller.remove);
 
-  app.use('/api/pallet-load', router);
+  app.use('/api/document', router);
 };

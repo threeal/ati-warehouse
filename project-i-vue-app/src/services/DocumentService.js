@@ -9,16 +9,16 @@ class DocumentService {
     return http.post('/api/document', data);
   }
 
-  findOne(id) {
-    return http.get(`/api/document/${id}`);
+  findOne(documentId) {
+    return http.get(`/api/document/${documentId}`);
   }
 
-  update(id, data) {
-    return http.put(`/api/document/${id}`, data);
+  update(documentId, data) {
+    return http.put(`/api/document/${documentId}`, data);
   }
 
-  remove(id) {
-    return http.delete(`/api/document/${id}`);
+  remove(documentId) {
+    return http.delete(`/api/document/${documentId}`);
   }
 }
 

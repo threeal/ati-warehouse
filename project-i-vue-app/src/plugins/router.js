@@ -18,14 +18,19 @@ export default new Router({
       component: () => import('../views/DocumentAdd'),
     },
     {
-      path: '/document/:id',
+      path: '/document/:documentId',
       name: 'document-detail',
       component: () => import('../views/DocumentDetail'),
     },
     {
-      path: '/document/:id/pallet-load-add',
+      path: '/document/:documentId/pallet-load-add',
       name: 'pallet-load-add',
       component: () => import('../views/PalletLoadAdd'),
+    },
+    {
+      path: '/document/:documentId/basket-unload-add',
+      name: 'basket-unload-add',
+      component: () => import('../views/BasketUnloadAdd'),
     },
     {
       path: '/bongkar-basket',

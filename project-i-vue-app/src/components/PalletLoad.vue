@@ -91,6 +91,9 @@ export default {
       type: Object,
       required: true,
     },
+    deleteCallback: {
+      type: Function,
+    },
   },
   data() {
     return {
@@ -133,7 +136,7 @@ export default {
         brand: this.brand,
       };
 
-      PalletLoadService.update(this.$route.params.id, data)
+      PalletLoadService.update(this.$route.params.documentId, data)
         .then(() => {
           this.app.log('Detail data muat palet berhasil diperbaharui');
           this.edit = false;
@@ -147,12 +150,17 @@ export default {
     onDelete() {
       this.deleting = true;
 
-      PalletLoadService.remove(this.$route.params.id)
+      PalletLoadService.remove(this.$route.params.documentId)
         .then(() => {
           this.app.log('Data muat palet berhasil dihapus');
           this.deleting = false;
 
-          this.$router.go();
+          if (typeof this.deleteCallback === 'function') {
+            this.deleteCallback();
+          }
+          else {
+            this.$router.go();
+          }
         })
         .catch(() => {
           this.app.log('Data muat palet gagal dihapus');
@@ -161,7 +169,7 @@ export default {
     },
   },
   mounted() {
-    PalletLoadService.find(this.$route.params.id)
+    PalletLoadService.find(this.$route.params.documentId)
       .then((res) => {
         this.fetching = false;
         this.loadDate = res.data.loadDate;

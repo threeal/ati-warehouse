@@ -7,9 +7,9 @@ module.exports = (app) => {
   router.get('/', controller.findAll);
   router.post('/', controller.create);
 
-  router.get('/:id', controller.findOne);
-  router.put('/:id', controller.update);
-  router.delete('/:id', controller.remove);
+  router.get('/:documentId', controller.findOne);
+  router.put('/:documentId', controller.update);
+  router.delete('/:documentId', controller.remove);
 
   app.use('/api/document', router);
 };

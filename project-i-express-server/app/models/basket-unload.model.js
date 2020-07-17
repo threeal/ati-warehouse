@@ -1,6 +1,7 @@
 module.exports = (mongoose) => {
   let schema = mongoose.Schema(
     {
+      documentId: String,
       unloadDate: String,
       line: String,
     },
