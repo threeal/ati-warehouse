@@ -3,17 +3,19 @@
     <v-row>
       <v-col>
         <v-select v-model="selectedFilter" :items="filters" label="Filter Dokumen"
-            hide-details dense outlined/>
+            :disabled="fetching" hide-details dense outlined/>
       </v-col>
     </v-row>
     <v-row dense>
       <v-col>
-        <v-btn color="primary" @click="$router.push('/document-add')" block>Tambah Dokumen</v-btn>
+        <v-btn color="primary" @click="onDocumentAdd()" :disabled="fetching" block>
+          Tambah Dokumen
+        </v-btn>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-card>
+        <v-card flat>
           <v-list>
             <v-list-group value="true">
               <template v-slot:activator>
@@ -21,15 +23,18 @@
                   Daftar Dokumen
                 </v-list-item-title>
               </template>
-              <v-list-item v-if="fetching" two-line>
-                <v-list-item-content>
-                  <v-progress-circular color="primary" indeterminate/>
-                </v-list-item-content>
-              </v-list-item>
+              <div v-if="fetching">
+                <v-divider/>
+                <v-list-item two-line>
+                  <v-list-item-content>
+                    <v-progress-circular color="primary" indeterminate/>
+                  </v-list-item-content>
+                </v-list-item>
+              </div>
               <div v-else-if="documents.length > 0">
                 <div v-for="(document, index) in documents" :key="index">
                   <v-divider/>
-                  <v-list-item  @click="$router.push(`/document/${document.id}`)"
+                  <v-list-item  @click="onDocumentClick(document.id)"
                       two-line link>
                     <v-list-item-content>
                       <v-list-item-title>
@@ -42,13 +47,16 @@
                   </v-list-item>
                 </div>
               </div>
-              <v-list-item v-else two-line>
-                <v-list-item-content>
-                  <v-list-item-title class="d-flex justify-center">
-                    Dokumen Kosong
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+              <div v-else>
+                <v-divider/>
+                <v-list-item two-line>
+                  <v-list-item-content>
+                    <v-list-item-title class="d-flex justify-center">
+                      Dokumen Kosong
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </div>
             </v-list-group>
           </v-list>
         </v-card>
@@ -63,10 +71,7 @@ import DocumentService from '../services/DocumentService'
 export default {
   name: 'document-list',
   props: {
-    app: {
-      type: Object,
-      required: true,
-    },
+    app: { type: Object, required: true },
   },
   data() {
     let filters = [
@@ -82,13 +87,21 @@ export default {
       documents: [],
     };
   },
+  methods: {
+    onDocumentAdd() {
+      this.$router.push('/document-add');
+    },
+    onDocumentClick(documentId) {
+      this.$router.push(`/document/${documentId}`);
+    },
+  },
   mounted() {
     this.app.title = 'Daftar Dokumen';
 
     DocumentService.findAll()
       .then((res) => {
-        this.fetching = false;
         this.documents = res.data;
+        this.fetching = false;
       })
       .catch(() => {
         this.app.log('Error: Gagal mengambil dokumen dari database');

@@ -14,13 +14,7 @@
             :filled="!edit" :clearable="edit" outlined dense hide-details/>
       </v-col>
     </v-row>
-    <v-row dense>
-      <v-col>
-        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-            color="error" block>
-          Hapus Data
-        </v-btn>
-      </v-col>
+    <v-row>
       <v-col>
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
           Ubah Detail
@@ -31,69 +25,37 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row dense>
+    <div v-if="fetching" class="d-flex justify-center">
+      <v-progress-circular color="primary" indeterminate/>
+    </div>
+    <v-row v-else>
       <v-col>
-        <v-btn color="primary" block>Tambah Data Palet</v-btn>
+        <PalletList :app="app"/>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-card>
-          <v-list>
-            <v-list-group value="true">
-              <template v-slot:activator>
-                <v-list-item-title>
-                  Daftar Data Palet
-                </v-list-item-title>
-              </template>
-              <div v-for="(row, index) in rows" :key="index">
-                <v-divider/>
-                <v-list-item two-line link>
-                  <v-list-item-content eager>
-                    <v-list-item-title>
-                      <div class="d-flex justify-space-between">
-                        <div>
-                          Palet {{ row.palletNumber }} (Basket {{ row.basketNumbers }})
-                        </div>
-                        <div>
-                          {{ row.quantity }}
-                        </div>
-                      </div>
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      <div class="d-flex justify-space-between">
-                        <div>
-                          {{ row.startTime }} - {{ row.endTime }}
-                        </div>
-                        <div>
-                          Loader: {{ row.loader }}
-                        </div>
-                      </div>
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-              </div>
-            </v-list-group>
-          </v-list>
-        </v-card>
+        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
+            color="error" block>
+          Hapus Data Muat Palet
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import PalletList from './PalletList'
 import PalletLoadService from '../services/PalletLoadService'
 
 export default {
   name: 'pallet-load',
+  components: {
+    PalletList
+  },
   props: {
-    app: {
-      type: Object,
-      required: true,
-    },
-    deleteCallback: {
-      type: Function,
-    },
+    app: { type: Object, required: true },
+    deleteCallback: { type: Function },
   },
   data() {
     return {
@@ -103,25 +65,6 @@ export default {
       edit: false,
       loadDate: null,
       brand: null,
-      panel: 0,
-      rows: [
-        {
-          palletNumber: '1',
-          basketNumbers: '5, 6, 7',
-          quantity: '50 Tingkat',
-          startTime: '05.00',
-          endTime: '06.00',
-          loader: 'Udin'
-        },
-        {
-          palletNumber: '2',
-          basketNumbers: '3, 2',
-          quantity: '13 Tingkat 6 Kaleng',
-          startTime: '06.00',
-          endTime: '06.30',
-          loader: 'Udin'
-        },
-      ],
     };
   },
   methods: {

@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <v-text-field v-model="productKind" label="Jenis Produk"
-            :disabled="submitting" hide-details dense outlined/>
+            :disabled="submitting" clearable hide-details dense outlined/>
       </v-col>
     </v-row>
     <v-row>
@@ -30,10 +30,7 @@ import DocumentService from '../services/DocumentService';
 export default {
   name: 'document-add',
   props: {
-    app: {
-      type: Object,
-      required: true,
-    },
+    app: { type: Object, required: true },
   },
   data() {
     return {

@@ -28,6 +28,16 @@ export default new Router({
       component: () => import('../views/PalletLoadAdd'),
     },
     {
+      path: '/document/:documentId/pallet-add',
+      name: 'pallet-add',
+      component: () => import('../views/PalletAdd'),
+    },
+    {
+      path: '/document/:documentId/pallet/:palletId',
+      name: 'pallet-detail',
+      component: () => import('../views/PalletDetail'),
+    },
+    {
       path: '/document/:documentId/basket-unload-add',
       name: 'basket-unload-add',
       component: () => import('../views/BasketUnloadAdd'),

@@ -14,10 +14,7 @@
 export default {
   name: 'toast',
   props: {
-    app: {
-      type: Object,
-      required: true,
-    },
+    app: { type: Object, required: true },
   },
   data() {
     return {

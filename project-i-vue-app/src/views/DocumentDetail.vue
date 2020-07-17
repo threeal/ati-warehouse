@@ -14,13 +14,7 @@
             :filled="!edit" outlined dense hide-details/>
       </v-col>
     </v-row>
-    <v-row dense>
-      <v-col>
-        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-            color="error" block>
-          Hapus Dokumen
-        </v-btn>
-      </v-col>
+    <v-row>
       <v-col>
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
           Ubah Detail
@@ -33,7 +27,10 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-card>
+        <div v-if="fetching" class="d-flex justify-center">
+          <v-progress-circular color="primary" indeterminate/>
+        </div>
+        <v-card v-else>
           <v-tabs v-model="tab" background-color="primary" grow dark>
             <v-tab href="#pallet-load">
               Muat Palet
@@ -83,6 +80,14 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
+            color="error" block>
+          Hapus Dokumen
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -100,10 +105,7 @@ export default {
     PalletLoad,
   },
   props: {
-    app: {
-      type: Object,
-      required: true,
-    },
+    app: { type: Object, required: true },
   },
   data() {
     return {
@@ -196,9 +198,10 @@ export default {
 
     DocumentService.findOne(this.$route.params.documentId)
       .then((res) => {
-        this.fetching = false;
         this.productKind = res.data.productKind;
         this.productionDate = res.data.productionDate;
+
+        this.fetching = false;
 
         this.onPalletLoadFetch();
         this.onBasketUnloadFetch();

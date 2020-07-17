@@ -14,3 +14,10 @@ Date.prototype.toDateInput = function() {
 
   return `${year.pad(4)}-${month.pad(2)}-${date.pad(2)}`;
 }
+
+Date.prototype.toTimeInput = function() {
+  let hours = this.getHours();
+  let minutes = this.getMinutes();
+
+  return `${hours.pad(2)}:${minutes.pad(2)}`;
+}

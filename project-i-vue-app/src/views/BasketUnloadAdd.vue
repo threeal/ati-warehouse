@@ -9,7 +9,7 @@
     <v-row>
       <v-col>
         <v-text-field v-model="line" label="Line"
-            :disabled="submitting" dense hide-details outlined/>
+            :disabled="submitting" clearable dense hide-details outlined/>
       </v-col>
     </v-row>
     <v-row>
@@ -30,10 +30,7 @@ import BasketUnloadService from '../services/BasketUnloadService';
 export default {
   name: 'basket-unload-add',
   props: {
-    app: {
-      type: Object,
-      required: true,
-    },
+    app: { type: Object, required: true },
   },
   data() {
     return {

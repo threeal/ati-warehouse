@@ -87,13 +87,8 @@ import BasketUnloadService from '../services/BasketUnloadService'
 export default {
   name: 'basket-unload',
   props: {
-    app: {
-      type: Object,
-      required: true,
-    },
-    deleteCallback: {
-      type: Function,
-    },
+    app: { type: Object, required: true },
+    deleteCallback: { type: Function },
   },
   data() {
     return {
