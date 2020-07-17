@@ -14,13 +14,7 @@
             :filled="!edit" :clearable="edit" outlined dense hide-details/>
       </v-col>
     </v-row>
-    <v-row dense>
-      <v-col>
-        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-            color="error" block>
-          Hapus Data
-        </v-btn>
-      </v-col>
+    <v-row>
       <v-col>
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
           Ubah Detail
@@ -31,61 +25,34 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-row dense>
+    <div v-if="fetching" class="d-flex justify-center">
+      <v-progress-circular color="primary" indeterminate/>
+    </div>
+    <v-row v-else>
       <v-col>
-        <v-btn color="primary" block>Tambah Data Basket</v-btn>
+        <BasketList :app="app"/>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-card>
-          <v-list>
-            <v-list-group value="true">
-              <template v-slot:activator>
-                <v-list-item-title>
-                  Daftar Data Palet
-                </v-list-item-title>
-              </template>
-              <div v-for="(row, index) in rows" :key="index">
-                <v-divider/>
-                <v-list-item two-line link>
-                  <v-list-item-content eager>
-                    <v-list-item-title>
-                      <div class="d-flex justify-space-between">
-                        <div>
-                          Basket {{ row.basketNumber }} (ID {{ row.basketId }})
-                        </div>
-                        <div>
-                          {{ row.quantity }}
-                        </div>
-                      </div>
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      <div class="d-flex justify-space-between">
-                        <div>
-                          {{ row.startTime }} - {{ row.endTime }}
-                        </div>
-                        <div v-if="row.rejectQuantity > 0">
-                          Rijek: {{ row.rejectQuantity }} ({{ row.rejectKind }})
-                        </div>
-                      </div>
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-              </div>
-            </v-list-group>
-          </v-list>
-        </v-card>
+        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
+            color="error" block>
+          Hapus Data Muat Basket
+        </v-btn>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import BasketList from './BasketList'
 import BasketUnloadService from '../services/BasketUnloadService'
 
 export default {
   name: 'basket-unload',
+  components: {
+    BasketList
+  },
   props: {
     app: { type: Object, required: true },
     deleteCallback: { type: Function },
@@ -98,27 +65,6 @@ export default {
       edit: false,
       unloadDate: null,
       line: null,
-      panel: 0,
-      rows: [
-        {
-          basketNumber: '1',
-          basketId: '32',
-          startTime: '05.00',
-          endTime: '06.00',
-          quantity: '50 Basket',
-          rejectQuantity: 10,
-          rejectKind: 'PJ',
-        },
-        {
-          basketNumber: '2',
-          basketId: '16',
-          startTime: '04.00',
-          endTime: '07.00',
-          quantity: '32 Basket 6 Kaleng',
-          rejectQuantity: 0,
-          rejectKind: '',
-        },
-      ],
     };
   },
   methods: {

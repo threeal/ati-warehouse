@@ -2,15 +2,14 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-text-field v-model="palletNumber" label="Nomor Palet"
+        <v-text-field v-model="basketNumber" label="Nomor Basket"
             :disabled="submitting" clearable hide-details dense outlined/>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-combobox v-model="basketNumbers" label="Nomor Basket"
-            :disabled="submitting" clearable hide-details outlined
-            multiple chips deletable-chips/>
+        <v-text-field v-model="basketId" label="Id Basket"
+            :disabled="submitting" clearable hide-details dense outlined/>
       </v-col>
     </v-row>
     <v-row>
@@ -25,7 +24,7 @@
     </v-row>
     <v-row>
       <v-col cols="6">
-        <v-text-field v-model="stackQuantity" label="Jumlah Tingkat" type="number"
+        <v-text-field v-model="basketQuantity" label="Jumlah Basket" type="number"
             :disabled="submitting" clearable hide-details dense outlined/>
       </v-col>
       <v-col cols="6">
@@ -35,7 +34,13 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-text-field v-model="loader" label="Loader"
+        <v-text-field v-model="rejectQuantity" label="Jumlah Rijek" type="number"
+            :disabled="submitting" clearable hide-details dense outlined/>
+      </v-col>
+    </v-row>
+    <v-row v-if="rejectQuantity && rejectQuantity > 0">
+      <v-col>
+        <v-text-field v-model="rejectKind" label="Jenis Rijek"
             :disabled="submitting" clearable hide-details dense outlined/>
       </v-col>
     </v-row>
@@ -43,7 +48,7 @@
       <v-col>
         <v-btn @click="onAdd()" :disabled="addDisabled"
             :loading="submitting" color="success" block>
-          Submit Data Palet
+          Submit Data Basket
         </v-btn>
       </v-col>
     </v-row>
@@ -52,30 +57,31 @@
 
 <script>
 import '../plugins/utility'
-import PalletService from '../services/PalletService';
+import BasketService from '../services/BasketService';
 
 export default {
-  name: 'pallet-add',
+  name: 'basket-add',
   props: {
     app: { type: Object, required: true },
   },
   data() {
     return {
-      palletNumber: null,
-      basketNumbers: null,
+      basketNumber: null,
+      basketId: null,
       startTime: (new Date()).toTimeInput(),
       endTime: (new Date()).toTimeInput(),
-      stackQuantity: null,
+      basketQuantity: null,
       canQuantity: null,
-      loader: null,
+      rejectQuantity: null,
+      rejectKind: null,
       submitting: false,
     };
   },
   computed: {
     addDisabled() {
-      return this.submitting || !this.palletNumber || !this.basketNumbers
-        || !this.startTime || !this.endTime || !this.loader
-        || (!this.stackQuantity && !this.canQuantity);
+      return this.submitting || !this.basketNumber || !this.basketId
+        || !this.startTime || !this.endTime || (!this.basketQuantity && !this.canQuantity)
+        || (this.rejectQuantity && this.rejectQuantity > 0 && !this.rejectKind);
     }
   },
   methods: {
@@ -83,28 +89,29 @@ export default {
       this.submitting = true;
 
       let data = {
-        palletNumber: this.palletNumber,
-        basketNumbers: this.basketNumbers,
+        basketNumber: this.basketNumber,
+        basketId: this.basketId,
         startTime: this.startTime,
         endTime: this.endTime,
-        stackQuantity: this.stackQuantity,
+        basketQuantity: this.basketQuantity,
         canQuantity: this.canQuantity,
-        loader: this.loader,
+        rejectQuantity: this.rejectQuantity,
+        rejectKind: this.rejectKind,
       };
 
-      PalletService.create(this.$route.params.documentId, data)
+      BasketService.create(this.$route.params.documentId, data)
         .then(() => {
-          this.app.log('Data palet berhasil ditambahkan');
+          this.app.log('Data basket berhasil ditambahkan');
           this.$router.push(`/document/${this.$route.params.documentId}`);
         })
         .catch(() => {
-          this.app.log('Data palet gagal ditambahkan');
+          this.app.log('Data basket gagal ditambahkan');
           this.submitting = false;
         });
     },
   },
   mounted() {
-    this.app.title = 'Tambah Data Palet';
+    this.app.title = 'Tambah Data Basket';
   },
 }
 </script>

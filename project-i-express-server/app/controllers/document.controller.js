@@ -1,5 +1,9 @@
 const models = require('../models');
 const Document = models.Document;
+const PalletLoad = models.PalletLoad;
+const Pallet = models.Pallet;
+const BasketUnload = models.BasketUnload;
+const Basket = models.Basket;
 
 exports.findAll = (_, res) => {
   setTimeout(() => {
@@ -100,12 +104,50 @@ exports.remove = (req, res) => {
   const documentId = req.params.documentId;
 
   setTimeout(() => {
-    Document.findByIdAndRemove(documentId)
+    Document.findByIdAndDelete(documentId)
       .then((data) => {
         if (data) {
-          res.send({
-            message: 'document was removed successfully',
-          });
+          const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
+
+          PalletLoad.deleteMany(condition)
+            .then(() => {
+              Pallet.deleteMany(condition)
+                .then(() => {
+                  BasketUnload.deleteMany(condition)
+                    .then(() => {
+                      Basket.deleteMany(condition)
+                        .then(() => {
+                          res.send({
+                            message: 'document was removed successfully',
+                          });
+                        })
+                        .catch((err) => {
+                          res.status(500).send({
+                            message: err.message
+                              || `some error occured while removing basket with document id ${documentId}`,
+                          });
+                        });
+                    })
+                    .catch((err) => {
+                      res.status(500).send({
+                        message: err.message
+                          || `some error occured while removing basket unload with document id ${documentId}`,
+                      });
+                    });
+                })
+                .catch((err) => {
+                  res.status(500).send({
+                    message: err.message
+                      || `some error occured while removing pallet with document id ${documentId}`,
+                  });
+                });
+            })
+            .catch((err) => {
+              res.status(500).send({
+                message: err.message
+                  || `some error occured while removing pallet load with document id ${documentId}`,
+              });
+            });
         }
         else {
           res.status(404).send({

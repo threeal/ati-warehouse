@@ -1,11 +1,10 @@
 const models = require('../models');
 const BasketUnload = models.BasketUnload;
+const Basket = models.Basket;
 
 exports.find = (req, res) => {
   const documentId = req.params.documentId;
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
-
-  console.log(`finding basket unload with document id ${documentId}`);
 
   setTimeout(() => {
     BasketUnload.findOne(condition)
@@ -92,12 +91,21 @@ exports.remove = (req, res) => {
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
 
   setTimeout(() => {
-    BasketUnload.findOneAndRemove(condition)
+    BasketUnload.deleteMany(condition)
       .then((data) => {
         if (data) {
-          res.send({
-            message: 'basket unload was removed successfully',
-          });
+          Basket.deleteMany(condition)
+            .then(() => {
+              res.send({
+                message: 'basket unload was removed successfully',
+              });
+            })
+            .catch((err) => {
+              res.status(500).send({
+                message: err.message
+                  || `some error occured while removing basket with document id ${documentId}`,
+              });
+            });
         }
         else {
           res.status(404).send({

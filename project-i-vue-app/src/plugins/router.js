@@ -43,6 +43,16 @@ export default new Router({
       component: () => import('../views/BasketUnloadAdd'),
     },
     {
+      path: '/document/:documentId/basket-add',
+      name: 'basket-add',
+      component: () => import('../views/BasketAdd'),
+    },
+    {
+      path: '/document/:documentId/basket/:basketId',
+      name: 'basket-detail',
+      component: () => import('../views/BasketDetail'),
+    },
+    {
       path: '/bongkar-basket',
       name: 'bongkar-basket',
       component: () => import('../components/BongkarBasket'),

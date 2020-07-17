@@ -2,17 +2,16 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-text-field v-model="palletNumber" label="Nomor Palet"
+        <v-text-field v-model="basketNumber" label="Nomor Basket"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
             :filled="!edit" :clearable="edit" hide-details dense outlined/>
       </v-col>
     </v-row>
     <v-row>
       <v-col>
-        <v-combobox v-model="basketNumbers" label="Nomor Basket"
+        <v-text-field v-model="basketId" label="Id Basket"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :clearable="edit" hide-details outlined
-            multiple chips deletable-chips/>
+            :filled="!edit" :clearable="edit" hide-details dense outlined/>
       </v-col>
     </v-row>
     <v-row>
@@ -28,22 +27,29 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-if="edit || (stackQuantity && stackQuantity > 0)"
+      <v-col v-if="edit || (basketQuantity && basketQuantity > 0)"
           :cols="(edit || (canQuantity && canQuantity > 0)) ? 6 : 12">
-        <v-text-field v-model="stackQuantity" label="Jumlah Tingkat" type="number"
+        <v-text-field v-model="basketQuantity" label="Jumlah Basket" type="number"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
             :filled="!edit" :clearable="edit" hide-details dense outlined/>
       </v-col>
       <v-col v-if="edit || (canQuantity && canQuantity > 0)"
-          :cols="(edit || (stackQuantity && stackQuantity > 0)) ? 6 : 12">
+          :cols="(edit || (basketQuantity && basketQuantity > 0)) ? 6 : 12">
         <v-text-field v-model="canQuantity" label="Jumlah Kaleng" type="number"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
             :filled="!edit" :clearable="edit" hide-details dense outlined/>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="edit || (rejectQuantity && rejectQuantity > 0)">
       <v-col>
-        <v-text-field v-model="loader" label="Loader"
+        <v-text-field v-model="rejectQuantity" label="Jumlah Rijek"
+            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+            :filled="!edit" :clearable="edit" hide-details dense outlined/>
+      </v-col>
+    </v-row>
+    <v-row v-if="rejectQuantity && rejectQuantity > 0">
+      <v-col>
+        <v-text-field v-model="rejectKind" label="Jenis Rijek" type="number"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
             :filled="!edit" :clearable="edit" hide-details dense outlined/>
       </v-col>
@@ -63,7 +69,7 @@
       <v-col>
         <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
             color="error" block>
-          Hapus Data Palet
+          Hapus Data Basket
         </v-btn>
       </v-col>
     </v-row>
@@ -71,10 +77,10 @@
 </template>
 
 <script>
-import PalletService from '../services/PalletService'
+import BasketService from '../services/BasketService'
 
 export default {
-  name: 'pallet-detail',
+  name: 'basket-detail',
   props: {
     app: { type: Object, required: true },
   },
@@ -84,20 +90,21 @@ export default {
       submitting: false,
       deleting: false,
       edit: false,
-      palletNumber: null,
-      basketNumbers: null,
+      basketNumber: null,
+      basketId: null,
       startTime: null,
       endTime: null,
-      stackQuantity: null,
+      basketQuantity: null,
       canQuantity: null,
-      loader: null,
+      rejectQuantity: null,
+      rejectKind: null,
     };
   },
   computed: {
     submitDisabled() {
-      return this.submitting || !this.palletNumber || !this.basketNumbers
-        || !this.startTime || !this.endTime || !this.loader
-        || (!this.stackQuantity && !this.canQuantity);
+      return this.submitting || !this.basketNumber || !this.basketId
+        || !this.startTime || !this.endTime || (!this.basketQuantity && !this.canQuantity)
+        || (this.rejectQuantity && this.rejectQuantity > 0 && !this.rejectKind);
     }
   },
   methods: {
@@ -108,59 +115,61 @@ export default {
       this.submitting = true;
 
       let data = {
-        palletNumber: this.palletNumber,
-        basketNumbers: this.basketNumbers,
+        basketNumber: this.basketNumber,
+        basketId: this.basketId,
         startTime: this.startTime,
         endTime: this.endTime,
-        stackQuantity: this.stackQuantity,
+        basketQuantity: this.basketQuantity,
         canQuantity: this.canQuantity,
-        loader: this.loader,
+        rejectQuantity: this.rejectQuantity,
+        rejectKind: this.rejectKind,
       };
 
-      PalletService.update(this.$route.params.documentId, this.$route.params.palletId, data)
+      BasketService.update(this.$route.params.documentId, this.$route.params.basketId, data)
         .then(() => {
-          this.app.log('Detail data palet berhasil diperbaharui');
+          this.app.log('Detail data basket berhasil diperbaharui');
           this.edit = false;
           this.submitting = false;
         })
         .catch(() => {
-          this.app.log('Detail data palet gagal diperbaharui');
+          this.app.log('Detail data basket gagal diperbaharui');
           this.submitting = false;
         });
     },
     onDelete() {
       this.deleting = true;
 
-      PalletService.remove(this.$route.params.documentId, this.$route.params.palletId)
+      BasketService.remove(this.$route.params.documentId, this.$route.params.basketId)
         .then(() => {
-          this.app.log('Data palet berhasil dihapus');
+          this.app.log('Data basket berhasil dihapus');
           this.deleting = false;
 
           this.$router.push(`/document/${this.$route.params.documentId}`);
         })
         .catch(() => {
-          this.app.log('Data palet gagal dihapus');
+          this.app.log('Data basket gagal dihapus');
           this.deleting = false;
         });
     },
   },
   mounted() {
-    this.app.title = 'Detail Data Palet';
+    this.app.title = 'Detail Data Basket';
 
-    PalletService.findOne(this.$route.params.documentId, this.$route.params.palletId)
+    BasketService.findOne(this.$route.params.documentId, this.$route.params.basketId)
       .then((res) => {
-        this.palletNumber = res.data.palletNumber;
-        this.basketNumbers = res.data.basketNumbers;
+        this.basketNumber = res.data.basketNumber;
+        this.basketId = res.data.basketId;
         this.startTime = res.data.startTime;
         this.endTime = res.data.endTime;
-        this.stackQuantity = res.data.stackQuantity;
+        this.basketQuantity = res.data.basketQuantity;
         this.canQuantity = res.data.canQuantity;
-        this.loader = res.data.loader;
+        this.rejectQuantity = res.data.rejectQuantity;
+        this.rejectKind = res.data.rejectKind;
 
         this.fetching = false;
       })
       .catch(() => {
-        this.app.log('Error: Gagal mengambil detail data palet dari database');
+        this.app.log('Error: Gagal mengambil detail data basket dari database');
       });
   },
 }

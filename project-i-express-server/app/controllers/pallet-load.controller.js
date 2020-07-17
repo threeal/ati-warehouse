@@ -1,11 +1,10 @@
 const models = require('../models');
 const PalletLoad = models.PalletLoad;
+const Pallet = models.Pallet;
 
 exports.find = (req, res) => {
   const documentId = req.params.documentId;
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
-
-  console.log(`finding pallet load with document id ${documentId}`);
 
   setTimeout(() => {
     PalletLoad.findOne(condition)
@@ -92,12 +91,21 @@ exports.remove = (req, res) => {
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
 
   setTimeout(() => {
-    PalletLoad.findOneAndRemove(condition)
+    PalletLoad.deleteMany(condition)
       .then((data) => {
         if (data) {
-          res.send({
-            message: 'pallet load was removed successfully',
-          });
+          Pallet.deleteMany(condition)
+            .then(() => {
+              res.send({
+                message: 'pallet load was removed successfully',
+              });
+            })
+            .catch((err) => {
+              res.status(500).send({
+                message: err.message
+                  || `some error occured while removing pallet with document id ${documentId}`,
+              });
+            });
         }
         else {
           res.status(404).send({
