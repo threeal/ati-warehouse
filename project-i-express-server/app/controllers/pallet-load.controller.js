@@ -6,7 +6,7 @@ exports.find = (req, res) => {
   const documentId = req.params.documentId;
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
 
-  setTimeout(() => {
+  // setTimeout(() => {
     PalletLoad.findOne(condition)
       .then((data) => {
         if (data) {
@@ -24,7 +24,7 @@ exports.find = (req, res) => {
             || `some error occured while retrieving pallet load with document id ${documentId}`,
         });
       });
-  }, 1000);
+  // }, 1000);
 };
 
 exports.create = (req, res) => {
@@ -40,7 +40,7 @@ exports.create = (req, res) => {
     brand: req.body.brand,
   });
 
-  setTimeout(() => {
+  // setTimeout(() => {
     palletLoad.save(palletLoad)
       .then((data) => {
         res.send(data);
@@ -50,7 +50,7 @@ exports.create = (req, res) => {
           message: err.message || 'some error occured while creating the pallet load',
         });
       });
-  }, 1000);
+  // }, 1000);
 };
 
 exports.update = (req, res) => {
@@ -63,7 +63,7 @@ exports.update = (req, res) => {
     });
   }
 
-  setTimeout(() => {
+  // setTimeout(() => {
     PalletLoad.findOneAndUpdate(condition, req.body, { useFindAndModify: false })
       .then((data) => {
         if (data) {
@@ -83,14 +83,14 @@ exports.update = (req, res) => {
             || `some error occured while updating pallet load with document id ${documentId}`,
         });
       });
-  }, 1000);
+  // }, 1000);
 };
 
 exports.remove = (req, res) => {
   const documentId = req.params.documentId;
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
 
-  setTimeout(() => {
+  // setTimeout(() => {
     PalletLoad.deleteMany(condition)
       .then((data) => {
         if (data) {
@@ -119,5 +119,5 @@ exports.remove = (req, res) => {
             || `some error occured while removing pallet load with document id ${documentId}`,
         });
       });
-  }, 1000);
+  // }, 1000);
 };
