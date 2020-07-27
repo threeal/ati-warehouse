@@ -1,11 +1,10 @@
 <template>
   <v-app>
-    <v-app-bar @click="drawer = !drawer" app color="primary" dark>
+    <v-app-bar v-if="appBar" @click="drawer = true" app color="primary" dark>
       <v-app-bar-nav-icon app/>
       <v-toolbar-title>{{ title }}</v-toolbar-title>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" absolute temporary>
-    </v-navigation-drawer>
+    <Drawer v-if="appBar" :app="this"/>
     <Toast :app="this"/>
     <v-content>
       <router-view :app="this"/>
@@ -14,22 +13,40 @@
 </template>
 
 <script>
+import Drawer from './components/Drawer'
 import Toast from './components/Toast'
 
 export default {
-  name: 'App',
+  name: 'app',
   components: {
-    Toast
+    Drawer,
+    Toast,
   },
   data() {
     return {
       title: '',
       drawer: false,
+      appBar: false,
     };
   },
   methods: {
     log(message) {
       console.log(message);
+    },
+    setAppBar(enable, title) {
+      this.appBar = enable;
+      this.title = title;
+      document.title = `${this.title} | Project-I`;
+    },
+    routePush(path) {
+      if (this.$route.path != path) {
+        this.$router.push(path);
+      }
+    },
+    routeReplace(path) {
+      if (this.$route.path != path) {
+        this.$router.replace(path);
+      }
     },
   },
 }

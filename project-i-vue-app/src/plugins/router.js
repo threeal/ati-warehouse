@@ -3,12 +3,22 @@ import Router from 'vue-router'
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   routes: [
     {
       path: '/',
-      alias: '/document',
+      alias: '/login',
+      name: 'login',
+      component: () => import('../views/Login'),
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/Register'),
+    },
+    {
+      path: '/document',
       name: 'document-list',
       component: () => import('../views/DocumentList'),
     },
@@ -62,10 +72,27 @@ export default new Router({
       name: 'muat-pallet',
       component: () => import('../components/MuatPallet'),
     },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('../components/Login'),
-    },
   ],
-})
+});
+
+router.beforeEach((to, _, next) => {
+  const user = localStorage.getItem('user');
+  if (to.path === '/login' || to.path === '/register') {
+    if (user) {
+      next('/document');
+    }
+    else {
+      next();
+    }
+  }
+  else {
+    if (user) {
+      next();
+    }
+    else {
+      next('/login');
+    }
+  }
+});
+
+export default router

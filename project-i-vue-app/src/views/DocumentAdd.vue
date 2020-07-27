@@ -25,7 +25,8 @@
 
 <script>
 import '../plugins/utility'
-import DocumentService from '../services/DocumentService';
+import DocumentService from '../services/DocumentService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'document-add',
@@ -51,16 +52,31 @@ export default {
       DocumentService.create(data)
         .then(() => {
           this.app.log('Dokumen berhasil ditambahkan');
-          this.$router.push('/document');
+          this.$router.go(-1);
         })
-        .catch(() => {
-          this.app.log('Dokumen gagal ditambahkan');
+        .catch((err) => {
           this.submitting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Dokumen gagal ditambahkan, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Dokumen gagal ditambahkan,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Dokumen gagal ditambahkan, tidak ada jaringan');
+          }
         });
     },
   },
   mounted() {
-    this.app.title = 'Tambah Dokumen';
+    this.app.setAppBar(true, 'Tambah Dokumen');
   },
 }
 </script>

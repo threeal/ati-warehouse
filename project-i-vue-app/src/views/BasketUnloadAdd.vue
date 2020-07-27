@@ -25,7 +25,8 @@
 
 <script>
 import '../plugins/utility'
-import BasketUnloadService from '../services/BasketUnloadService';
+import BasketUnloadService from '../services/BasketUnloadService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'basket-unload-add',
@@ -51,16 +52,31 @@ export default {
       BasketUnloadService.create(this.$route.params.documentId, data)
         .then(() => {
           this.app.log('Data bongkar basket berhasil ditambahkan');
-          this.$router.push(`/document/${this.$route.params.documentId}`);
+          this.$router.go(-1);
         })
-        .catch(() => {
-          this.app.log('Data bongkar basket gagal ditambahkan');
+        .catch((err) => {
           this.submitting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Data bongkar basket gagal ditambahkan, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Data bongkar basket gagal ditambahkan,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Data bongkar basket gagal ditambahkan, tidak ada jaringan');
+          }
         });
     },
   },
   mounted() {
-    this.app.title = 'Tambah Data Bongkar Basket';
+    this.app.setAppBar(true, 'Tambah Data Bongkar Basket');
   },
 }
 </script>

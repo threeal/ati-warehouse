@@ -47,6 +47,7 @@
 <script>
 import PalletList from './PalletList'
 import PalletLoadService from '../services/PalletLoadService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'pallet-load',
@@ -85,9 +86,24 @@ export default {
           this.edit = false;
           this.submitting = false;
         })
-        .catch(() => {
-          this.app.log('Detail data muat palet gagal diperbaharui');
+        .catch((err) => {
           this.submitting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Detail data muat palet gagal diperbaharui, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Detail data muat palet gagal diperbaharui,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Detail data muat palet gagal diperbaharui, tidak ada jaringan');
+          }
         });
     },
     onDelete() {
@@ -102,12 +118,27 @@ export default {
             this.deleteCallback();
           }
           else {
-            this.$router.go();
+            this.$router.go(-1);
           }
         })
-        .catch(() => {
-          this.app.log('Data muat palet gagal dihapus');
+        .catch((err) => {
           this.deleting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Data muat palet gagal dihapus, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Data muat palet gagal dihapus,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Data muat palet gagal dihapus, tidak ada jaringan');
+          }
         });
     },
   },
@@ -118,8 +149,22 @@ export default {
         this.loadDate = res.data.loadDate;
         this.brand = res.data.brand;
       })
-      .catch(() => {
-        this.app.log('Error: Gagal mengambil detail data muat palet dari database');
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            this.app.log('Gagal mengambil data muat palet, sesi habis');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+          else {
+            this.app.log('Gagal mengambil data muat palet,'
+              + ` kesalahan server (${err.response.status})`);
+          }
+        }
+        else {
+          this.app.log('Gagal mengambil data muat palet, tidak ada jaringan');
+        }
       });
   },
 }

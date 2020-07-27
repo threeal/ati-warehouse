@@ -1,24 +1,30 @@
 import http from '../plugins/http-common'
+import AuthService from './AuthService'
 
 class DocumentService {
   findAll() {
-    return http.get('/api/document');
+    let headers = { headers: AuthService.header() };
+    return http.get('/api/document', headers);
   }
 
   create(data) {
-    return http.post('/api/document', data);
+    let headers = { headers: AuthService.header() };
+    return http.post('/api/document', data, headers);
   }
 
   findOne(documentId) {
-    return http.get(`/api/document/${documentId}`);
+    let headers = { headers: AuthService.header() };
+    return http.get(`/api/document/${documentId}`, headers);
   }
 
   update(documentId, data) {
-    return http.put(`/api/document/${documentId}`, data);
+    let headers = { headers: AuthService.header() };
+    return http.put(`/api/document/${documentId}`, data, headers);
   }
 
   remove(documentId) {
-    return http.delete(`/api/document/${documentId}`);
+    let headers = { headers: AuthService.header() };
+    return http.delete(`/api/document/${documentId}`, headers);
   }
 }
 

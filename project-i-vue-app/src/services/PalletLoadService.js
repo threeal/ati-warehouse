@@ -1,21 +1,26 @@
 import http from '../plugins/http-common'
+import AuthService from './AuthService'
 
-class PalletLoad {
+class PalletLoadService {
   find(documentId) {
-    return http.get(`/api/document/${documentId}/pallet-load`);
+    let headers = { headers: AuthService.header() };
+    return http.get(`/api/document/${documentId}/pallet-load`, headers);
   }
 
   create(documentId, data) {
-    return http.post(`/api/document/${documentId}/pallet-load`, data);
+    let headers = { headers: AuthService.header() };
+    return http.post(`/api/document/${documentId}/pallet-load`, data, headers);
   }
 
   update(documentId, data) {
-    return http.put(`/api/document/${documentId}/pallet-load`, data);
+    let headers = { headers: AuthService.header() };
+    return http.put(`/api/document/${documentId}/pallet-load`, data, headers);
   }
 
   remove(documentId) {
-    return http.delete(`/api/document/${documentId}/pallet-load`);
+    let headers = { headers: AuthService.header() };
+    return http.delete(`/api/document/${documentId}/pallet-load`, headers);
   }
 }
 
-export default new PalletLoad();
+export default new PalletLoadService();

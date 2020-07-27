@@ -67,6 +67,7 @@
 
 <script>
 import DocumentService from '../services/DocumentService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'document-list',
@@ -89,22 +90,35 @@ export default {
   },
   methods: {
     onDocumentAdd() {
-      this.$router.push('/document-add');
+      this.app.routePush('/document-add');
     },
     onDocumentClick(documentId) {
-      this.$router.push(`/document/${documentId}`);
+      this.app.routePush(`/document/${documentId}`);
     },
   },
   mounted() {
-    this.app.title = 'Daftar Dokumen';
+    this.app.setAppBar(true, 'Daftar Dokumen');
 
     DocumentService.findAll()
       .then((res) => {
         this.documents = res.data;
         this.fetching = false;
       })
-      .catch(() => {
-        this.app.log('Error: Gagal mengambil dokumen dari database');
+      .catch((err) => {
+        if (err.request) {
+          if (err.request.status === 401) {
+            this.app.log('Gagal mengambil dokumen, sesi habis');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+          else {
+            this.app.log(`Gagal mengambil dokumen, kesalahan server (${err.request.status})`);
+          }
+        }
+        else {
+          this.app.log('Gagal mengambil dokumen, tidak ada jaringan');
+        }
       });
   },
 }

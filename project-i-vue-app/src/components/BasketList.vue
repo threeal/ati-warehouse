@@ -60,6 +60,7 @@
 <script>
 import BasketListItem from './BasketListItem'
 import BasketService from '../services/BasketService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'basket-list',
@@ -84,10 +85,10 @@ export default {
   },
   methods: {
     onBasketAdd() {
-      this.$router.push(`/document/${this.$route.params.documentId}/basket-add`);
+      this.app.routePush(`/document/${this.$route.params.documentId}/basket-add`);
     },
     onBasketClick(basketId) {
-      this.$router.push(`/document/${this.$route.params.documentId}/basket/${basketId}`);
+      this.app.routePush(`/document/${this.$route.params.documentId}/basket/${basketId}`);
     },
   },
   mounted() {
@@ -96,8 +97,22 @@ export default {
         this.baskets = res.data;
         this.fetching = false;
       })
-      .catch(() => {
-        this.app.log('Error: Gagal mengambil daftar basket dari database');
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            this.app.log('Gagal mengambil daftar basket, sesi habis');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+          else {
+            this.app.log('Gagal mengambil daftar basket,'
+              + ` kesalahan server (${err.response.status})`);
+          }
+        }
+        else {
+          this.app.log('Gagal mengambil daftar basket, tidak ada jaringan');
+        }
       });
   }
 }

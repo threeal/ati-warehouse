@@ -60,6 +60,7 @@
 <script>
 import PalletListItem from './PalletListItem'
 import PalletService from '../services/PalletService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'pallet-list',
@@ -84,10 +85,10 @@ export default {
   },
   methods: {
     onPalletAdd() {
-      this.$router.push(`/document/${this.$route.params.documentId}/pallet-add`);
+      this.app.routePush(`/document/${this.$route.params.documentId}/pallet-add`);
     },
     onPalletClick(palletId) {
-      this.$router.push(`/document/${this.$route.params.documentId}/pallet/${palletId}`);
+      this.app.routePush(`/document/${this.$route.params.documentId}/pallet/${palletId}`);
     },
   },
   mounted() {
@@ -96,8 +97,22 @@ export default {
         this.pallets = res.data;
         this.fetching = false;
       })
-      .catch(() => {
-        this.app.log('Error: Gagal mengambil daftar palet dari database');
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            this.app.log('Gagal mengambil daftar palet, sesi habis');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+          else {
+            this.app.log('Gagal mengambil daftar palet,'
+              + ` kesalahan server (${err.response.status})`);
+          }
+        }
+        else {
+          this.app.log('Gagal mengambil daftar palet, tidak ada jaringan');
+        }
       });
   }
 }

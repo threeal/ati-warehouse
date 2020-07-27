@@ -1,15 +1,17 @@
 module.exports = (app) => {
-  const controller = require('../controllers/document.controller.js');
-
   const express = require('express');
   var router = express.Router();
 
-  router.get('/', controller.findAll);
-  router.post('/', controller.create);
+  const { authJwt } = require('../middlewares');
 
-  router.get('/:documentId', controller.findOne);
-  router.put('/:documentId', controller.update);
-  router.delete('/:documentId', controller.remove);
+  const controller = require('../controllers/document.controller.js');
+
+  router.get('/', [ authJwt.verifyToken ], controller.findAll);
+  router.post('/', [ authJwt.verifyToken ], controller.create);
+
+  router.get('/:documentId', [ authJwt.verifyToken ], controller.findOne);
+  router.put('/:documentId', [ authJwt.verifyToken ], controller.update);
+  router.delete('/:documentId', [ authJwt.verifyToken ], controller.remove);
 
   app.use('/api/document', router);
 };

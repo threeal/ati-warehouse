@@ -78,6 +78,7 @@
 
 <script>
 import BasketService from '../services/BasketService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'basket-detail',
@@ -131,9 +132,24 @@ export default {
           this.edit = false;
           this.submitting = false;
         })
-        .catch(() => {
-          this.app.log('Detail data basket gagal diperbaharui');
+        .catch((err) => {
           this.submitting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Detail data basket gagal diperbaharui, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Detail data basket gagal diperbaharui,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Detail data basket gagal diperbaharui, tidak ada jaringan');
+          }
         });
     },
     onDelete() {
@@ -144,16 +160,31 @@ export default {
           this.app.log('Data basket berhasil dihapus');
           this.deleting = false;
 
-          this.$router.push(`/document/${this.$route.params.documentId}`);
+          this.$router.go(-1);
         })
-        .catch(() => {
-          this.app.log('Data basket gagal dihapus');
+        .catch((err) => {
           this.deleting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Data basket gagal dihapus, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Data basket gagal dihapus,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Data basket gagal dihapus, tidak ada jaringan');
+          }
         });
     },
   },
   mounted() {
-    this.app.title = 'Detail Data Basket';
+    this.app.setAppBar(true, 'Detail Data Basket');
 
     BasketService.findOne(this.$route.params.documentId, this.$route.params.basketId)
       .then((res) => {
@@ -168,8 +199,22 @@ export default {
 
         this.fetching = false;
       })
-      .catch(() => {
-        this.app.log('Error: Gagal mengambil detail data basket dari database');
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            this.app.log('Gagal mengambil detail data basket, sesi habis');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+          else {
+            this.app.log('Gagal mengambil detail data basket,'
+              + ` kesalahan server (${err.response.status})`);
+          }
+        }
+        else {
+          this.app.log('Gagal mengambil detail data basket, tidak ada jaringan');
+        }
       });
   },
 }

@@ -1,15 +1,17 @@
 module.exports = (app) => {
-  const controller = require('../controllers/basket.controller.js');
-
   const express = require('express');
   var router = express.Router();
 
-  router.get('/:documentId/basket/', controller.findAll);
-  router.post('/:documentId/basket/', controller.create);
+  const { authJwt } = require('../middlewares');
 
-  router.get('/:documentId/basket/:basketId', controller.findOne);
-  router.put('/:documentId/basket/:basketId', controller.update);
-  router.delete('/:documentId/basket/:basketId', controller.remove);
+  const controller = require('../controllers/basket.controller.js');
+
+  router.get('/:documentId/basket/', [ authJwt.verifyToken ], controller.findAll);
+  router.post('/:documentId/basket/', [ authJwt.verifyToken ], controller.create);
+
+  router.get('/:documentId/basket/:basketId', [ authJwt.verifyToken ], controller.findOne);
+  router.put('/:documentId/basket/:basketId', [ authJwt.verifyToken ], controller.update);
+  router.delete('/:documentId/basket/:basketId', [ authJwt.verifyToken ], controller.remove);
 
   app.use('/api/document', router);
 };

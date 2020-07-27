@@ -72,6 +72,7 @@
 
 <script>
 import PalletService from '../services/PalletService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'pallet-detail',
@@ -123,9 +124,24 @@ export default {
           this.edit = false;
           this.submitting = false;
         })
-        .catch(() => {
-          this.app.log('Detail data palet gagal diperbaharui');
+        .catch((err) => {
           this.submitting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Detail data palet gagal diperbaharui, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Detail data palet gagal diperbaharui,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Detail data palet gagal diperbaharui, tidak ada jaringan');
+          }
         });
     },
     onDelete() {
@@ -136,16 +152,31 @@ export default {
           this.app.log('Data palet berhasil dihapus');
           this.deleting = false;
 
-          this.$router.push(`/document/${this.$route.params.documentId}`);
+          this.$router.go(-1);
         })
-        .catch(() => {
-          this.app.log('Data palet gagal dihapus');
+        .catch((err) => {
           this.deleting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Data palet gagal dihapus, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Data palet gagal dihapus,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Data palet gagal dihapus, tidak ada jaringan');
+          }
         });
     },
   },
   mounted() {
-    this.app.title = 'Detail Data Palet';
+    this.app.setAppBar(true, 'Detail Data Palet');
 
     PalletService.findOne(this.$route.params.documentId, this.$route.params.palletId)
       .then((res) => {
@@ -159,8 +190,22 @@ export default {
 
         this.fetching = false;
       })
-      .catch(() => {
-        this.app.log('Error: Gagal mengambil detail data palet dari database');
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            this.app.log('Gagal mengambil detail data palet, sesi habis');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+          else {
+            this.app.log('Gagal mengambil detail data palet,'
+              + ` kesalahan server (${err.response.status})`);
+          }
+        }
+        else {
+          this.app.log('Gagal mengambil detail data palet, tidak ada jaringan');
+        }
       });
   },
 }

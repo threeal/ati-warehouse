@@ -1,21 +1,26 @@
 import http from '../plugins/http-common'
+import AuthService from './AuthService'
 
-class BasketUnload {
+class BasketUnloadService {
   find(documentId) {
-    return http.get(`/api/document/${documentId}/basket-unload`);
+    let headers = { headers: AuthService.header() };
+    return http.get(`/api/document/${documentId}/basket-unload`, headers);
   }
 
   create(documentId, data) {
-    return http.post(`/api/document/${documentId}/basket-unload`, data);
+    let headers = { headers: AuthService.header() };
+    return http.post(`/api/document/${documentId}/basket-unload`, data, headers);
   }
 
   update(documentId, data) {
-    return http.put(`/api/document/${documentId}/basket-unload`, data);
+    let headers = { headers: AuthService.header() };
+    return http.put(`/api/document/${documentId}/basket-unload`, data, headers);
   }
 
   remove(documentId) {
-    return http.delete(`/api/document/${documentId}/basket-unload`);
+    let headers = { headers: AuthService.header() };
+    return http.delete(`/api/document/${documentId}/basket-unload`, headers);
   }
 }
 
-export default new BasketUnload();
+export default new BasketUnloadService();

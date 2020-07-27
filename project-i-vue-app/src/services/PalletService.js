@@ -1,24 +1,30 @@
 import http from '../plugins/http-common'
+import AuthService from './AuthService'
 
 class PalletService {
   findAll(documentId) {
-    return http.get(`/api/document/${documentId}/pallet`);
+    let headers = { headers: AuthService.header() };
+    return http.get(`/api/document/${documentId}/pallet`, headers);
   }
 
   create(documentId, data) {
-    return http.post(`/api/document/${documentId}/pallet`, data);
+    let headers = { headers: AuthService.header() };
+    return http.post(`/api/document/${documentId}/pallet`, data, headers);
   }
 
   findOne(documentId, palletId) {
-    return http.get(`/api/document/${documentId}/pallet/${palletId}`);
+    let headers = { headers: AuthService.header() };
+    return http.get(`/api/document/${documentId}/pallet/${palletId}`, headers);
   }
 
   update(documentId, palletId, data) {
-    return http.put(`/api/document/${documentId}/pallet/${palletId}`, data);
+    let headers = { headers: AuthService.header() };
+    return http.put(`/api/document/${documentId}/pallet/${palletId}`, data, headers);
   }
 
   remove(documentId, palletId) {
-    return http.delete(`/api/document/${documentId}/pallet/${palletId}`);
+    let headers = { headers: AuthService.header() };
+    return http.delete(`/api/document/${documentId}/pallet/${palletId}`, headers);
   }
 }
 

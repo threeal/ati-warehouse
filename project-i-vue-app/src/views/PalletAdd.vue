@@ -52,7 +52,8 @@
 
 <script>
 import '../plugins/utility'
-import PalletService from '../services/PalletService';
+import PalletService from '../services/PalletService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'pallet-add',
@@ -95,16 +96,31 @@ export default {
       PalletService.create(this.$route.params.documentId, data)
         .then(() => {
           this.app.log('Data palet berhasil ditambahkan');
-          this.$router.push(`/document/${this.$route.params.documentId}`);
+          this.$router.go(-1);
         })
-        .catch(() => {
-          this.app.log('Data palet gagal ditambahkan');
+        .catch((err) => {
           this.submitting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Data palet gagal ditambahkan, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Data palet gagal ditambahkan,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Data palet gagal ditambahkan, tidak ada jaringan');
+          }
         });
     },
   },
   mounted() {
-    this.app.title = 'Tambah Data Palet';
+    this.app.setAppBar(true, 'Tambah Data Palet');
   },
 }
 </script>

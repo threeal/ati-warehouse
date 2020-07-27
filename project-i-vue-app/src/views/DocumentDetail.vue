@@ -97,6 +97,7 @@ import PalletLoad from '../components/PalletLoad'
 import DocumentService from '../services/DocumentService'
 import PalletLoadService from '../services/PalletLoadService'
 import BasketUnloadService from '../services/BasketUnloadService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'document-detail',
@@ -140,9 +141,24 @@ export default {
           this.edit = false;
           this.submitting = false;
         })
-        .catch(() => {
-          this.app.log('Detail dokumen gagal diperbaharui');
+        .catch((err) => {
           this.submitting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Detail dokumen gagal diperbaharui, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Detail dokumen gagal diperbaharui,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Detail dokumen gagal diperbaharui, tidak ada jaringan');
+          }
         });
     },
     onDelete() {
@@ -153,11 +169,26 @@ export default {
           this.app.log('Dokumen berhasil dihapus');
           this.deleting = false;
 
-          this.$router.push('/document');
+          this.app.routePush('/document');
         })
-        .catch(() => {
-          this.app.log('Dokumen gagal dihapus');
+        .catch((err) => {
           this.deleting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Dokumen gagal dihapus, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Dokumen gagal dihapus,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Dokumen gagal dihapus, tidak ada jaringan');
+          }
         });
     },
     onPalletLoadFetch() {
@@ -169,12 +200,29 @@ export default {
           this.palletLoadFetching = false;
           this.palletLoadExist = true;
         })
-        .catch(() => {
-          this.palletLoadFetching = false;
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Gagal mengambil data muat palet, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else if (err.response.status === 404) {
+              this.palletLoadFetching = false;
+            }
+            else {
+              this.app.log('Gagal mengambil data muat palet,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Gagal mengambil data muat palet, tidak ada jaringan');
+          }
         });
     },
     onPalletLoadAdd() {
-      this.$router.push(`/document/${this.$route.params.documentId}/pallet-load-add`);
+      this.app.routePush(`/document/${this.$route.params.documentId}/pallet-load-add`);
     },
     onBasketUnloadFetch() {
       this.basketUnloadFetching = true;
@@ -185,16 +233,33 @@ export default {
           this.basketUnloadFetching = false;
           this.basketUnloadExist = true;
         })
-        .catch(() => {
-          this.basketUnloadFetching = false;
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Gagal mengambil data bongkar basket, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else if (err.response.status === 404) {
+              this.basketUnloadFetching = false;
+            }
+            else {
+              this.app.log('Gagal mengambil data bongkar basket,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Gagal mengambil data bongkar basket, tidak ada jaringan');
+          }
         });
     },
     onBasketUnloadAdd() {
-      this.$router.push(`/document/${this.$route.params.documentId}/basket-unload-add`);
+      this.app.routePush(`/document/${this.$route.params.documentId}/basket-unload-add`);
     },
   },
   mounted() {
-    this.app.title = 'Detail Dokumen';
+    this.app.setAppBar(true, 'Detail Dokumen');
 
     DocumentService.findOne(this.$route.params.documentId)
       .then((res) => {
@@ -206,8 +271,22 @@ export default {
         this.onPalletLoadFetch();
         this.onBasketUnloadFetch();
       })
-      .catch(() => {
-        this.app.log('Error: Gagal mengambil detail dokumen dari database');
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            this.app.log('Gagal mengambil dokumen, sesi habis');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+          else {
+            this.app.log('Gagal mengambil dokumen,'
+              + ` kesalahan server (${err.response.status})`);
+          }
+        }
+        else {
+          this.app.log('Gagal mengambil dokumen, tidak ada jaringan');
+        }
       });
   },
 }

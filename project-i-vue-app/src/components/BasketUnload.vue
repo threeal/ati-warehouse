@@ -47,6 +47,7 @@
 <script>
 import BasketList from './BasketList'
 import BasketUnloadService from '../services/BasketUnloadService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'basket-unload',
@@ -85,9 +86,24 @@ export default {
           this.edit = false;
           this.submitting = false;
         })
-        .catch(() => {
-          this.app.log('Detail data bongkar basket gagal diperbaharui');
+        .catch((err) => {
           this.submitting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Detail data bongkar basket gagal diperbaharui, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Detail data bongkar basket gagal diperbaharui,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Detail data bongkar basket gagal diperbaharui, tidak ada jaringan');
+          }
         });
     },
     onDelete() {
@@ -102,12 +118,26 @@ export default {
             this.deleteCallback();
           }
           else {
-            this.$router.go();
+            this.$router.go(-1);
           }
         })
-        .catch(() => {
-          this.app.log('Data bongkar basket gagal dihapus');
-          this.deleting = false;
+        .catch((err) => {
+          if (err.response) {
+            this.deleting = false;
+            if (err.response.status === 401) {
+              this.app.log('Data bongkar basket gagal dihapus, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Data bongkar basket gagal dihapus,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Data bongkar basket gagal dihapus, tidak ada jaringan');
+          }
         });
     },
   },
@@ -118,8 +148,22 @@ export default {
         this.unloadDate = res.data.unloadDate;
         this.line = res.data.line;
       })
-      .catch(() => {
-        this.app.log('Error: Gagal mengambil detail data bongkar basket dari database');
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            this.app.log('Gagal mengambil detail data bongkar basket, sesi habis');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+          else {
+            this.app.log('Gagal mengambil detail data bongkar basket,'
+              + ` kesalahan server (${err.response.status})`);
+          }
+        }
+        else {
+          this.app.log('Gagal mengambil detail data bongkar basket, tidak ada jaringan');
+        }
       });
   },
 }

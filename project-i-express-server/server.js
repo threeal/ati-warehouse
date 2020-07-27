@@ -23,6 +23,14 @@ models.mongoose
     process.exit();
   });
 
+app.use((req, res, next) => {
+  res.header(
+    "Access-Control-Allow-Headers",
+    "x-access-token, Origin, Content-Type, Accept"
+  );
+  next();
+});
+
 const routes = require('./app/routes');
 routes(app);
 

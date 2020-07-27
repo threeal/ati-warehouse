@@ -1,15 +1,17 @@
 module.exports = (app) => {
-  const controller = require('../controllers/pallet.controller.js');
-
   const express = require('express');
   var router = express.Router();
 
-  router.get('/:documentId/pallet/', controller.findAll);
-  router.post('/:documentId/pallet/', controller.create);
+  const { authJwt } = require('../middlewares');
 
-  router.get('/:documentId/pallet/:palletId', controller.findOne);
-  router.put('/:documentId/pallet/:palletId', controller.update);
-  router.delete('/:documentId/pallet/:palletId', controller.remove);
+  const controller = require('../controllers/pallet.controller.js');
+
+  router.get('/:documentId/pallet/', [ authJwt.verifyToken ], controller.findAll);
+  router.post('/:documentId/pallet/', [ authJwt.verifyToken ], controller.create);
+
+  router.get('/:documentId/pallet/:palletId', [ authJwt.verifyToken ], controller.findOne);
+  router.put('/:documentId/pallet/:palletId', [ authJwt.verifyToken ], controller.update);
+  router.delete('/:documentId/pallet/:palletId', [ authJwt.verifyToken ], controller.remove);
 
   app.use('/api/document', router);
 };

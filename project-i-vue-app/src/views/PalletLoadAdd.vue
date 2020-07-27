@@ -25,7 +25,8 @@
 
 <script>
 import '../plugins/utility'
-import PalletLoadService from '../services/PalletLoadService';
+import PalletLoadService from '../services/PalletLoadService'
+import AuthService from '../services/AuthService'
 
 export default {
   name: 'pallet-load-add',
@@ -51,16 +52,31 @@ export default {
       PalletLoadService.create(this.$route.params.documentId, data)
         .then(() => {
           this.app.log('Data muat palet berhasil ditambahkan');
-          this.$router.push(`/document/${this.$route.params.documentId}`);
+          this.$router.go(-1);
         })
-        .catch(() => {
-          this.app.log('Data muat palet gagal ditambahkan');
+        .catch((err) => {
           this.submitting = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Data muat palet gagal ditambahkan, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Data muat palet gagal ditambahkan,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Data muat palet gagal ditambahkan, tidak ada jaringan');
+          }
         });
     },
   },
   mounted() {
-    this.app.title = 'Tambah Data Muat Palet';
+    this.app.setAppBar(true, 'Tambah Data Muat Palet');
   },
 }
 </script>
