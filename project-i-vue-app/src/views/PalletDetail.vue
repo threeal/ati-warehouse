@@ -1,70 +1,62 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-        <v-text-field v-model="palletNumber" label="Nomor Palet"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" hide-details dense outlined/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-combobox v-model="basketNumbers" label="Nomor Basket"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :clearable="edit" hide-details outlined
-            multiple chips deletable-chips/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="6">
-        <v-text-field v-model="startTime" label="Waktu Mulai" type="time"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" hide-details dense outlined/>
-      </v-col>
-      <v-col cols="6">
-        <v-text-field v-model="endTime" label="Waktu Selesai" type="time"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" hide-details dense outlined/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col v-if="edit || (stackQuantity && stackQuantity > 0)"
-          :cols="(edit || (canQuantity && canQuantity > 0)) ? 6 : 12">
-        <v-text-field v-model="stackQuantity" label="Jumlah Tingkat" type="number"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" hide-details dense outlined/>
-      </v-col>
-      <v-col v-if="edit || (canQuantity && canQuantity > 0)"
-          :cols="(edit || (stackQuantity && stackQuantity > 0)) ? 6 : 12">
-        <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" hide-details dense outlined/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-text-field v-model="loader" label="Loader"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" hide-details dense outlined/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
-          <v-icon left>mdi-pencil</v-icon> Ubah Detail
-        </v-btn>
-        <v-btn v-else @click="onSave()" :disabled="submitting || submitDisabled"
-            :loading="submitting" color="success" block>
-          <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-            color="error" block>
-          <v-icon left>mdi-delete</v-icon> Hapus Data Palet
-        </v-btn>
+    <v-row justify="center">
+      <v-col cols="12" sm="8" md="6">
+        <v-row>
+          <v-col cols="12">
+            <v-text-field v-model="palletNumber" label="Nomor Palet"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col cols="12">
+            <v-combobox v-model="basketNumbers" label="Nomor Basket"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :clearable="edit" hide-details outlined
+                multiple chips deletable-chips/>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field v-model="startTime" label="Waktu Mulai" type="time"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" hide-details dense outlined/>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field v-model="endTime" label="Waktu Selesai" type="time"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" hide-details dense outlined/>
+          </v-col>
+          <v-col v-if="edit || (stackQuantity && stackQuantity > 0)"
+              :cols="(edit || (canQuantity && canQuantity > 0)) ? 6 : 12">
+            <v-text-field v-model="stackQuantity" label="Jumlah Tingkat" type="number"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col v-if="edit || (canQuantity && canQuantity > 0)"
+              :cols="(edit || (stackQuantity && stackQuantity > 0)) ? 6 : 12">
+            <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field v-model="loader" label="Loader"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col cols="12">
+            <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
+              <v-icon left>mdi-pencil</v-icon> Ubah Detail
+            </v-btn>
+            <v-btn v-else @click="onSave()" :disabled="submitting || submitDisabled"
+                :loading="submitting" color="success" block>
+              <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
+            </v-btn>
+          </v-col>
+          <v-col cols="12">
+            <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
+                color="error" block>
+              <v-icon left>mdi-delete</v-icon> Hapus Data Palet
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -175,9 +167,10 @@ export default {
         });
     },
   },
-  mounted() {
+  created() {
     this.app.setAppBar(true, 'Detail Data Palet');
-
+  },
+  mounted() {
     PalletService.findOne(this.$route.params.documentId, this.$route.params.palletId)
       .then((res) => {
         this.palletNumber = res.data.palletNumber;

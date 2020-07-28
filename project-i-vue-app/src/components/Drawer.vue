@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="app.drawer" absolute temporary>
+  <v-navigation-drawer v-model="app.drawer" app temporary>
     <v-list color="primary" dark>
       <v-list-item>
         <v-list-item-content>

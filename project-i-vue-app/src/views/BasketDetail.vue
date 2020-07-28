@@ -1,76 +1,66 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-        <v-text-field v-model="basketNumber" label="Nomor Basket"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" hide-details dense outlined/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-text-field v-model="basketId" label="Id Basket"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" hide-details dense outlined/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="6">
-        <v-text-field v-model="startTime" label="Waktu Mulai" type="time"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" hide-details dense outlined/>
-      </v-col>
-      <v-col cols="6">
-        <v-text-field v-model="endTime" label="Waktu Selesai" type="time"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" hide-details dense outlined/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col v-if="edit || (basketQuantity && basketQuantity > 0)"
-          :cols="(edit || (canQuantity && canQuantity > 0)) ? 6 : 12">
-        <v-text-field v-model="basketQuantity" label="Jumlah Basket" type="number"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" hide-details dense outlined/>
-      </v-col>
-      <v-col v-if="edit || (canQuantity && canQuantity > 0)"
-          :cols="(edit || (basketQuantity && basketQuantity > 0)) ? 6 : 12">
-        <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" hide-details dense outlined/>
-      </v-col>
-    </v-row>
-    <v-row v-if="edit || (rejectQuantity && rejectQuantity > 0)">
-      <v-col>
-        <v-text-field v-model="rejectQuantity" label="Jumlah Rijek"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" hide-details dense outlined/>
-      </v-col>
-    </v-row>
-    <v-row v-if="rejectQuantity && rejectQuantity > 0">
-      <v-col>
-        <v-text-field v-model="rejectKind" label="Jenis Rijek" type="number"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" hide-details dense outlined/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
-          <v-icon left>mdi-pencil</v-icon> Ubah Detail
-        </v-btn>
-        <v-btn v-else @click="onSave()" :disabled="submitting || submitDisabled"
-            :loading="submitting" color="success" block>
-          <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-            color="error" block>
-          <v-icon left>mdi-delete</v-icon> Hapus Data Basket
-        </v-btn>
+    <v-row justify="center">
+      <v-col cols="12" sm="8" md="6">
+        <v-row>
+          <v-col cols="6">
+            <v-text-field v-model="basketNumber" label="Nomor Basket"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field v-model="basketId" label="Id Basket"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field v-model="startTime" label="Waktu Mulai" type="time"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" hide-details dense outlined/>
+          </v-col>
+          <v-col cols="6">
+            <v-text-field v-model="endTime" label="Waktu Selesai" type="time"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" hide-details dense outlined/>
+          </v-col>
+          <v-col v-if="edit || (basketQuantity && basketQuantity > 0)"
+              :cols="(edit || (canQuantity && canQuantity > 0)) ? 6 : 12">
+            <v-text-field v-model="basketQuantity" label="Jumlah Basket" type="number"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col v-if="edit || (canQuantity && canQuantity > 0)"
+              :cols="(edit || (basketQuantity && basketQuantity > 0)) ? 6 : 12">
+            <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col v-if="edit || (rejectQuantity && rejectQuantity > 0)" cols="12">
+            <v-text-field v-model="rejectQuantity" label="Jumlah Rijek"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col v-if="rejectQuantity && rejectQuantity > 0" cols="12">
+            <v-text-field v-model="rejectKind" label="Jenis Rijek"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col cols="12">
+            <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
+              <v-icon left>mdi-pencil</v-icon> Ubah Detail
+            </v-btn>
+            <v-btn v-else @click="onSave()" :disabled="submitting || submitDisabled"
+                :loading="submitting" color="success" block>
+              <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
+            </v-btn>
+          </v-col>
+          <v-col cols="12">
+            <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
+                color="error" block>
+              <v-icon left>mdi-delete</v-icon> Hapus Data Basket
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>
@@ -183,9 +173,10 @@ export default {
         });
     },
   },
-  mounted() {
+  created() {
     this.app.setAppBar(true, 'Detail Data Basket');
-
+  },
+  mounted() {
     BasketService.findOne(this.$route.params.documentId, this.$route.params.basketId)
       .then((res) => {
         this.basketNumber = res.data.basketNumber;

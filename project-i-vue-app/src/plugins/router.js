@@ -23,39 +23,14 @@ const router = new Router({
       component: () => import('../views/DocumentList'),
     },
     {
-      path: '/document-add',
-      name: 'document-add',
-      component: () => import('../views/DocumentAdd'),
-    },
-    {
       path: '/document/:documentId',
       name: 'document-detail',
       component: () => import('../views/DocumentDetail'),
     },
     {
-      path: '/document/:documentId/pallet-load-add',
-      name: 'pallet-load-add',
-      component: () => import('../views/PalletLoadAdd'),
-    },
-    {
-      path: '/document/:documentId/pallet-add',
-      name: 'pallet-add',
-      component: () => import('../views/PalletAdd'),
-    },
-    {
       path: '/document/:documentId/pallet/:palletId',
       name: 'pallet-detail',
       component: () => import('../views/PalletDetail'),
-    },
-    {
-      path: '/document/:documentId/basket-unload-add',
-      name: 'basket-unload-add',
-      component: () => import('../views/BasketUnloadAdd'),
-    },
-    {
-      path: '/document/:documentId/basket-add',
-      name: 'basket-add',
-      component: () => import('../views/BasketAdd'),
     },
     {
       path: '/document/:documentId/basket/:basketId',

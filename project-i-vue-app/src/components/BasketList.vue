@@ -9,7 +9,7 @@
       </v-row>
       <v-row dense>
         <v-col>
-          <v-btn color="primary" @click="onBasketAdd()" :disabled="fetching" block>
+          <v-btn color="primary" @click="basketAdd = true" :disabled="fetching" block>
             <v-icon left>mdi-plus-circle</v-icon> Tambah Data Basket
           </v-btn>
         </v-col>
@@ -54,10 +54,15 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-dialog v-model="basketAdd" max-width="480">
+      <BasketAdd :app="app" :cancelCallback="onBasketAddCancel"
+          :successCallback="onBasketAddSuccess"/>
+    </v-dialog>
   </v-card>
 </template>
 
 <script>
+import BasketAdd from './BasketAdd'
 import BasketListItem from './BasketListItem'
 import BasketService from '../services/BasketService'
 import AuthService from '../services/AuthService'
@@ -65,6 +70,7 @@ import AuthService from '../services/AuthService'
 export default {
   name: 'basket-list',
   components: {
+    BasketAdd,
     BasketListItem,
   },
   props: {
@@ -80,40 +86,51 @@ export default {
       fetching: true,
       sorts: sorts,
       selectedSort: sorts[0],
+      basketAdd: false,
       baskets: [],
     };
   },
   methods: {
-    onBasketAdd() {
-      this.app.routePush(`/document/${this.$route.params.documentId}/basket-add`);
+    reset() {
+      this.baskets = [];
+      this.fetching = true;
+
+      BasketService.findAll(this.$route.params.documentId)
+        .then((res) => {
+          this.baskets = res.data;
+          this.fetching = false;
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Gagal mengambil daftar basket, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Gagal mengambil daftar basket,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Gagal mengambil daftar basket, tidak ada jaringan');
+          }
+        });
+    },
+    onBasketAddCancel() {
+      this.basketAdd = false;
+    },
+    onBasketAddSuccess() {
+      this.basketAdd = false;
+      this.reset();
     },
     onBasketClick(basketId) {
       this.app.routePush(`/document/${this.$route.params.documentId}/basket/${basketId}`);
     },
   },
   mounted() {
-    BasketService.findAll(this.$route.params.documentId)
-      .then((res) => {
-        this.baskets = res.data;
-        this.fetching = false;
-      })
-      .catch((err) => {
-        if (err.response) {
-          if (err.response.status === 401) {
-            this.app.log('Gagal mengambil daftar basket, sesi habis');
-
-            AuthService.signOut();
-            this.app.routeReplace('/login');
-          }
-          else {
-            this.app.log('Gagal mengambil daftar basket,'
-              + ` kesalahan server (${err.response.status})`);
-          }
-        }
-        else {
-          this.app.log('Gagal mengambil daftar basket, tidak ada jaringan');
-        }
-      });
+    this.reset();
   }
 }
 </script>

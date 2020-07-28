@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar v-if="appBar" @click="drawer = true" app color="primary" dark>
-      <v-app-bar-nav-icon app/>
+      <v-app-bar-nav-icon/>
       <v-toolbar-title>{{ title }}</v-toolbar-title>
     </v-app-bar>
     <Drawer v-if="appBar" :app="this"/>

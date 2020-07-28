@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row align="center" justify="center">
+    <v-row justify="center">
       <v-col cols="12" sm="8" md="4">
         <v-card>
           <v-toolbar color="primary" dark flat>
@@ -32,7 +32,7 @@
               <v-col>
                 <v-btn @click="onRegister()" :disabled="registerDisabled"
                     :loading="submitting" color="success" block>
-                  Daftar
+                  <v-icon left>mdi-file-document-edit</v-icon> Daftar
                 </v-btn>
               </v-col>
             </v-row>
@@ -130,7 +130,7 @@ export default {
       this.app.routePush('/login');
     },
   },
-  beforeMount() {
+  created() {
     this.app.setAppBar(false, 'Daftar');
   },
 }

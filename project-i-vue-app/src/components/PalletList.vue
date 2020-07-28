@@ -9,7 +9,7 @@
       </v-row>
       <v-row dense>
         <v-col>
-          <v-btn color="primary" @click="onPalletAdd()" :disabled="fetching" block>
+          <v-btn color="primary" @click="palletAdd = true" :disabled="fetching" block>
             <v-icon left>mdi-plus-circle</v-icon> Tambah Data Palet
           </v-btn>
         </v-col>
@@ -54,10 +54,15 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-dialog v-model="palletAdd" max-width="480">
+      <PalletAdd :app="app" :cancelCallback="onPalletAddCancel"
+          :successCallback="onPalletAddSuccess"/>
+    </v-dialog>
   </v-card>
 </template>
 
 <script>
+import PalletAdd from './PalletAdd'
 import PalletListItem from './PalletListItem'
 import PalletService from '../services/PalletService'
 import AuthService from '../services/AuthService'
@@ -65,6 +70,7 @@ import AuthService from '../services/AuthService'
 export default {
   name: 'pallet-list',
   components: {
+    PalletAdd,
     PalletListItem,
   },
   props: {
@@ -80,40 +86,51 @@ export default {
       fetching: true,
       sorts: sorts,
       selectedSort: sorts[0],
+      palletAdd: false,
       pallets: [],
     };
   },
   methods: {
-    onPalletAdd() {
-      this.app.routePush(`/document/${this.$route.params.documentId}/pallet-add`);
+    reset() {
+      this.pallets = [];
+      this.fetching = true;
+
+      PalletService.findAll(this.$route.params.documentId)
+        .then((res) => {
+          this.pallets = res.data;
+          this.fetching = false;
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Gagal mengambil daftar palet, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Gagal mengambil daftar palet,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Gagal mengambil daftar palet, tidak ada jaringan');
+          }
+        });
+    },
+    onPalletAddCancel() {
+      this.palletAdd = false;
+    },
+    onPalletAddSuccess() {
+      this.palletAdd = false;
+      this.reset();
     },
     onPalletClick(palletId) {
       this.app.routePush(`/document/${this.$route.params.documentId}/pallet/${palletId}`);
     },
   },
   mounted() {
-    PalletService.findAll(this.$route.params.documentId)
-      .then((res) => {
-        this.pallets = res.data;
-        this.fetching = false;
-      })
-      .catch((err) => {
-        if (err.response) {
-          if (err.response.status === 401) {
-            this.app.log('Gagal mengambil daftar palet, sesi habis');
-
-            AuthService.signOut();
-            this.app.routeReplace('/login');
-          }
-          else {
-            this.app.log('Gagal mengambil daftar palet,'
-              + ` kesalahan server (${err.response.status})`);
-          }
-        }
-        else {
-          this.app.log('Gagal mengambil daftar palet, tidak ada jaringan');
-        }
-      });
+    this.reset();
   }
 }
 </script>

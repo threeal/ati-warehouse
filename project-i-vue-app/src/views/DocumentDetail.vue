@@ -1,40 +1,44 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-        <v-text-field v-model="productKind" label="Jenis Produk"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" :clearable="edit" outlined dense hide-details/>
+    <v-row justify="center">
+      <v-col cols="12" sm="8" md="4">
+        <v-row>
+          <v-col cols="12">
+            <v-text-field v-model="productKind" label="Jenis Produk"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" outlined dense hide-details/>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field v-if="!edit" v-model="productionDateLocale" label="Tanggal Produksi"
+                :disabled="fetching"  :loading="fetching" readonly filled outlined
+                dense hide-details/>
+            <v-text-field v-else v-model="productionDate" label="Tanggal Produksi" type="date"
+                :disabled="submitting" outlined dense hide-details/>
+          </v-col>
+          <v-col cols="12">
+            <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
+              <v-icon left>mdi-pencil</v-icon> Ubah Detail
+            </v-btn>
+            <v-btn v-else @click="onSave()" :disabled="submitting" :loading="submitting"
+                color="success" block>
+              <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
+            </v-btn>
+          </v-col>
+          <v-col cols="12">
+            <v-btn @click="onDownload()" :disabled="downloadDisabled" :loading="downloading"
+                color="primary" block>
+              <v-icon left>mdi-download</v-icon> Unduh XLSX
+            </v-btn>
+          </v-col>
+          <v-col class="hidden-sm-and-down" cols="12">
+            <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
+                color="error" block>
+              <v-icon left>mdi-delete</v-icon> Hapus Dokumen
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-text-field v-model="productionDate" label="Tanggal Produksi" type="date"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" outlined dense hide-details/>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
-          <v-icon left>mdi-pencil</v-icon> Ubah Detail
-        </v-btn>
-        <v-btn v-else @click="onSave()" :disabled="submitting" :loading="submitting"
-             color="success" block>
-          <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-btn @click="onDownload()" :disabled="downloading" :loading="downloading"
-            color="primary" block>
-          <v-icon left>mdi-download</v-icon> Unduh XLSX
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
+      <v-col cols="12" sm="8" md="6">
         <div v-if="fetching" class="d-flex justify-center">
           <v-progress-circular color="primary" indeterminate/>
         </div>
@@ -55,11 +59,11 @@
                 </div>
               </v-container>
               <PalletLoad v-else-if="palletLoadExist" :app="app"
-                  :deleteCallback="onPalletLoadFetch"/>
+                  :deleteCallback="palletLoadReset"/>
               <v-container v-else>
                 <v-container>
                   <v-row>
-                    <v-btn color="primary" @click="onPalletLoadAdd()" block>
+                    <v-btn color="primary" @click="palletLoadAdd = true" block>
                       <v-icon left>mdi-plus-circle</v-icon> Tambah Data Muat Palet
                     </v-btn>
                   </v-row>
@@ -73,11 +77,11 @@
                 </div>
               </v-container>
               <BasketUnload v-else-if="basketUnloadExist" :app="app"
-                  :deleteCallback="onBasketUnloadFetch"/>
+                  :deleteCallback="basketUnloadReset"/>
               <v-container v-else>
                 <v-container>
                   <v-row>
-                    <v-btn color="primary" @click="onBasketUnloadAdd()" block>
+                    <v-btn color="primary" @click="basketUnloadAdd = true" block>
                       <v-icon left>mdi-plus-circle</v-icon> Tambah Data Bongkar Basket
                     </v-btn>
                   </v-row>
@@ -87,32 +91,43 @@
           </v-tabs-items>
         </v-card>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
+      <v-col class="hidden-md-and-up" cols="12" sm="8">
         <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
             color="error" block>
           <v-icon left>mdi-delete</v-icon> Hapus Dokumen
         </v-btn>
       </v-col>
     </v-row>
+    <v-dialog v-model="palletLoadAdd" max-width="480">
+      <PalletLoadAdd :app="app" :cancelCallback="onPalletLoadAddCancel"
+          :successCallback="onPalletLoadAddSuccess"/>
+    </v-dialog>
+    <v-dialog v-model="basketUnloadAdd" max-width="480">
+      <BasketUnloadAdd :app="app" :cancelCallback="onBasketUnloadAddCancel"
+          :successCallback="onBasketUnloadAddSuccess"/>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
-import BasketUnload from '../components/BasketUnload'
 import PalletLoad from '../components/PalletLoad'
+import PalletLoadAdd from '../components/PalletLoadAdd'
+import BasketUnload from '../components/BasketUnload'
+import BasketUnloadAdd from '../components/BasketUnloadAdd'
 import DocumentService from '../services/DocumentService'
 import PalletLoadService from '../services/PalletLoadService'
 import BasketUnloadService from '../services/BasketUnloadService'
 import AuthService from '../services/AuthService'
 import XlsxService from '../services/XlsxService'
+import '../plugins/utility'
 
 export default {
   name: 'document-detail',
   components: {
-    BasketUnload,
     PalletLoad,
+    PalletLoadAdd,
+    BasketUnload,
+    BasketUnloadAdd,
   },
   props: {
     app: { type: Object, required: true },
@@ -126,12 +141,22 @@ export default {
       edit: false,
       palletLoadFetching: true,
       palletLoadExist: false,
+      palletLoadAdd: false,
       basketUnloadFetching: true,
       basketUnloadExist: false,
+      basketUnloadAdd: false,
       productKind: null,
       productionDate: null,
       tab: null,
     };
+  },
+  computed: {
+    productionDateLocale() {
+      return this.productionDate.toLocaleDateString();
+    },
+    downloadDisabled() {
+      return this.downloading || !this.palletLoadExist || !this.basketUnloadExist;
+    }
   },
   methods: {
     onEdit() {
@@ -175,7 +200,6 @@ export default {
       this.downloading = true;
       XlsxService.generateDocument(this.$route.params.documentId)
         .then(() => {
-          this.app.log('Dokumen berhasil diunduh dalam bentuk XLSX');
           this.downloading = false;
         })
         .catch((err) => {
@@ -191,7 +215,7 @@ export default {
           this.app.log('Dokumen berhasil dihapus');
           this.deleting = false;
 
-          this.app.routePush('/document');
+          this.$router.go(-1);
         })
         .catch((err) => {
           this.deleting = false;
@@ -213,7 +237,7 @@ export default {
           }
         });
     },
-    onPalletLoadFetch() {
+    palletLoadReset() {
       this.palletLoadFetching = true;
       this.palletLoadExist = false;
 
@@ -243,10 +267,14 @@ export default {
           }
         });
     },
-    onPalletLoadAdd() {
-      this.app.routePush(`/document/${this.$route.params.documentId}/pallet-load-add`);
+    onPalletLoadAddCancel() {
+      this.palletLoadAdd = false;
     },
-    onBasketUnloadFetch() {
+    onPalletLoadAddSuccess() {
+      this.palletLoadAdd = false;
+      this.palletLoadReset();
+    },
+    basketUnloadReset() {
       this.basketUnloadFetching = true;
       this.basketUnloadExist = false;
 
@@ -276,13 +304,18 @@ export default {
           }
         });
     },
-    onBasketUnloadAdd() {
-      this.app.routePush(`/document/${this.$route.params.documentId}/basket-unload-add`);
+    onBasketUnloadAddCancel() {
+      this.basketUnloadAdd = false;
+    },
+    onBasketUnloadAddSuccess() {
+      this.basketUnloadAdd = false;
+      this.basketUnloadReset();
     },
   },
-  mounted() {
+  created() {
     this.app.setAppBar(true, 'Detail Dokumen');
-
+  },
+  mounted() {
     DocumentService.findOne(this.$route.params.documentId)
       .then((res) => {
         this.productKind = res.data.productKind;
@@ -290,8 +323,8 @@ export default {
 
         this.fetching = false;
 
-        this.onPalletLoadFetch();
-        this.onBasketUnloadFetch();
+        this.palletLoadReset();
+        this.basketUnloadReset();
       })
       .catch((err) => {
         if (err.response) {

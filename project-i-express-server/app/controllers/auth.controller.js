@@ -7,7 +7,7 @@ const User = models.User;
 const config = require("../config/auth.config");
 
 exports.signIn = (req, res) => {
-  setTimeout(() => {
+  // setTimeout(() => {
     User.findOne({ username: req.body.username })
       .then((data) => {
         if (data) {
@@ -40,11 +40,11 @@ exports.signIn = (req, res) => {
             || `some error occured while signing in user ${username}`,
         });
       });
-  }, 1000);
+  // }, 1000);
 };
 
 exports.signUp = (req, res) => {
-  setTimeout(() => {
+  // setTimeout(() => {
     User.findOne({ username: req.body.username })
       .then((data) => {
         if (data) {
@@ -74,5 +74,5 @@ exports.signUp = (req, res) => {
           message: err.message || 'some error occured while signing up the user',
         });
       });
-  }, 1000);
+  // }, 1000);
 };

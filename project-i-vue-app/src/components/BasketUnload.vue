@@ -1,21 +1,19 @@
 <template>
   <v-container>
     <v-row>
-      <v-col>
-        <v-text-field v-model="unloadDate" label="Tanggal Bongkar" type="date"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" outlined dense hide-details/>
+      <v-col cols="8">
+        <v-text-field v-if="!edit" v-model="unloadDateLocale" label="Tanggal Bongkar"
+            :disabled="fetching" :loading="fetching" readonly filled outlined
+            dense hide-details/>
+        <v-text-field v-else v-model="unloadDate" label="Tanggal Bongkar" type="date"
+            :disabled="submitting" outlined dense hide-details/>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
+      <v-col cols="4">
         <v-text-field v-model="line" label="Line"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
             :filled="!edit" :clearable="edit" outlined dense hide-details/>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
+      <v-col cols="12">
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
           <v-icon left>mdi-pencil</v-icon> Ubah Detail
         </v-btn>
@@ -48,6 +46,7 @@
 import BasketList from './BasketList'
 import BasketUnloadService from '../services/BasketUnloadService'
 import AuthService from '../services/AuthService'
+import '../plugins/utility'
 
 export default {
   name: 'basket-unload',
@@ -67,6 +66,11 @@ export default {
       unloadDate: null,
       line: null,
     };
+  },
+  computed: {
+    unloadDateLocale() {
+      return this.unloadDate.toLocaleDateString();
+    },
   },
   methods: {
     onEdit() {

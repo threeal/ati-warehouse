@@ -1,21 +1,19 @@
 <template>
   <v-container>
     <v-row>
-      <v-col>
-        <v-text-field v-model="loadDate" label="Tanggal Muat" type="date"
-            :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-            :filled="!edit" outlined dense hide-details/>
+      <v-col cols="8">
+        <v-text-field v-if="!edit" v-model="loadDateLocale" label="Tanggal Muat"
+            :disabled="fetching" :loading="fetching" readonly filled outlined
+            dense hide-details/>
+        <v-text-field v-else v-model="loadDate" label="Tanggal Muat" type="date"
+            :disabled="submitting" outlined dense hide-details/>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
+      <v-col cols="4">
         <v-text-field v-model="brand" label="Merek"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
             :filled="!edit" :clearable="edit" outlined dense hide-details/>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
+      <v-col cols="12">
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
           <v-icon left>mdi-pencil</v-icon> Ubah Detail
         </v-btn>
@@ -48,6 +46,7 @@
 import PalletList from './PalletList'
 import PalletLoadService from '../services/PalletLoadService'
 import AuthService from '../services/AuthService'
+import '../plugins/utility'
 
 export default {
   name: 'pallet-load',
@@ -67,6 +66,11 @@ export default {
       loadDate: null,
       brand: null,
     };
+  },
+  computed: {
+    loadDateLocale() {
+      return this.loadDate.toLocaleDateString();
+    },
   },
   methods: {
     onEdit() {

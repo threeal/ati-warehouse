@@ -1,30 +1,29 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-        <v-select v-model="selectedFilter" :items="filters" label="Filter Dokumen"
-            :disabled="fetching" hide-details dense outlined/>
+    <v-row justify="center">
+      <v-col cols="12" sm="8" md="4">
+        <v-row>
+          <v-col>
+            <v-select v-model="selectedFilter" :items="filters" label="Filter Dokumen"
+                :disabled="fetching" hide-details dense outlined/>
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <v-btn color="primary" @click="documentAdd = true" :disabled="fetching" block>
+              <v-icon left>mdi-plus-circle</v-icon> Tambah Dokumen
+            </v-btn>
+          </v-col>
+        </v-row>
       </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col>
-        <v-btn color="primary" @click="onDocumentAdd()" :disabled="fetching" block>
-          <v-icon left>mdi-plus-circle</v-icon> Tambah Dokumen
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-card flat>
-          <v-list>
-            <v-list-group value="true">
-              <template v-slot:activator>
-                <v-list-item-title>
-                  Daftar Dokumen
-                </v-list-item-title>
-              </template>
+      <v-col cols="12" sm="8" md="6">
+        <v-card>
+          <v-toolbar color="primary" dark flat>
+            <v-toolbar-title>Daftar Dokumen</v-toolbar-title>
+          </v-toolbar>
+          <v-card-text>
+            <v-list>
               <div v-if="fetching">
-                <v-divider/>
                 <v-list-item two-line>
                   <v-list-item-content>
                     <v-progress-circular color="primary" indeterminate/>
@@ -33,7 +32,7 @@
               </div>
               <div v-else-if="documents.length > 0">
                 <div v-for="(document, index) in documents" :key="index">
-                  <v-divider/>
+                  <v-divider v-if="index > 0"/>
                   <v-list-item  @click="onDocumentClick(document.id)"
                       two-line link>
                     <v-list-item-content>
@@ -41,14 +40,13 @@
                         {{ document.productKind }}
                       </v-list-item-title>
                       <v-list-item-subtitle>
-                        {{ document.productionDate}}
+                        {{ document.productionDate.toLocaleDateString() }}
                       </v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
                 </div>
               </div>
               <div v-else>
-                <v-divider/>
                 <v-list-item two-line>
                   <v-list-item-content>
                     <v-list-item-title class="d-flex justify-center">
@@ -57,20 +55,29 @@
                   </v-list-item-content>
                 </v-list-item>
               </div>
-            </v-list-group>
-          </v-list>
+            </v-list>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
+    <v-dialog v-model="documentAdd" max-width="480">
+      <DocumentAdd :app="app" :cancelCallback="onDocumentAddCancel"
+          :successCallback="onDocumentAddSuccess"/>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
+import DocumentAdd from '../components/DocumentAdd'
 import DocumentService from '../services/DocumentService'
 import AuthService from '../services/AuthService'
+import '../plugins/utility'
 
 export default {
   name: 'document-list',
+  components: {
+    DocumentAdd,
+  },
   props: {
     app: { type: Object, required: true },
   },
@@ -85,41 +92,53 @@ export default {
       fetching: true,
       filters: filters,
       selectedFilter: filters[0],
+      documentAdd: false,
       documents: [],
     };
   },
   methods: {
-    onDocumentAdd() {
-      this.app.routePush('/document-add');
+    reset() {
+      this.documents = [];
+      this.fetching = true;
+
+      DocumentService.findAll()
+        .then((res) => {
+          this.documents = res.data;
+          this.fetching = false;
+        })
+        .catch((err) => {
+          if (err.request) {
+            if (err.request.status === 401) {
+              this.app.log('Gagal mengambil dokumen, sesi habis');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log(`Gagal mengambil dokumen, kesalahan server (${err.request.status})`);
+            }
+          }
+          else {
+            this.app.log('Gagal mengambil dokumen, tidak ada jaringan');
+          }
+        });
+    },
+    onDocumentAddCancel() {
+      this.documentAdd = false;
+    },
+    onDocumentAddSuccess() {
+      this.documentAdd = false;
+      this.reset();
     },
     onDocumentClick(documentId) {
       this.app.routePush(`/document/${documentId}`);
     },
   },
-  mounted() {
+  created() {
     this.app.setAppBar(true, 'Daftar Dokumen');
-
-    DocumentService.findAll()
-      .then((res) => {
-        this.documents = res.data;
-        this.fetching = false;
-      })
-      .catch((err) => {
-        if (err.request) {
-          if (err.request.status === 401) {
-            this.app.log('Gagal mengambil dokumen, sesi habis');
-
-            AuthService.signOut();
-            this.app.routeReplace('/login');
-          }
-          else {
-            this.app.log(`Gagal mengambil dokumen, kesalahan server (${err.request.status})`);
-          }
-        }
-        else {
-          this.app.log('Gagal mengambil dokumen, tidak ada jaringan');
-        }
-      });
+  },
+  mounted() {
+    this.reset();
   },
 }
 </script>

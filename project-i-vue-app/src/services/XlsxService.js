@@ -93,44 +93,58 @@ class XlsxService {
     }
 
     let pallets = await PalletService.findAll(documentId);
-    pallets.data.forEach((pallet, index) => {
-      worksheet.getCell(`A${index + 8}`).value = pallet.startTime;
-      worksheet.getCell(`B${index + 8}`).value = pallet.endTime;
+    if (pallets.data.length > 0) {
+      pallets.data.forEach((pallet, index) => {
+        worksheet.getCell(`A${index + 8}`).value = pallet.startTime;
+        worksheet.getCell(`B${index + 8}`).value = pallet.endTime;
 
-      let duration = pallet.endTime.toTimeNumber() - pallet.startTime.toTimeNumber();
-      worksheet.getCell(`C${index + 8}`).value = duration.toTimeInput();
+        let duration = pallet.endTime.toTimeNumber() - pallet.startTime.toTimeNumber();
+        worksheet.getCell(`C${index + 8}`).value = duration.toTimeInput();
 
-      worksheet.getCell(`D${index + 8}`).value = pallet.palletNumber;
-      worksheet.getCell(`E${index + 8}`).value = pallet.basketNumbers.toListString();
+        worksheet.getCell(`D${index + 8}`).value = pallet.palletNumber;
+        worksheet.getCell(`E${index + 8}`).value = pallet.basketNumbers.toListString();
 
-      worksheet.getCell(`F${index + 8}`).value = pallet.seaming || '-';
+        worksheet.getCell(`F${index + 8}`).value = pallet.seaming || '-';
 
-      worksheet.getCell(`G${index + 8}`).value = '-';
-      worksheet.getCell(`H${index + 8}`).value = '-';
-      worksheet.getCell(`I${index + 8}`).value = '-';
+        worksheet.getCell(`G${index + 8}`).value = '-';
+        worksheet.getCell(`H${index + 8}`).value = '-';
+        worksheet.getCell(`I${index + 8}`).value = '-';
 
-      worksheet.getCell(`J${index + 8}`).value = '-';
-      worksheet.getCell(`K${index + 8}`).value = '-';
-      worksheet.getCell(`L${index + 8}`).value = '-';
+        worksheet.getCell(`J${index + 8}`).value = '-';
+        worksheet.getCell(`K${index + 8}`).value = '-';
+        worksheet.getCell(`L${index + 8}`).value = '-';
 
-      worksheet.getCell(`M${index + 8}`).value = pallet.stackQuantity || 0;
-      worksheet.getCell(`N${index + 8}`).value = pallet.canQuantity || 0;
+        worksheet.getCell(`M${index + 8}`).value = pallet.stackQuantity || 0;
+        worksheet.getCell(`N${index + 8}`).value = pallet.canQuantity || 0;
 
-      worksheet.getCell(`O${index + 8}`).value = pallet.loader || '-';
-      worksheet.getCell(`P${index + 8}`).value = pallet.description || '-';
-    });
+        worksheet.getCell(`O${index + 8}`).value = pallet.loader || '-';
+        worksheet.getCell(`P${index + 8}`).value = pallet.description || '-';
+      });
 
-    for (let i = 8; i < pallets.data.length + 8; ++i) {
-      let row = worksheet.getRow(i);
-      for (let j = 1; j <= 16; ++j) {
-        let cell = row.getCell(j);
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' },
-        };
+      for (let i = 8; i < pallets.data.length + 8; ++i) {
+        let row = worksheet.getRow(i);
+        for (let j = 1; j <= 16; ++j) {
+          let cell = row.getCell(j);
+          cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' },
+          };
+        }
       }
+    }
+    else {
+      worksheet.mergeCells('A8:P8');
+      let cell = worksheet.getCell('A8');
+      cell.value = 'Data Kosong';
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
     }
 
     worksheet.mergeCells('R6:S6');
@@ -179,38 +193,52 @@ class XlsxService {
     }
 
     let baskets = await BasketService.findAll(documentId);
-    baskets.data.forEach((basket, index) => {
-      worksheet.getCell(`R${index + 8}`).value = basket.startTime || '-';
-      worksheet.getCell(`S${index + 8}`).value = basket.endTime || '-';
+    if (baskets.data.length > 0) {
+      baskets.data.forEach((basket, index) => {
+        worksheet.getCell(`R${index + 8}`).value = basket.startTime || '-';
+        worksheet.getCell(`S${index + 8}`).value = basket.endTime || '-';
 
-      let duration = basket.endTime.toTimeNumber() - basket.startTime.toTimeNumber();
-      worksheet.getCell(`T${index + 8}`).value = duration.toTimeInput() || '-';
+        let duration = basket.endTime.toTimeNumber() - basket.startTime.toTimeNumber();
+        worksheet.getCell(`T${index + 8}`).value = duration.toTimeInput() || '-';
 
-      worksheet.getCell(`U${index + 8}`).value = basket.basketNumber || '-';
-      worksheet.getCell(`V${index + 8}`).value = basket.basketId || '-';
+        worksheet.getCell(`U${index + 8}`).value = basket.basketNumber || '-';
+        worksheet.getCell(`V${index + 8}`).value = basket.basketId || '-';
 
-      worksheet.getCell(`W${index + 8}`).value = basket.seamingCondition || '-';
-      worksheet.getCell(`X${index + 8}`).value = basket.canMarkCondition || "-";
-      worksheet.getCell(`Y${index + 8}`).value = basket.IndicatorCondition || "-";
+        worksheet.getCell(`W${index + 8}`).value = basket.seamingCondition || '-';
+        worksheet.getCell(`X${index + 8}`).value = basket.canMarkCondition || "-";
+        worksheet.getCell(`Y${index + 8}`).value = basket.IndicatorCondition || "-";
 
-      worksheet.getCell(`Z${index + 8}`).value = basket.basketQuantity || 0;
-      worksheet.getCell(`AA${index + 8}`).value = basket.canQuantity || 0;
+        worksheet.getCell(`Z${index + 8}`).value = basket.basketQuantity || 0;
+        worksheet.getCell(`AA${index + 8}`).value = basket.canQuantity || 0;
 
-      worksheet.getCell(`AB${index + 8}`).value = basket.rejectQuantity || 0;
-      worksheet.getCell(`AC${index + 8}`).value = basket.rejectKind || '-';
-    });
+        worksheet.getCell(`AB${index + 8}`).value = basket.rejectQuantity || 0;
+        worksheet.getCell(`AC${index + 8}`).value = basket.rejectKind || '-';
+      });
 
-    for (let i = 8; i < baskets.data.length + 8; ++i) {
-      let row = worksheet.getRow(i);
-      for (let j = 18; j <= 29; ++j) {
-        let cell = row.getCell(j);
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' },
-        };
+      for (let i = 8; i < baskets.data.length + 8; ++i) {
+        let row = worksheet.getRow(i);
+        for (let j = 18; j <= 29; ++j) {
+          let cell = row.getCell(j);
+          cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' },
+          };
+        }
       }
+    }
+    else {
+      worksheet.mergeCells('R8:AC8');
+      let cell = worksheet.getCell('R8');
+      cell.value = 'Data Kosong';
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
     }
 
     const buffer = await workbook.xlsx.writeBuffer();
