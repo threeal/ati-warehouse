@@ -10,7 +10,7 @@
       <v-row dense>
         <v-col>
           <v-btn color="primary" @click="onBasketAdd()" :disabled="fetching" block>
-            Tambah Data Basket
+            <v-icon left>mdi-plus-circle</v-icon> Tambah Data Basket
           </v-btn>
         </v-col>
       </v-row>

@@ -10,7 +10,7 @@
       <v-row dense>
         <v-col>
           <v-btn color="primary" @click="onPalletAdd()" :disabled="fetching" block>
-            Tambah Data Palet
+            <v-icon left>mdi-plus-circle</v-icon> Tambah Data Palet
           </v-btn>
         </v-col>
       </v-row>

@@ -36,7 +36,7 @@
       </v-col>
       <v-col v-if="edit || (canQuantity && canQuantity > 0)"
           :cols="(edit || (stackQuantity && stackQuantity > 0)) ? 6 : 12">
-        <v-text-field v-model="canQuantity" label="Jumlah Kaleng" type="number"
+        <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
             :filled="!edit" :clearable="edit" hide-details dense outlined/>
       </v-col>
@@ -51,11 +51,11 @@
     <v-row>
       <v-col>
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
-          Ubah Detail
+          <v-icon left>mdi-pencil</v-icon> Ubah Detail
         </v-btn>
         <v-btn v-else @click="onSave()" :disabled="submitting || submitDisabled"
             :loading="submitting" color="success" block>
-          Simpan Perubahan
+          <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
         </v-btn>
       </v-col>
     </v-row>
@@ -63,7 +63,7 @@
       <v-col>
         <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
             color="error" block>
-          Hapus Data Palet
+          <v-icon left>mdi-delete</v-icon> Hapus Data Palet
         </v-btn>
       </v-col>
     </v-row>

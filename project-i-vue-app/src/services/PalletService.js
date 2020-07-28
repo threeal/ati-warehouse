@@ -28,4 +28,4 @@ class PalletService {
   }
 }
 
-export default new PalletService();
+export default new PalletService()

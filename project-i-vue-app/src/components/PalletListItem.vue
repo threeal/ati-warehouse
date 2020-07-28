@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import '../plugins/utility'
+
 export default {
   name: 'pallet-list-item',
   props: {
@@ -36,19 +38,7 @@ export default {
     basketNumbersString() {
       if (typeof this.pallet.basketNumbers === 'object'
           && this.pallet.basketNumbers.length > 0) {
-        let str = '';
-        let first = true;
-
-        this.pallet.basketNumbers.forEach((number) => {
-          if (first)
-            first = false;
-          else
-            str += ', ';
-
-          str += String(number);
-        });
-
-        return `(Basket ${str})`;
+        return `(Basket ${this.pallet.basketNumbers.toListString()})`;
       }
 
       return null;

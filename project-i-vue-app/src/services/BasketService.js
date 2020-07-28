@@ -28,4 +28,4 @@ class BasketService {
   }
 }
 
-export default new BasketService();
+export default new BasketService()

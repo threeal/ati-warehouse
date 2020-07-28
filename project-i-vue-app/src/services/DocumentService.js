@@ -28,4 +28,4 @@ class DocumentService {
   }
 }
 
-export default new DocumentService();
+export default new DocumentService()

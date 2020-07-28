@@ -17,11 +17,19 @@
     <v-row>
       <v-col>
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
-          Ubah Detail
+          <v-icon left>mdi-pencil</v-icon> Ubah Detail
         </v-btn>
         <v-btn v-else @click="onSave()" :disabled="submitting" :loading="submitting"
              color="success" block>
-          Simpan Perubahan
+          <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn @click="onDownload()" :disabled="downloading" :loading="downloading"
+            color="primary" block>
+          <v-icon left>mdi-download</v-icon> Unduh XLSX
         </v-btn>
       </v-col>
     </v-row>
@@ -52,7 +60,7 @@
                 <v-container>
                   <v-row>
                     <v-btn color="primary" @click="onPalletLoadAdd()" block>
-                      Tambah Data Muat Palet
+                      <v-icon left>mdi-plus-circle</v-icon> Tambah Data Muat Palet
                     </v-btn>
                   </v-row>
                 </v-container>
@@ -70,7 +78,7 @@
                 <v-container>
                   <v-row>
                     <v-btn color="primary" @click="onBasketUnloadAdd()" block>
-                      Tambah Data Bongkar Basket
+                      <v-icon left>mdi-plus-circle</v-icon> Tambah Data Bongkar Basket
                     </v-btn>
                   </v-row>
                 </v-container>
@@ -84,7 +92,7 @@
       <v-col>
         <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
             color="error" block>
-          Hapus Dokumen
+          <v-icon left>mdi-delete</v-icon> Hapus Dokumen
         </v-btn>
       </v-col>
     </v-row>
@@ -98,6 +106,7 @@ import DocumentService from '../services/DocumentService'
 import PalletLoadService from '../services/PalletLoadService'
 import BasketUnloadService from '../services/BasketUnloadService'
 import AuthService from '../services/AuthService'
+import XlsxService from '../services/XlsxService'
 
 export default {
   name: 'document-detail',
@@ -112,6 +121,7 @@ export default {
     return {
       fetching: true,
       submitting: false,
+      downloading: false,
       deleting: false,
       edit: false,
       palletLoadFetching: true,
@@ -159,6 +169,18 @@ export default {
           else {
             this.app.log('Detail dokumen gagal diperbaharui, tidak ada jaringan');
           }
+        });
+    },
+    onDownload() {
+      this.downloading = true;
+      XlsxService.generateDocument(this.$route.params.documentId)
+        .then(() => {
+          this.app.log('Dokumen berhasil diunduh dalam bentuk XLSX');
+          this.downloading = false;
+        })
+        .catch((err) => {
+          this.app.log(`Gagal mengunduh dokumen dalam bentuk xlsx ${err}`);
+          this.downloading = false;
         });
     },
     onDelete() {

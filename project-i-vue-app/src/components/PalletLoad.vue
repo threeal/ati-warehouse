@@ -9,7 +9,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-text-field v-model="brand" label="Merk"
+        <v-text-field v-model="brand" label="Merek"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
             :filled="!edit" :clearable="edit" outlined dense hide-details/>
       </v-col>
@@ -17,11 +17,11 @@
     <v-row>
       <v-col>
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
-          Ubah Detail
+          <v-icon left>mdi-pencil</v-icon> Ubah Detail
         </v-btn>
         <v-btn v-else @click="onSave()" :disabled="submitting" :loading="submitting"
              color="success" block>
-          Simpan Perubahan
+          <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
         </v-btn>
       </v-col>
     </v-row>
@@ -37,7 +37,7 @@
       <v-col>
         <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
             color="error" block>
-          Hapus Data Muat Palet
+          <v-icon left>mdi-delete</v-icon> Hapus Data Muat Palet
         </v-btn>
       </v-col>
     </v-row>

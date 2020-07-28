@@ -108,7 +108,7 @@ export default {
       AuthService.signUp(data)
         .then(() => {
           this.app.log('Akun berhasil didaftarkan, harap hubungi admin untuk verifikasi');
-          this.app.routeReplace('/login');
+          this.app.routePush('/login');
         })
         .catch((err) => {
           if (err.response) {
@@ -127,7 +127,7 @@ export default {
         });
     },
     onLogin() {
-      this.app.routeReplace('/login');
+      this.app.routePush('/login');
     },
   },
   beforeMount() {

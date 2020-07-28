@@ -23,4 +23,4 @@ class BasketUnloadService {
   }
 }
 
-export default new BasketUnloadService();
+export default new BasketUnloadService()

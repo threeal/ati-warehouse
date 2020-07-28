@@ -16,7 +16,7 @@
       <v-col>
         <v-btn @click="onAdd()" :disabled="submitting || !loadDate || !brand"
             :loading="submitting" color="success" block>
-          Submit Data
+          <v-icon left>mdi-upload</v-icon> Submit Data
         </v-btn>
       </v-col>
     </v-row>

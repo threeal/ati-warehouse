@@ -90,7 +90,7 @@ export default {
         });
     },
     onRegister() {
-      this.$router.push('/register');
+      this.app.routePush('/register');
     },
   },
   beforeMount() {

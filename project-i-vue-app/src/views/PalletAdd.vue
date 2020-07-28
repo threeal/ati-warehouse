@@ -29,7 +29,7 @@
             :disabled="submitting" clearable hide-details dense outlined/>
       </v-col>
       <v-col cols="6">
-        <v-text-field v-model="canQuantity" label="Jumlah Kaleng" type="number"
+        <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
             :disabled="submitting" clearable hide-details dense outlined/>
       </v-col>
     </v-row>

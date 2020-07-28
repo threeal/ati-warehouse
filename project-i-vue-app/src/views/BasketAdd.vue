@@ -28,7 +28,7 @@
             :disabled="submitting" clearable hide-details dense outlined/>
       </v-col>
       <v-col cols="6">
-        <v-text-field v-model="canQuantity" label="Jumlah Kaleng" type="number"
+        <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
             :disabled="submitting" clearable hide-details dense outlined/>
       </v-col>
     </v-row>
@@ -48,7 +48,7 @@
       <v-col>
         <v-btn @click="onAdd()" :disabled="addDisabled"
             :loading="submitting" color="success" block>
-          Submit Data Basket
+          <v-icon left>mdi-upload</v-icon> Submit Data Basket
         </v-btn>
       </v-col>
     </v-row>

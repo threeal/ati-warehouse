@@ -21,3 +21,62 @@ Date.prototype.toTimeInput = function() {
 
   return `${hours.pad(2)}:${minutes.pad(2)}`;
 }
+
+Array.prototype.toListString = function() {
+  let str = '';
+  let first = true;
+
+  this.forEach((element) => {
+    if (first)
+      first = false;
+    else
+      str += ', ';
+
+    str += String(element);
+  });
+
+  return str;
+}
+
+String.prototype.toTimeNumber = function() {
+  let str = this.split(':');
+  if (str.length >= 2) {
+    return (Number.parseInt(str[0]) * 60) + Number.parseInt(str[1]);
+  }
+
+  return NaN;
+}
+
+Number.prototype.toTimeInput = function() {
+  let first = Math.floor(this / 60);
+  if (first < 0) {
+    first = 0;
+  }
+
+  let second = this % 60;
+  if (second < 0) {
+    second = 0;
+  }
+
+  return `${first.pad(2)}:${second.pad(2)}`;
+}
+
+String.prototype.toLocaleDateString = function() {
+  const date = new Date(this);
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+  return date.toLocaleDateString('id', options);
+}
+
+Uint8Array.prototype.download = function(filename) {
+  var a = document.createElement('a');
+  a.href = window.URL.createObjectURL(new Blob([this.buffer], {type: 'text/xlsx'}));
+  a.download = filename || 'sheet.xlsx';
+
+  a.style.display = 'none';
+  document.body.appendChild(a);
+
+  a.click();
+
+  document.body.removeChild(a);
+}
