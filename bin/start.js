@@ -43,13 +43,10 @@ app.get('*', function (_, response) {
   response.sendFile(path.resolve(__dirname, '../dist/index.html'));
 });
 
-let httpPort = process.argv[2] || 8080;
-let httpsPort = process.argv[3] || 4433;
+let httpPort = process.argv[2] || 80;
+let httpsPort = process.argv[3] || 443;
 
 let http = require('http');
-http.createServer(app).listen(httpPort);
-
-console.log(`HTTP server is running on port ${httpPort}!`);
 
 let fs = require('fs');
 fs.readFile(path.resolve(__dirname, '../ssl/ssl.key'), 'utf8', (err, privateKey) => {
@@ -67,13 +64,31 @@ fs.readFile(path.resolve(__dirname, '../ssl/ssl.key'), 'utf8', (err, privateKey)
         https.createServer(credentials, app).listen(httpsPort);
 
         console.log(`HTTPS server is running on port ${httpsPort}!`);
+
+        http.createServer((req, res) => {
+          let hosts = req.headers.host.split(':');
+          let host = (hosts.length >= 2)
+            ? `${hosts[0]}:${httpsPort}`
+            : hosts[0];
+
+          res.writeHead(301, { 'Location': `https://${host}${req.url}` });
+          res.end();
+        }).listen(httpPort);
+
+        console.log(`HTTP redirect server is running on port ${httpPort}!`);
       }
       else {
         console.log('No ssl certificate provided for HTTPS!');
+
+        http.createServer(app).listen(httpPort);
+        console.log(`HTTP server is running on port ${httpPort}!`);
       }
     });
   }
   else {
     console.log('No ssl private key provided for HTTPS!');
+
+    http.createServer(app).listen(httpPort);
+    console.log(`HTTP server is running on port ${httpPort}!`);
   }
 });
