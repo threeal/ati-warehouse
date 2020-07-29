@@ -51,8 +51,7 @@
             </v-btn>
           </v-col>
           <v-col cols="12">
-            <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-                color="error" block>
+            <v-btn @click="onDelete()" :disabled="fetching" color="error" block>
               <v-icon left>mdi-delete</v-icon> Hapus Data Palet
             </v-btn>
           </v-col>
@@ -75,7 +74,6 @@ export default {
     return {
       fetching: true,
       submitting: false,
-      deleting: false,
       edit: false,
       palletNumber: null,
       basketNumbers: null,
@@ -121,7 +119,7 @@ export default {
 
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Detail data palet gagal diperbaharui, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -137,21 +135,21 @@ export default {
         });
     },
     onDelete() {
-      this.deleting = true;
-
-      PalletService.remove(this.$route.params.documentId, this.$route.params.palletId)
-        .then(() => {
+      this.app.confirm({
+        description: 'Apakah anda yakin ingin menghapus data palet ini?',
+        promiseCallback: () => {
+          return PalletService.remove(
+            this.$route.params.documentId, this.$route.params.palletId
+          );
+        },
+        thenCallback: () => {
           this.app.log('Data palet berhasil dihapus');
-          this.deleting = false;
-
           this.$router.go(-1);
-        })
-        .catch((err) => {
-          this.deleting = false;
-
+        },
+        catchCallback: (err) => {
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Data palet gagal dihapus, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -164,7 +162,8 @@ export default {
           else {
             this.app.log('Data palet gagal dihapus, tidak ada jaringan');
           }
-        });
+        },
+      });
     },
   },
   created() {
@@ -186,7 +185,7 @@ export default {
       .catch((err) => {
         if (err.response) {
           if (err.response.status === 401) {
-            this.app.log('Gagal mengambil detail data palet, sesi habis');
+            this.app.log('Sesi habis, harap masuk kembali');
 
             AuthService.signOut();
             this.app.routeReplace('/login');

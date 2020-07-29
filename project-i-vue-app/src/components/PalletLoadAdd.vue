@@ -80,7 +80,7 @@ export default {
 
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Data muat palet gagal ditambahkan, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');

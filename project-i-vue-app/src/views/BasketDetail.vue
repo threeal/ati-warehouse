@@ -55,8 +55,7 @@
             </v-btn>
           </v-col>
           <v-col cols="12">
-            <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-                color="error" block>
+            <v-btn @click="onDelete()" :disabled="fetching" color="error" block>
               <v-icon left>mdi-delete</v-icon> Hapus Data Basket
             </v-btn>
           </v-col>
@@ -79,7 +78,6 @@ export default {
     return {
       fetching: true,
       submitting: false,
-      deleting: false,
       edit: false,
       basketNumber: null,
       basketId: null,
@@ -127,7 +125,7 @@ export default {
 
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Detail data basket gagal diperbaharui, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -143,21 +141,21 @@ export default {
         });
     },
     onDelete() {
-      this.deleting = true;
-
-      BasketService.remove(this.$route.params.documentId, this.$route.params.basketId)
-        .then(() => {
+      this.app.confirm({
+        description: 'Apakah anda yakin ingin menghapus data basket ini?',
+        promiseCallback: () => {
+          return BasketService.remove(
+            this.$route.params.documentId, this.$route.params.basketId
+          );
+        },
+        thenCallback: () => {
           this.app.log('Data basket berhasil dihapus');
-          this.deleting = false;
-
           this.$router.go(-1);
-        })
-        .catch((err) => {
-          this.deleting = false;
-
+        },
+        catchCallback: (err) => {
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Data basket gagal dihapus, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -170,7 +168,8 @@ export default {
           else {
             this.app.log('Data basket gagal dihapus, tidak ada jaringan');
           }
-        });
+        },
+      });
     },
   },
   created() {
@@ -193,7 +192,7 @@ export default {
       .catch((err) => {
         if (err.response) {
           if (err.response.status === 401) {
-            this.app.log('Gagal mengambil detail data basket, sesi habis');
+            this.app.log('Sesi habis, harap masuk kembali');
 
             AuthService.signOut();
             this.app.routeReplace('/login');

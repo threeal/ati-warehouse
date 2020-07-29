@@ -103,7 +103,7 @@ export default {
         .catch((err) => {
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Gagal mengambil daftar basket, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');

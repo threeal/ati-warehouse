@@ -33,8 +33,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-            color="error" block>
+        <v-btn @click="onDelete()" :disabled="fetching" color="error" block>
           <v-icon left>mdi-delete</v-icon> Hapus Data Muat Palet
         </v-btn>
       </v-col>
@@ -61,7 +60,6 @@ export default {
     return {
       fetching: true,
       submitting: false,
-      deleting: false,
       edit: false,
       loadDate: null,
       brand: null,
@@ -69,7 +67,7 @@ export default {
   },
   computed: {
     loadDateLocale() {
-      return this.loadDate.toLocaleDateString();
+      return (this.loadDate) ? this.loadDate.toLocaleDateString() : null;
     },
   },
   methods: {
@@ -95,7 +93,7 @@ export default {
 
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Detail data muat palet gagal diperbaharui, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -111,12 +109,13 @@ export default {
         });
     },
     onDelete() {
-      this.deleting = true;
-
-      PalletLoadService.remove(this.$route.params.documentId)
-        .then(() => {
+      this.app.confirm({
+        description: 'Apakah anda yakin ingin menghapus data muat palet ini?',
+        promiseCallback: () => {
+          return PalletLoadService.remove(this.$route.params.documentId);
+        },
+        thenCallback: () => {
           this.app.log('Data muat palet berhasil dihapus');
-          this.deleting = false;
 
           if (typeof this.deleteCallback === 'function') {
             this.deleteCallback();
@@ -124,13 +123,11 @@ export default {
           else {
             this.$router.go(-1);
           }
-        })
-        .catch((err) => {
-          this.deleting = false;
-
+        },
+        catchCallback: (err) => {
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Data muat palet gagal dihapus, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -143,7 +140,8 @@ export default {
           else {
             this.app.log('Data muat palet gagal dihapus, tidak ada jaringan');
           }
-        });
+        },
+      });
     },
   },
   mounted() {
@@ -156,7 +154,7 @@ export default {
       .catch((err) => {
         if (err.response) {
           if (err.response.status === 401) {
-            this.app.log('Gagal mengambil data muat palet, sesi habis');
+            this.app.log('Sesi habis, harap masuk kembali');
 
             AuthService.signOut();
             this.app.routeReplace('/login');

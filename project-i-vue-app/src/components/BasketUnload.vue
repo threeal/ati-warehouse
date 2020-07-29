@@ -33,9 +33,8 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-            color="error" block>
-          <v-icon left>mdi-delete</v-icon> Hapus Data Muat Basket
+        <v-btn @click="onDelete()" :disabled="fetching" color="error" block>
+          <v-icon left>mdi-delete</v-icon> Hapus Data Bongkar Basket
         </v-btn>
       </v-col>
     </v-row>
@@ -61,7 +60,6 @@ export default {
     return {
       fetching: true,
       submitting: false,
-      deleting: false,
       edit: false,
       unloadDate: null,
       line: null,
@@ -69,7 +67,7 @@ export default {
   },
   computed: {
     unloadDateLocale() {
-      return this.unloadDate.toLocaleDateString();
+      return (this.unloadDate) ? this.unloadDate.toLocaleDateString() : null;
     },
   },
   methods: {
@@ -95,7 +93,7 @@ export default {
 
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Detail data bongkar basket gagal diperbaharui, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -111,12 +109,13 @@ export default {
         });
     },
     onDelete() {
-      this.deleting = true;
-
-      BasketUnloadService.remove(this.$route.params.documentId)
-        .then(() => {
+      this.app.confirm({
+        description: 'Apakah anda yakin ingin menghapus data bongkar basket ini?',
+        promiseCallback: () => {
+          return  BasketUnloadService.remove(this.$route.params.documentId);
+        },
+        thenCallback: () => {
           this.app.log('Data bongkar basket berhasil dihapus');
-          this.deleting = false;
 
           if (typeof this.deleteCallback === 'function') {
             this.deleteCallback();
@@ -124,12 +123,11 @@ export default {
           else {
             this.$router.go(-1);
           }
-        })
-        .catch((err) => {
+        },
+        catchCallback: (err) => {
           if (err.response) {
-            this.deleting = false;
             if (err.response.status === 401) {
-              this.app.log('Data bongkar basket gagal dihapus, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -142,7 +140,8 @@ export default {
           else {
             this.app.log('Data bongkar basket gagal dihapus, tidak ada jaringan');
           }
-        });
+        },
+      });
     },
   },
   mounted() {
@@ -155,7 +154,7 @@ export default {
       .catch((err) => {
         if (err.response) {
           if (err.response.status === 401) {
-            this.app.log('Gagal mengambil detail data bongkar basket, sesi habis');
+            this.app.log('Sesi habis, harap masuk kembali');
 
             AuthService.signOut();
             this.app.routeReplace('/login');

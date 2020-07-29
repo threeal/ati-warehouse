@@ -13,29 +13,38 @@ class XlsxService {
 
     let document = await DocumentService.findOne(documentId);
 
-    let worksheet = workbook.addWorksheet(document.data.productKind);
+    let worksheet = workbook.addWorksheet(
+      (document.data) ? document.data.productKind : 'document'
+    );
 
-    worksheet.getCell('F1').value = 'Jenis Produksi';
-    worksheet.getCell('H1').value = document.data.productKind;
-
+    worksheet.getCell('F1').value = 'Jenis Produk';
     worksheet.getCell('A1').value = 'Tanggal Produksi';
-    worksheet.getCell('C1').value = document.data.productionDate.toLocaleDateString();
 
-    let palletLoad = await PalletLoadService.find(documentId);
+    if (document.data) {
+      worksheet.getCell('H1').value = document.data.productKind || '-';
+      worksheet.getCell('C1').value = (document.data.productionDate)
+        ? document.data.productionDate.toLocaleDateString() : '-';
+    }
 
     worksheet.getCell('A2').value = 'Tanggal Muat';
-    worksheet.getCell('C2').value = palletLoad.data.loadDate.toLocaleDateString();
-
     worksheet.getCell('F2').value = 'Merek';
-    worksheet.getCell('H2').value = palletLoad.data.brand;
 
-    let basketUnload = await BasketUnloadService.find(documentId);
+    let palletLoad = await PalletLoadService.find(documentId);
+    if (palletLoad.data) {
+      worksheet.getCell('C2').value = (palletLoad.data.loadDate) ?
+        palletLoad.data.loadDate.toLocaleDateString() : '-';
+      worksheet.getCell('H2').value = palletLoad.data.brand;
+    }
 
     worksheet.getCell('A3').value = 'Tanggal Bongkar';
-    worksheet.getCell('C3').value = basketUnload.data.unloadDate.toLocaleDateString();
-
     worksheet.getCell('F3').value = 'Line';
-    worksheet.getCell('H3').value = basketUnload.data.line;
+
+    let basketUnload = await BasketUnloadService.find(documentId);
+    if (basketUnload.data) {
+      worksheet.getCell('C3').value = (basketUnload.data.unloadDate)
+        ? basketUnload.data.unloadDate.toLocaleDateString() : '-';
+      worksheet.getCell('H3').value = basketUnload.data.line;
+    }
 
     worksheet.mergeCells('A6:B6');
     worksheet.getCell('A6').value = 'Jam Penuh';
@@ -95,14 +104,23 @@ class XlsxService {
     let pallets = await PalletService.findAll(documentId);
     if (pallets.data.length > 0) {
       pallets.data.forEach((pallet, index) => {
-        worksheet.getCell(`A${index + 8}`).value = pallet.startTime;
-        worksheet.getCell(`B${index + 8}`).value = pallet.endTime;
+        worksheet.getCell(`A${index + 8}`).value = pallet.startTime || '-';
+        worksheet.getCell(`B${index + 8}`).value = pallet.endTime || '-';
 
-        let duration = pallet.endTime.toTimeNumber() - pallet.startTime.toTimeNumber();
-        worksheet.getCell(`C${index + 8}`).value = duration.toTimeInput();
+        worksheet.getCell(`C${index + 8}`).value = (() => {
+          if (pallet.startTime) {
+            if (pallet.endTime) {
+              let duration = pallet.endTime.toTimeNumber() - pallet.startTime.toTimeNumber();
+              return duration.toTimeInput();
+            }
+          }
 
-        worksheet.getCell(`D${index + 8}`).value = pallet.palletNumber;
-        worksheet.getCell(`E${index + 8}`).value = pallet.basketNumbers.toListString();
+          return '-';
+        }) ();
+
+        worksheet.getCell(`D${index + 8}`).value = pallet.palletNumber || '-';
+        worksheet.getCell(`E${index + 8}`).value = (pallet.basketNumber)
+          ? pallet.basketNumbers.toListString() : '-';
 
         worksheet.getCell(`F${index + 8}`).value = pallet.seaming || '-';
 
@@ -198,8 +216,16 @@ class XlsxService {
         worksheet.getCell(`R${index + 8}`).value = basket.startTime || '-';
         worksheet.getCell(`S${index + 8}`).value = basket.endTime || '-';
 
-        let duration = basket.endTime.toTimeNumber() - basket.startTime.toTimeNumber();
-        worksheet.getCell(`T${index + 8}`).value = duration.toTimeInput() || '-';
+        worksheet.getCell(`T${index + 8}`).value = (() => {
+          if (basket.startTime) {
+            if (basket.endTime) {
+              let duration = basket.endTime.toTimeNumber() - basket.startTime.toTimeNumber();
+              return duration.toTimeInput();
+            }
+          }
+
+          return '-';
+        }) ();
 
         worksheet.getCell(`U${index + 8}`).value = basket.basketNumber || '-';
         worksheet.getCell(`V${index + 8}`).value = basket.basketId || '-';

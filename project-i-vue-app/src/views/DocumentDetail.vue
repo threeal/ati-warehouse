@@ -31,8 +31,7 @@
             </v-btn>
           </v-col>
           <v-col class="hidden-sm-and-down" cols="12">
-            <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-                color="error" block>
+            <v-btn @click="onDelete()" :disabled="fetching" color="error" block>
               <v-icon left>mdi-delete</v-icon> Hapus Dokumen
             </v-btn>
           </v-col>
@@ -92,8 +91,7 @@
         </v-card>
       </v-col>
       <v-col class="hidden-md-and-up" cols="12" sm="8">
-        <v-btn @click="onDelete()" :disabled="fetching || deleting" :loading="deleting"
-            color="error" block>
+        <v-btn @click="onDelete()" :disabled="fetching" color="error" block>
           <v-icon left>mdi-delete</v-icon> Hapus Dokumen
         </v-btn>
       </v-col>
@@ -137,7 +135,6 @@ export default {
       fetching: true,
       submitting: false,
       downloading: false,
-      deleting: false,
       edit: false,
       palletLoadFetching: true,
       palletLoadExist: false,
@@ -152,7 +149,7 @@ export default {
   },
   computed: {
     productionDateLocale() {
-      return this.productionDate.toLocaleDateString();
+      return (this.productionDate) ? this.productionDate.toLocaleDateString() : null;
     },
     downloadDisabled() {
       return this.downloading || !this.palletLoadExist || !this.basketUnloadExist;
@@ -181,7 +178,7 @@ export default {
 
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Detail dokumen gagal diperbaharui, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -200,29 +197,48 @@ export default {
       this.downloading = true;
       XlsxService.generateDocument(this.$route.params.documentId)
         .then(() => {
+          this.app.log('Dokumen berhasil diunduh');
+
           this.downloading = false;
         })
         .catch((err) => {
-          this.app.log(`Gagal mengunduh dokumen dalam bentuk xlsx ${err}`);
           this.downloading = false;
-        });
-    },
-    onDelete() {
-      this.deleting = true;
-
-      DocumentService.remove(this.$route.params.documentId)
-        .then(() => {
-          this.app.log('Dokumen berhasil dihapus');
-          this.deleting = false;
-
-          this.$router.go(-1);
-        })
-        .catch((err) => {
-          this.deleting = false;
 
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Dokumen gagal dihapus, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Gagal mengunduh dokumen dalam bentuk xlsx,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else if (err.request) {
+            this.app.log('Gagal mengunduh dokumen dalam bentuk xlsx, tidak ada jaringan');
+          }
+          else {
+            this.app.log('Gagal mengunduh dokumen dalam bentuk xlsx,'
+              + ` kesalahan klien (${err.message})`);
+          }
+        });
+    },
+    onDelete() {
+      this.app.confirm({
+        description: 'Apakah anda yakin ingin menghapus dokumen ini?',
+        promiseCallback: () => {
+          return DocumentService.remove(this.$route.params.documentId);
+        },
+        thenCallback: () => {
+          this.app.log('Dokumen berhasil dihapus');
+          this.$router.go(-1);
+        },
+        catchCallback: (err) => {
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -235,7 +251,8 @@ export default {
           else {
             this.app.log('Dokumen gagal dihapus, tidak ada jaringan');
           }
-        });
+        },
+      });
     },
     palletLoadReset() {
       this.palletLoadFetching = true;
@@ -249,7 +266,7 @@ export default {
         .catch((err) => {
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Gagal mengambil data muat palet, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -286,7 +303,7 @@ export default {
         .catch((err) => {
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Gagal mengambil data bongkar basket, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
@@ -329,7 +346,7 @@ export default {
       .catch((err) => {
         if (err.response) {
           if (err.response.status === 401) {
-            this.app.log('Gagal mengambil dokumen, sesi habis');
+              this.app.log('Sesi habis, harap masuk kembali');
 
             AuthService.signOut();
             this.app.routeReplace('/login');

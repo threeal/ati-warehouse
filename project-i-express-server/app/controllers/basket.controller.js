@@ -5,7 +5,7 @@ exports.findAll = (req, res) => {
   const documentId = req.params.documentId;
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
 
-  // setTimeout(() => {
+  setTimeout(() => {
     Basket.find(condition)
       .then((data) => {
         res.send(data);
@@ -16,7 +16,7 @@ exports.findAll = (req, res) => {
             `some error occured while retrieving baskets with document id ${documentId}`,
         });
       });
-  // }, 1000);
+  }, 33);
 };
 
 exports.create = (req, res) => {
@@ -40,7 +40,7 @@ exports.create = (req, res) => {
       rejectKind: req.body.rejectKind,
   });
 
-  // setTimeout(() => {
+  setTimeout(() => {
     basket.save(basket)
       .then((data) => {
         res.send(data);
@@ -51,13 +51,13 @@ exports.create = (req, res) => {
             || `some error occured while creating basket with document id ${documentId}`,
         });
       });
-  // }, 1000);
+  }, 33);
 };
 
 exports.findOne = (req, res) => {
   const basketId = req.params.basketId;
 
-  // setTimeout(() => {
+  setTimeout(() => {
     Basket.findById(basketId)
       .then((data) => {
         if (data) {
@@ -75,7 +75,7 @@ exports.findOne = (req, res) => {
             || `some error occured while retrieving basket with id ${basketId}`,
         });
       });
-  // }, 1000);
+  }, 500);
 };
 
 exports.update = (req, res) => {
@@ -87,7 +87,7 @@ exports.update = (req, res) => {
     });
   }
 
-  // setTimeout(() => {
+  setTimeout(() => {
     Basket.findByIdAndUpdate(basketId, req.body, { useFindAndModify: false })
       .then((data) => {
         if (data) {
@@ -107,13 +107,13 @@ exports.update = (req, res) => {
             || `some error occured while updating basket with id ${basketId}`,
         });
       });
-  // }, 1000);
+  }, 500);
 };
 
 exports.remove = (req, res) => {
   const basketId = req.params.basketId;
 
-  // setTimeout(() => {
+  setTimeout(() => {
     Basket.findByIdAndDelete(basketId)
       .then((data) => {
         if (data) {
@@ -133,5 +133,5 @@ exports.remove = (req, res) => {
             || `some error occured while removing basket with id ${basketId}`,
         });
       });
-  // }, 1000);
+  }, 500);
 };

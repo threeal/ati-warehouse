@@ -40,7 +40,9 @@
                         {{ document.productKind }}
                       </v-list-item-title>
                       <v-list-item-subtitle>
-                        {{ document.productionDate.toLocaleDateString() }}
+                        {{ (document.productionDate)
+                          ? document.productionDate.toLocaleDateString()
+                          : null }}
                       </v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -107,15 +109,16 @@ export default {
           this.fetching = false;
         })
         .catch((err) => {
-          if (err.request) {
-            if (err.request.status === 401) {
-              this.app.log('Gagal mengambil dokumen, sesi habis');
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Sesi habis, harap masuk kembali');
 
               AuthService.signOut();
               this.app.routeReplace('/login');
             }
             else {
-              this.app.log(`Gagal mengambil dokumen, kesalahan server (${err.request.status})`);
+              this.app.log('Gagal mengambil dokumen,'
+                + ` kesalahan server (${err.response.status})`);
             }
           }
           else {

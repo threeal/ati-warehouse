@@ -14,12 +14,13 @@
     </v-list>
     <v-divider/>
     <v-list dense nav>
-      <v-list-item v-for="item in items" :key="item.title" @click="item.onClick()" link>
+      <v-list-item v-for="link in links" :key="link.title"
+          @click="onLinkClick(link)" link>
         <v-list-item-icon>
-          <v-icon>{{ item.icon }}</v-icon>
+          <v-icon>{{ link.icon }}</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
+          <v-list-item-title>{{ link.title }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
@@ -27,37 +28,25 @@
 </template>
 
 <script>
-import AuthService from '../services/AuthService'
-
 export default {
   name: 'add-tutorial',
   props: {
     app: { type: Object, required: true },
+    links: { type: Array, required: true },
   },
   data() {
     let user = JSON.parse(localStorage.getItem('user'));
     return {
       username: user.username,
-      items: [
-        {
-          title: 'Daftar Dokumen',
-          icon: 'mdi-view-list',
-          onClick: () => {
-            this.app.drawer = false;
-            this.app.routePush('/document');
-          },
-        },
-        {
-          title: 'Keluar',
-          icon: 'mdi-logout',
-          onClick: () => {
-            AuthService.signOut();
-            this.app.drawer = false;
-            this.app.routeReplace('/login');
-          },
-        },
-      ],
     };
+  },
+  methods: {
+    onLinkClick(link) {
+      if (typeof link.onClick === 'function') {
+        link.onClick();
+        this.app.drawer = false;
+      }
+    },
   },
 }
 </script>
