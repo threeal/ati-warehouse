@@ -1,8 +1,12 @@
 module.exports = {
-  "devServer": {
-    "port": 8081
+  devServer: {
+    port: 8081,
   },
-  "transpileDependencies": [
-    "vuetify"
-  ]
+  transpileDependencies: [
+    'vuetify',
+  ],
+  pwa: {
+    name: 'Project-I',
+    themeColor: '#1976D2',
+  },
 }
