@@ -16,10 +16,10 @@ models.mongoose
     useFindAndModify: false,
   })
   .then(() => {
-    console.log('connected to the databse!');
+    console.log('Connected to the MongoDB!');
   })
   .catch((err) => {
-    console.log('cannot connect to the databse!', err);
+    console.log('Cannot connect to the MongoDB!', err);
     process.exit();
   });
 
@@ -40,9 +40,40 @@ const path = require('path');
 app.use(serveStatic(path.resolve(__dirname, '../dist')));
 
 app.get('*', function (_, response) {
-  response.sendFile(path.resolve(__dirname, '../dist/app.html'));
+  response.sendFile(path.resolve(__dirname, '../dist/index.html'));
 });
 
-app.listen(8081, () => {
-  console.log('server is running on port 8080');
+let httpPort = process.argv[2] || 8080;
+let httpsPort = process.argv[3] || 4433;
+
+let http = require('http');
+http.createServer(app).listen(httpPort);
+
+console.log(`HTTP server is running on port ${httpPort}!`);
+
+let fs = require('fs');
+fs.readFile(path.resolve(__dirname, '../ssl/ssl.key'), 'utf8', (err, privateKey) => {
+  if (!err) {
+    fs.readFile(path.resolve(__dirname, '../ssl/ssl.crt'), 'utf8', (err, certificate) => {
+      if (!err) {
+        let credentials = {
+          key: privateKey,
+          cert: certificate,
+          requestCert: false,
+          rejectUnauthorized: false
+        };
+
+        let https = require('https');
+        https.createServer(credentials, app).listen(httpsPort);
+
+        console.log(`HTTPS server is running on port ${httpsPort}!`);
+      }
+      else {
+        console.log('No ssl certificate provided for HTTPS!');
+      }
+    });
+  }
+  else {
+    console.log('No ssl private key provided for HTTPS!');
+  }
 });

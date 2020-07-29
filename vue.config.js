@@ -7,8 +7,9 @@ module.exports = {
   ],
   pages: {
     app: {
-      entry: 'client/src/main.js',
-      template: 'client/public/index.html',
+      entry: 'client/main.js',
+      template: 'public/index.html',
+      filename: 'index.html',
     },
   },
   pwa: {

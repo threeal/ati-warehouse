@@ -1,3 +1,3 @@
 module.exports = {
-  secret: 'this-is-a-secret-key',
+  secret: Math.random().toString(36).substring(7),
 };
