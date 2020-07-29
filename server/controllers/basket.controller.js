@@ -1,22 +1,22 @@
 const models = require('../models');
-const Pallet = models.Pallet;
+const Basket = models.Basket;
 
 exports.findAll = (req, res) => {
   const documentId = req.params.documentId;
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
 
-  setTimeout(() => {
-    Pallet.find(condition)
+  // setTimeout(() => {
+    Basket.find(condition)
       .then((data) => {
         res.send(data);
       })
       .catch((err) => {
         res.status(500).send({
           message: err.message ||
-            `some error occured while retrieving pallets with document id ${documentId}`,
+            `some error occured while retrieving baskets with document id ${documentId}`,
         });
       });
-  }, 33);
+  // }, 33);
 };
 
 exports.create = (req, res) => {
@@ -28,57 +28,58 @@ exports.create = (req, res) => {
     });
   }
 
-  const pallet = new Pallet({
+  const basket = new Basket({
       documentId: documentId,
-      palletNumber: req.body.palletNumber,
-      basketNumbers: req.body.basketNumbers,
+      basketNumber: req.body.basketNumber,
+      basketId: req.body.basketId,
       startTime: req.body.startTime,
       endTime: req.body.endTime,
-      stackQuantity: req.body.stackQuantity,
+      basketQuantity: req.body.basketQuantity,
       canQuantity: req.body.canQuantity,
-      loader: req.body.loader,
+      rejectQuantity: req.body.rejectQuantity,
+      rejectKind: req.body.rejectKind,
   });
 
-  setTimeout(() => {
-    pallet.save(pallet)
+  // setTimeout(() => {
+    basket.save(basket)
       .then((data) => {
         res.send(data);
       })
       .catch((err) => {
         res.status(500).send({
           message: err.message
-            || `some error occured while creating pallet with document id ${documentId}`,
+            || `some error occured while creating basket with document id ${documentId}`,
         });
       });
-  }, 33);
+  // }, 33);
 };
 
 exports.findOne = (req, res) => {
-  const palletId = req.params.palletId;
+  const basketId = req.params.basketId;
 
-  setTimeout(() => {
-    Pallet.findById(palletId)
+  // setTimeout(() => {
+    Basket.findById(basketId)
       .then((data) => {
         if (data) {
           res.send(data);
         }
         else {
           res.status(404).send({
-            message: `pallet with id ${palletId} not found`,
+            message: `basket with id ${basketId} not found`,
           });
         }
       })
       .catch((err) => {
         res.status(500).send({
           message: err.message
-            || `some error occured while retrieving pallet with id ${palletId}`,
+            || `some error occured while retrieving basket with id ${basketId}`,
         });
       });
-  }, 33);
+  // }, 33);
 };
 
 exports.update = (req, res) => {
-  const palletId = req.params.palletId;
+  const basketId = req.params.basketId;
 
   if (!req.body) {
     return res.status(400).send({
@@ -86,51 +87,51 @@ exports.update = (req, res) => {
     });
   }
 
-  setTimeout(() => {
-    Pallet.findByIdAndUpdate(palletId, req.body, { useFindAndModify: false })
+  // setTimeout(() => {
+    Basket.findByIdAndUpdate(basketId, req.body, { useFindAndModify: false })
       .then((data) => {
         if (data) {
           res.send({
-            message: 'pallet was updated successfully',
+            message: 'basket was updated successfully',
           });
         }
         else {
           res.status(404).send({
-            message: `cannot update pallet with id ${palletId}`,
+            message: `cannot update basket with id ${basketId}`,
           });
         }
       })
       .catch((err) => {
         res.status(500).send({
           message: err.message
-            || `some error occured while updating pallet with id ${palletId}`,
+            || `some error occured while updating basket with id ${basketId}`,
         });
       });
-  }, 33);
+  // }, 33);
 };
 
 exports.remove = (req, res) => {
-  const palletId = req.params.palletId;
+  const basketId = req.params.basketId;
 
-  setTimeout(() => {
-    Pallet.findByIdAndDelete(palletId)
+  // setTimeout(() => {
+    Basket.findByIdAndDelete(basketId)
       .then((data) => {
         if (data) {
           res.send({
-            message: 'pallet was removed successfully',
+            message: 'basket was removed successfully',
           });
         }
         else {
           res.status(404).send({
-            message: `cannot remove pallet with id ${palletId}`,
+            message: `cannot remove basket with id ${basketId}`,
           });
         }
       })
       .catch((err) => {
         res.status(500).send({
           message: err.message
-            || `some error occured while removing pallet with id ${palletId}`,
+            || `some error occured while removing basket with id ${basketId}`,
         });
       });
-  }, 33);
+  // }, 33);
 };

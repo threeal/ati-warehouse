@@ -6,7 +6,7 @@ const BasketUnload = models.BasketUnload;
 const Basket = models.Basket;
 
 exports.findAll = (_, res) => {
-  setTimeout(() => {
+  // setTimeout(() => {
     Document.find()
       .then((data) => {
         res.send(data);
@@ -16,7 +16,7 @@ exports.findAll = (_, res) => {
           message: err.message || 'some error occured while retrieving documents',
         });
       });
-  }, 33);
+  // }, 33);
 };
 
 exports.create = (req, res) => {
@@ -31,7 +31,7 @@ exports.create = (req, res) => {
     productionDate: req.body.productionDate,
   });
 
-  setTimeout(() => {
+  // setTimeout(() => {
     document.save(document)
       .then((data) => {
         res.send(data);
@@ -41,13 +41,13 @@ exports.create = (req, res) => {
           message: err.message || 'some error occured while creating the document',
         });
       });
-  }, 33);
+  // }, 33);
 };
 
 exports.findOne = (req, res) => {
   const documentId = req.params.documentId;
 
-  setTimeout(() => {
+  // setTimeout(() => {
     Document.findById(documentId)
       .then((data) => {
         if (data) {
@@ -65,7 +65,7 @@ exports.findOne = (req, res) => {
             || `some error occured while retrieving document with id ${documentId}`,
         });
       });
-  }, 33);
+  // }, 33);
 };
 
 exports.update = (req, res) => {
@@ -77,7 +77,7 @@ exports.update = (req, res) => {
     });
   }
 
-  setTimeout(() => {
+  // setTimeout(() => {
     Document.findByIdAndUpdate(documentId, req.body, { useFindAndModify: false })
       .then((data) => {
         if (data) {
@@ -97,13 +97,13 @@ exports.update = (req, res) => {
             || `some error occured while updating document with id ${documentId}`,
         });
       });
-  }, 33);
+  // }, 33);
 };
 
 exports.remove = (req, res) => {
   const documentId = req.params.documentId;
 
-  setTimeout(() => {
+  // setTimeout(() => {
     Document.findByIdAndDelete(documentId)
       .then((data) => {
         if (data) {
@@ -161,5 +161,5 @@ exports.remove = (req, res) => {
             || `some error occured while removing document with id ${documentId}`,
         });
       });
-  }, 33);
+  // }, 33);
 };
