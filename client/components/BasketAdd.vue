@@ -37,8 +37,9 @@
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col v-if="rejectQuantity && rejectQuantity > 0" cols="12">
-          <v-text-field v-model="rejectKind" label="Jenis Rijek"
-              :disabled="submitting" clearable hide-details dense outlined/>
+          <v-select v-model="rejectKind" :items="rejectKindList" label="Jenis Rijek"
+              item-text="name" item-value="id" :disabled="submitting"
+              hide-details dense outlined/>
         </v-col>
         <v-col cols="12">
           <v-btn @click="onAdd()" :disabled="addDisabled"
@@ -73,6 +74,13 @@ export default {
       canQuantity: null,
       rejectQuantity: null,
       rejectKind: null,
+      rejectKindList: [
+        { id: 'PJ', name: 'Penyok Jatuh (PJ)' },
+        { id: 'TJ', name: 'Terjepit (TJ)' },
+        { id: 'SB', name: 'Score Break (SB)' },
+        { id: 'PB', name: 'Penyok dari Basket (PB)' },
+        { id: 'FD', name: 'Flange Down (FD)' },
+      ],
       submitting: false,
     };
   },

@@ -41,9 +41,12 @@
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
           <v-col v-if="rejectQuantity && rejectQuantity > 0" cols="12">
-            <v-text-field v-model="rejectKind" label="Jenis Rijek"
-                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+            <v-select v-if="edit" v-model="rejectKind" :items="rejectKindList"
+                label="Jenis Rijek" item-text="name" item-value="id"
+                :disabled="submitting" hide-details dense outlined/>
+            <v-text-field v-else label="Jenis Rijek" :value="rejectKindValue"
+                :loading="fetching" :disabled="fetching" readonly filled
+                hide-details dense outlined/>
           </v-col>
           <v-col cols="12">
             <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
@@ -87,14 +90,30 @@ export default {
       canQuantity: null,
       rejectQuantity: null,
       rejectKind: null,
+      rejectKindList: [
+        { id: 'PJ', name: 'Penyok Jatuh (PJ)' },
+        { id: 'TJ', name: 'Terjepit (TJ)' },
+        { id: 'SB', name: 'Score Break (SB)' },
+        { id: 'PB', name: 'Penyok dari Basket (PB)' },
+        { id: 'FD', name: 'Flange Down (FD)' },
+      ],
     };
   },
   computed: {
+    rejectKindValue() {
+      let rejectKindObj = this.rejectKindList.find(o => o.id == this.rejectKind);
+      if (rejectKindObj) {
+        return rejectKindObj.name;
+      }
+      else {
+        return '-';
+      }
+    },
     submitDisabled() {
       return this.submitting || !this.basketNumber || !this.basketId
         || !this.startTime || !this.endTime || (!this.basketQuantity && !this.canQuantity)
         || (this.rejectQuantity && this.rejectQuantity > 0 && !this.rejectKind);
-    }
+    },
   },
   methods: {
     onEdit() {

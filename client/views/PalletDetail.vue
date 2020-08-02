@@ -9,10 +9,12 @@
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
           <v-col cols="12">
-            <v-combobox v-model="basketNumbers" label="Nomor Basket"
-                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-                :clearable="edit" hide-details outlined
+            <v-combobox v-if="edit" v-model="basketNumbers" label="Nomor Basket"
+                :disabled="submitting" clearable hide-details outlined
                 multiple chips deletable-chips/>
+            <v-text-field v-else :value="basketNumbers.toListString()" label="Nomor Palet"
+                :disabled="fetching" :loading="fetching" readonly
+                filled hide-details dense outlined/>
           </v-col>
           <v-col cols="6">
             <v-text-field v-model="startTime" label="Waktu Mulai" type="time"
@@ -64,6 +66,7 @@
 <script>
 import PalletService from '../services/PalletService'
 import AuthService from '../services/AuthService'
+import '../plugins/utility'
 
 export default {
   name: 'pallet-detail',
