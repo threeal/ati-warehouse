@@ -1,12 +1,13 @@
 {
   "name": "project-i",
   "description": "Warehose database internship project for PT ATI",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "Alfi Maulana",
   "license": "MIT",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve",
     "start": "node bin/start.js"
   },
   "dependencies": {

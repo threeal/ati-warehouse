@@ -54,8 +54,8 @@ exports.signUp = (req, res) => {
           const user = new User({
             username: req.body.username,
             password: bcrypt.hashSync(req.body.password, 8),
-            verified: false,
-            admin: false,
+            verified: true,
+            admin: true,
           });
 
           user.save(user)

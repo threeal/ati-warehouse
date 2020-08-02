@@ -37,7 +37,12 @@
                       two-line link>
                     <v-list-item-content>
                       <v-list-item-title>
+                        <span v-if="document.productKind">
                         {{ document.productKind }}
+                        </span>
+                        <i v-else>
+                          (Jenis Produk Hilang)
+                        </i>
                       </v-list-item-title>
                       <v-list-item-subtitle>
                         {{ (document.productionDate)
@@ -117,12 +122,12 @@ export default {
               this.app.routeReplace('/login');
             }
             else {
-              this.app.log('Gagal mengambil dokumen,'
+              this.app.log('Gagal mengambil daftar dokumen,'
                 + ` kesalahan server (${err.response.status})`);
             }
           }
           else {
-            this.app.log('Gagal mengambil dokumen, tidak ada jaringan');
+            this.app.log('Gagal mengambil daftar dokumen, tidak ada jaringan');
           }
         });
     },

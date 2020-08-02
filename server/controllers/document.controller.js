@@ -1,4 +1,5 @@
 const models = require('../models');
+const ProductKind = models.ProductKind;
 const Document = models.Document;
 const PalletLoad = models.PalletLoad;
 const Pallet = models.Pallet;
@@ -7,9 +8,30 @@ const Basket = models.Basket;
 
 exports.findAll = (_, res) => {
   // setTimeout(() => {
-    Document.find()
-      .then((data) => {
-        res.send(data);
+    ProductKind.find()
+      .then((productKinds) => {
+        Document.find()
+        .then((documents) => {
+          let data = [];
+
+          documents.forEach((document, index) => {
+            let productKind = productKinds.find(o => o.id === document.productKindId);
+            data.push({
+              id: document._id,
+              productKindId: document.productKindId,
+              productKind: (productKind) ? productKind.name : null,
+              productionDate: document.productionDate,
+            });
+          });
+
+          res.send(data);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(500).send({
+            message: err.message || 'some error occured while retrieving documents',
+          });
+        });
       })
       .catch((err) => {
         res.status(500).send({
@@ -27,7 +49,7 @@ exports.create = (req, res) => {
   }
 
   const document = new Document({
-    productKind: req.body.productKind,
+    productKindId: req.body.productKindId,
     productionDate: req.body.productionDate,
   });
 
@@ -49,9 +71,24 @@ exports.findOne = (req, res) => {
 
   // setTimeout(() => {
     Document.findById(documentId)
-      .then((data) => {
-        if (data) {
-          res.send(data);
+      .then((document) => {
+        if (document) {
+          ProductKind.findById(document.productKindId)
+            .then((productKind) => {
+              res.send({
+                id: document._id,
+                productKindId: document.productKindId,
+                productKind: (productKind) ? productKind.name : null,
+                productionDate: document.productionDate,
+              });
+            })
+            .catch((err) => {
+              res.status(500).send({
+                message: err.message
+                  || 'some error occured while retrieving product kind with id'
+                  + `${productKindId}`,
+              });
+            });
         }
         else {
           res.status(404).send({
@@ -77,8 +114,13 @@ exports.update = (req, res) => {
     });
   }
 
+  let newData = {
+    productKindId: req.body.productKindId,
+    productionDate: req.body.productionDate,
+  };
+
   // setTimeout(() => {
-    Document.findByIdAndUpdate(documentId, req.body, { useFindAndModify: false })
+    Document.findByIdAndUpdate(documentId, newData, { useFindAndModify: false })
       .then((data) => {
         if (data) {
           res.send({

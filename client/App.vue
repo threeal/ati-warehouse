@@ -46,6 +46,13 @@ export default {
           },
         },
         {
+          title: 'Daftar Jenis Produk',
+          icon: 'mdi-view-list',
+          onClick: () => {
+            this.routePush('/product-kind');
+          },
+        },
+        {
           title: 'Keluar',
           icon: 'mdi-logout',
           onClick: () => {

@@ -4,6 +4,7 @@ mongoose.Promise = global.Promise;
 const dbConfig = require('../config/db.config.js');
 
 const userModel = require('./user.model.js');
+const productKindModel = require('./product-kind.model');
 const documentModel = require('./document.model.js');
 const palletLoadModel = require('./pallet-load.model.js');
 const palletModel = require('./pallet.model.js');
@@ -14,6 +15,7 @@ module.exports = {
   mongoose: mongoose,
   url: dbConfig.url,
   User: userModel(mongoose),
+  ProductKind: productKindModel(mongoose),
   Document: documentModel(mongoose),
   PalletLoad: palletLoadModel(mongoose),
   Pallet: palletModel(mongoose),

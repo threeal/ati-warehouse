@@ -18,6 +18,16 @@ const router = new Router({
       component: () => import('../views/Register'),
     },
     {
+      path: '/product-kind',
+      name: 'product-kind-list',
+      component: () => import('../views/ProductKindList'),
+    },
+    {
+      path: '/product-kind/:productKindId',
+      name: 'product-kind-detail',
+      component: () => import('../views/ProductKindDetail'),
+    },
+    {
       path: '/document',
       name: 'document-list',
       component: () => import('../views/DocumentList'),

@@ -1,8 +1,7 @@
 module.exports = (mongoose) => {
   let schema = mongoose.Schema(
     {
-      productKindId: String,
-      productionDate: String,
+      name: String,
     },
     { timestamp: true },
   );
@@ -13,5 +12,5 @@ module.exports = (mongoose) => {
     return object;
   });
 
-  return mongoose.model('document', schema);
+  return mongoose.model('product-kind', schema);
 };

@@ -4,9 +4,14 @@
       <v-col cols="12" sm="8" md="4">
         <v-row>
           <v-col cols="12">
-            <v-text-field v-model="productKind" label="Jenis Produk"
-                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
-                :filled="!edit" :clearable="edit" outlined dense hide-details/>
+            <v-select v-if="edit"  v-model="productKindSelect" :items="productKindList"
+                label="Jenis Produk" no-data-text="Jenis produk kosong"
+                item-text="name" item-value="id" return object
+                :disabled="productKindFetching || submitting"
+                :loading="productKindFetching" hide-details dense outlined/>
+            <v-text-field v-else label="Jenis Produk" :value="productKindName"
+                :disabled="fetching" :loading="fetching" readonly filled
+                outlined dense hide-details/>
           </v-col>
           <v-col cols="12">
             <v-text-field v-if="!edit" v-model="productionDateLocale" label="Tanggal Produksi"
@@ -19,8 +24,8 @@
             <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
               <v-icon left>mdi-pencil</v-icon> Ubah Detail
             </v-btn>
-            <v-btn v-else @click="onSave()" :disabled="submitting" :loading="submitting"
-                color="success" block>
+            <v-btn v-else @click="onSave()" :disabled="submitDisabled"
+                :loading="submitting" color="success" block>
               <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
             </v-btn>
           </v-col>
@@ -113,6 +118,7 @@ import PalletLoadAdd from '../components/PalletLoadAdd'
 import BasketUnload from '../components/BasketUnload'
 import BasketUnloadAdd from '../components/BasketUnloadAdd'
 import DocumentService from '../services/DocumentService'
+import ProductKindService from '../services/ProductKindService'
 import PalletLoadService from '../services/PalletLoadService'
 import BasketUnloadService from '../services/BasketUnloadService'
 import AuthService from '../services/AuthService'
@@ -133,6 +139,11 @@ export default {
   data() {
     return {
       fetching: true,
+      productKind: null,
+      productKindSelect: null,
+      productKindList: [],
+      productKindFetching: true,
+      productionDate: null,
       submitting: false,
       downloading: false,
       edit: false,
@@ -142,14 +153,18 @@ export default {
       basketUnloadFetching: true,
       basketUnloadExist: false,
       basketUnloadAdd: false,
-      productKind: null,
-      productionDate: null,
       tab: null,
     };
   },
   computed: {
+    productKindName() {
+      return this.productKind || "(Jenis Produk Hilang)";
+    },
     productionDateLocale() {
       return (this.productionDate) ? this.productionDate.toLocaleDateString() : null;
+    },
+    submitDisabled() {
+      return this.submitting || !this.productKindSelect || !this.productionDate;
     },
     downloadDisabled() {
       return this.downloading || !this.palletLoadExist || !this.basketUnloadExist;
@@ -162,8 +177,11 @@ export default {
     onSave() {
       this.submitting = true;
 
+      let productKind = this.productKindList.find(o => o.id === this.productKindSelect);
+      this.productKind = productKind.name;
+
       let data = {
-        productKind: this.productKind,
+        productKindId: this.productKindSelect,
         productionDate: this.productionDate,
       };
 
@@ -336,6 +354,7 @@ export default {
     DocumentService.findOne(this.$route.params.documentId)
       .then((res) => {
         this.productKind = res.data.productKind;
+        this.productKindSelect = res.data.productKindId;
         this.productionDate = res.data.productionDate;
 
         this.fetching = false;
@@ -358,6 +377,36 @@ export default {
         }
         else {
           this.app.log('Gagal mengambil dokumen, tidak ada jaringan');
+        }
+      });
+
+    ProductKindService.findAll()
+      .then((res) => {
+        this.productKindList = [];
+        res.data.forEach((productKind) => {
+          this.productKindList.push({
+            id: productKind.id,
+            name: productKind.name,
+          });
+        });
+
+        this.productKindFetching = false;
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            this.app.log('Sesi habis, harap masuk kembali');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+          else {
+            this.app.log('Gagal mengambil daftar jenis produk,'
+              + ` kesalahan server (${err.response.status})`);
+          }
+        }
+        else {
+          this.app.log('Gagal mengambil daftar jenis produk, tidak ada jaringan');
         }
       });
   },
