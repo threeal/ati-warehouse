@@ -48,11 +48,23 @@
                 :loading="fetching" :disabled="fetching" readonly filled
                 hide-details dense outlined/>
           </v-col>
+          <v-col cols="4">
+            <v-checkbox v-model="seamingCondition" label="Seaming" :readonly="!edit"
+                off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+          </v-col>
+          <v-col cols="4">
+            <v-checkbox v-model="canMarkCondition" label="Can Mark" :readonly="!edit"
+                off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+          </v-col>
+          <v-col cols="4">
+            <v-checkbox v-model="indicatorCondition" label="Indicator" :readonly="!edit"
+                off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+          </v-col>
           <v-col cols="12">
             <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
               <v-icon left>mdi-pencil</v-icon> Ubah Detail
             </v-btn>
-            <v-btn v-else @click="onSave()" :disabled="submitting || submitDisabled"
+            <v-btn v-else @click="onSave()" :disabled="submitDisabled"
                 :loading="submitting" color="success" block>
               <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
             </v-btn>
@@ -97,6 +109,9 @@ export default {
         { id: 'PB', name: 'Penyok dari Basket (PB)' },
         { id: 'FD', name: 'Flange Down (FD)' },
       ],
+      seamingCondition: null,
+      canMarkCondition: null,
+      indicatorCondition: null,
     };
   },
   computed: {
@@ -112,7 +127,7 @@ export default {
     submitDisabled() {
       return this.submitting || !this.basketNumber || !this.basketId
         || !this.startTime || !this.endTime || (!this.basketQuantity && !this.canQuantity)
-        || (this.rejectQuantity && this.rejectQuantity > 0 && !this.rejectKind);
+        || (this.rejectQuantity > 0 && !this.rejectKind);
     },
   },
   methods: {
@@ -131,6 +146,9 @@ export default {
         canQuantity: this.canQuantity,
         rejectQuantity: this.rejectQuantity,
         rejectKind: this.rejectKind,
+        seamingCondition: this.seamingCondition || false,
+        canMarkCondition: this.canMarkCondition || false,
+        indicatorCondition: this.indicatorCondition || false,
       };
 
       BasketService.update(this.$route.params.documentId, this.$route.params.basketId, data)
@@ -205,6 +223,9 @@ export default {
         this.canQuantity = res.data.canQuantity;
         this.rejectQuantity = res.data.rejectQuantity;
         this.rejectKind = res.data.rejectKind;
+        this.seamingCondition = res.data.seamingCondition || false;
+        this.canMarkCondition = res.data.canMarkCondition || false;
+        this.indicatorCondition = res.data.indicatorCondition || false;
 
         this.fetching = false;
       })

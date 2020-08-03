@@ -41,6 +41,18 @@
               item-text="name" item-value="id" :disabled="submitting"
               hide-details dense outlined/>
         </v-col>
+        <v-col cols="4">
+          <v-checkbox v-model="seamingCondition" label="Seaming"
+              off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+        </v-col>
+        <v-col cols="4">
+          <v-checkbox v-model="canMarkCondition" label="Can Mark"
+              off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+        </v-col>
+        <v-col cols="4">
+          <v-checkbox v-model="indicatorCondition" label="Indicator"
+              off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+        </v-col>
         <v-col cols="12">
           <v-btn @click="onAdd()" :disabled="addDisabled"
               :loading="submitting" color="success" block>
@@ -81,6 +93,9 @@ export default {
         { id: 'PB', name: 'Penyok dari Basket (PB)' },
         { id: 'FD', name: 'Flange Down (FD)' },
       ],
+      seamingCondition: true,
+      canMarkCondition: true,
+      indicatorCondition: true,
       submitting: false,
     };
   },
@@ -101,6 +116,9 @@ export default {
       this.canQuantity = null;
       this.rejectQuantity = null;
       this.rejectKind = null;
+      this.seamingCondition = false;
+      this.canMarkCondition = false;
+      this.indicatorCondition = false;
     },
     onClose() {
       if (typeof this.cancelCallback === 'function') {
@@ -119,6 +137,9 @@ export default {
         canQuantity: this.canQuantity,
         rejectQuantity: this.rejectQuantity,
         rejectKind: this.rejectKind,
+        seamingCondition: this.seamingCondition,
+        canMarkCondition: this.canMarkCondition,
+        indicatorCondition: this.indicatorCondition,
       };
 
       BasketService.create(this.$route.params.documentId, data)

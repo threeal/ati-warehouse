@@ -38,6 +38,9 @@ exports.create = (req, res) => {
       canQuantity: req.body.canQuantity,
       rejectQuantity: req.body.rejectQuantity,
       rejectKind: req.body.rejectKind,
+      seamingCondition: req.body.seamingCondition,
+      canMarkCondition: req.body.canMarkCondition,
+      indicatorCondition: req.body.indicatorCondition,
   });
 
   // setTimeout(() => {
@@ -86,9 +89,23 @@ exports.update = (req, res) => {
       message: 'content could not be empty!',
     });
   }
+  
+  const newData = {
+    basketNumber: req.body.basketNumber,
+    basketId: req.body.basketId,
+    startTime: req.body.startTime,
+    endTime: req.body.endTime,
+    basketQuantity: req.body.basketQuantity,
+    canQuantity: req.body.canQuantity,
+    rejectQuantity: req.body.rejectQuantity,
+    rejectKind: req.body.rejectKind,
+    seamingCondition: req.body.seamingCondition,
+    canMarkCondition: req.body.canMarkCondition,
+    indicatorCondition: req.body.indicatorCondition,
+  };
 
   // setTimeout(() => {
-    Basket.findByIdAndUpdate(basketId, req.body, { useFindAndModify: false })
+    Basket.findByIdAndUpdate(basketId, newData, { useFindAndModify: false })
       .then((data) => {
         if (data) {
           res.send({

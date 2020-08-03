@@ -10,6 +10,9 @@ module.exports = (mongoose) => {
       CanQuantity: Number,
       rejectQuantity: Number,
       rejectKind: String,
+      seamingCondition: Boolean,
+      canMarkCondition: Boolean,
+      indicatorCondition: Boolean,
     },
     { timestamp: true },
   );
