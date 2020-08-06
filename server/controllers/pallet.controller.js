@@ -44,6 +44,7 @@ exports.create = (req, res) => {
       bottomPrintResult: req.body.bottomPrintResult,
       middlePrintResult: req.body.middlePrintResult,
       topPrintResult: req.body.topPrintResult,
+      description: req.body.description,
   });
 
   // setTimeout(() => {
@@ -107,6 +108,7 @@ exports.update = (req, res) => {
     bottomPrintResult: req.body.bottomPrintResult,
     middlePrintResult: req.body.middlePrintResult,
     topPrintResult: req.body.topPrintResult,
+    description: req.body.description,
   };
 
   // setTimeout(() => {

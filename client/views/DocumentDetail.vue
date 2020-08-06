@@ -4,6 +4,11 @@
       <v-col cols="12" sm="8" md="4">
         <v-row>
           <v-col cols="12">
+            <v-text-field v-model="name" label="Nama"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" outlined dense hide-details/>
+          </v-col>
+          <v-col cols="12">
             <v-select v-if="edit"  v-model="productKindSelect" :items="productKindList"
                 label="Jenis Produk" no-data-text="Jenis produk kosong"
                 item-text="name" item-value="id" return object
@@ -141,6 +146,7 @@ export default {
 
     return {
       fetching: true,
+      name: null,
       productKind: null,
       productKindSelect: null,
       productKindList: [],
@@ -166,7 +172,8 @@ export default {
       return (this.productionDate) ? this.productionDate.toLocaleDateString() : null;
     },
     submitDisabled() {
-      return this.submitting || !this.productKindSelect || !this.productionDate;
+      return this.submitting || !this.name || !this.productKindSelect
+        || !this.productionDate;
     },
     downloadDisabled() {
       return this.downloading || !this.palletLoadExist || !this.basketUnloadExist;
@@ -183,6 +190,7 @@ export default {
       this.productKind = productKind.name;
 
       let data = {
+        name: this.name,
         productKindId: this.productKindSelect,
         productionDate: this.productionDate,
       };
@@ -355,6 +363,7 @@ export default {
   mounted() {
     DocumentService.findOne(this.$route.params.documentId)
       .then((res) => {
+        this.name = res.data.name;
         this.productKind = res.data.productKind;
         this.productKindSelect = res.data.productKindId;
         this.productionDate = res.data.productionDate;

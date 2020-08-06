@@ -37,17 +37,28 @@
                       two-line link>
                     <v-list-item-content>
                       <v-list-item-title>
-                        <span v-if="document.productKind">
-                        {{ document.productKind }}
+                        <span v-if="document.name">
+                        {{ document.name }}
                         </span>
                         <i v-else>
-                          (Jenis Produk Hilang)
+                          (Dokumen Tanpa Nama)
                         </i>
                       </v-list-item-title>
                       <v-list-item-subtitle>
-                        {{ (document.productionDate)
-                          ? document.productionDate.toLocaleDateString()
-                          : null }}
+                        <div class="d-flex justify-space-between">
+                          <span v-if="document.productKind">
+                          {{ document.productKind }}
+                          </span>
+                          <i v-else>
+                            (Jenis Produk Hilang)
+                          </i>
+                          <span v-if="document.productionDate">
+                          {{ document.productionDate.toLocaleDateString() }}
+                          </span>
+                          <i v-else>
+                            (Tanggal Produksi Hilang)
+                          </i>
+                        </div>
                       </v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>

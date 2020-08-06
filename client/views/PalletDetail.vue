@@ -28,7 +28,7 @@
           </v-col>
           <v-col v-if="edit || (layerQuantity && layerQuantity > 0)"
               :cols="(edit || (canQuantity && canQuantity > 0)) ? 6 : 12">
-            <v-text-field v-model="layerQuantity" label="Jumlah Tingkat" type="number"
+            <v-text-field v-model="layerQuantity" label="Jumlah Layer" type="number"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
@@ -40,6 +40,11 @@
           </v-col>
           <v-col cols="12">
             <v-text-field v-model="loader" label="Loader"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col v-if="edit || description" cols="12">
+            <v-text-field v-model="description" label="Keterangan"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
@@ -150,6 +155,8 @@ export default {
       endTime: null,
       layerQuantity: null,
       canQuantity: null,
+      loader: null,
+      description: null,
       seamingCondition: null,
       cleanCondition: null,
       noRustCondition: null,
@@ -157,7 +164,6 @@ export default {
       bottomPrintResult: null,
       middlePrintResult: null,
       topPrintResult: null,
-      loader: null,
     };
   },
   computed: {
@@ -181,6 +187,8 @@ export default {
         endTime: this.endTime,
         layerQuantity: this.layerQuantity,
         canQuantity: this.canQuantity,
+        loader: this.loader,
+        description: this.description,
         seamingCondition: this.seamingCondition || false,
         cleanCondition: this.cleanCondition || false,
         noRustCondition: this.noRustCondition || false,
@@ -188,7 +196,6 @@ export default {
         bottomPrintResult: this.bottomPrintResult || false,
         middlePrintResult: this.middlePrintResult || false,
         topPrintResult: this.topPrintResult || false,
-        loader: this.loader,
       };
 
       PalletService.update(this.$route.params.documentId, this.$route.params.palletId, data)
@@ -262,6 +269,7 @@ export default {
         this.layerQuantity = res.data.layerQuantity;
         this.canQuantity = res.data.canQuantity;
         this.loader = res.data.loader;
+        this.description = res.data.description;
         this.seamingCondition = res.data.seamingCondition;
         this.cleanCondition = res.data.cleanCondition;
         this.noRustCondition = res.data.noRustCondition;

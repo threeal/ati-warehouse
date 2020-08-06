@@ -4,7 +4,7 @@
       <v-list-item-title>
         <div class="d-flex justify-space-between">
           <div>
-            Palet {{ pallet.palletNumber }} {{ basketNumbersString }}
+            No. {{ pallet.palletNumber }} {{ basketNumbersString }}
           </div>
           <div>
             {{ quantityString }}
@@ -14,12 +14,16 @@
       <v-list-item-subtitle>
         <div class="d-flex justify-space-between">
           <div>
-            {{ pallet.startTime }} - {{ pallet.endTime }}
+            <span>{{ pallet.startTime }} - {{ pallet.endTime }}</span>
+            <i>{{ durationString }}</i>
           </div>
           <div>
-            Loader: {{ pallet.loader }}
+            Loader {{ pallet.loader }}
           </div>
         </div>
+        <div>{{ pallet.description }}</div >
+        <div class="error--text">{{ conditionString }}</div >
+        <div class="error--text">{{ printResultString }}</div >
       </v-list-item-subtitle>
     </v-list-item-content>
   </v-list-item>
@@ -43,12 +47,23 @@ export default {
 
       return null;
     },
+    durationString() {
+      if (this.pallet.startTime) {
+        if (this.pallet.endTime) {
+          let duration = this.pallet.endTime.toTimeNumber()
+            - this.pallet.startTime.toTimeNumber();
+          return ` (~${duration.toTimeInput()})`;
+        }
+      }
+
+      return null;
+    },
     quantityString() {
       let stack = null;
       let can = null;
 
-      if (this.pallet.stackQuantity && this.pallet.stackQuantity > 0) {
-        stack = `${this.pallet.stackQuantity} Tingkat`;
+      if (this.pallet.layerQuantity && this.pallet.layerQuantity > 0) {
+        stack = `${this.pallet.layerQuantity} Layer`;
       }
 
       if (this.pallet.canQuantity && this.pallet.canQuantity > 0) {
@@ -63,6 +78,94 @@ export default {
       }
       else if (can) {
         return can;
+      }
+
+      return null;
+    },
+    conditionString() {
+      let string = '';
+      let first = true;
+
+      if (!this.pallet.seamingCondition) {
+        if (first) {
+          first = false;
+        }
+
+        string += 'seaming gagal';
+      }
+
+      if (!this.pallet.cleanCondition) {
+        if (first) {
+          first = false;
+        }
+        else {
+          string += ', ';
+        }
+
+        string += 'tidak bersih';
+      }
+
+      if (!this.pallet.noRustCondition) {
+        if (first) {
+          first = false;
+        }
+        else {
+          string += ', ';
+        }
+
+        string += 'berkarat';
+      }
+
+      if (!this.pallet.noOilyCondition) {
+        if (first) {
+          first = false;
+        }
+        else {
+          string += ', ';
+        }
+
+        string += 'berminyak';
+      }
+
+      return string;
+    },
+    printResultString() {
+      let string = '';
+      let first = true;
+
+
+      if (!this.pallet.bottomPrintResult) {
+        if (first) {
+          first = false;
+        }
+
+        string += 'bawah';
+      }
+
+      if (!this.pallet.middlePrintResult) {
+        if (first) {
+          first = false;
+        }
+        else {
+          string += ', ';
+        }
+
+        string += 'tengah';
+      }
+
+      if (!this.pallet.topPrintResult) {
+        if (first) {
+          first = false;
+        }
+        else {
+          string += ', ';
+        }
+
+        string += 'atas';
+      }
+
+      if (string.length > 0) {
+        return `hasil print ${string} gagal`;
       }
 
       return null;

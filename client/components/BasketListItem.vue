@@ -4,7 +4,8 @@
       <v-list-item-title>
         <div class="d-flex justify-space-between">
           <div>
-            Basket {{ basket.basketNumber }} (ID {{ basket.basketId }})
+            <span>No. {{ basket.basketNumber }}</span>
+            <span> (Basket {{ basket.basketId }})</span>
           </div>
           <div>
             {{ quantityString }}
@@ -14,12 +15,16 @@
       <v-list-item-subtitle>
         <div class="d-flex justify-space-between">
           <div>
-            {{ basket.startTime }} - {{ basket.endTime }}
+            <span>{{ basket.startTime }} - {{ basket.endTime }}</span>
+            <i>{{ durationString }}</i>
           </div>
-          <div v-if="basket.rejectQuantity && basket.rejectQuantity > 0">
-            Rijek: {{ basket.rejectQuantity }} ({{ basket.rejectKind }})
+          <div v-if="basket.rejectQuantity && basket.rejectQuantity > 0"
+              class="error--text">
+            <span>{{ basket.rejectQuantity }} Rijek</span>
+            <span v-if="basket.rejectKind"> ({{ basket.rejectKind }})</span>
           </div>
         </div>
+        <span class="error--text">{{ problemsString }}</span>
       </v-list-item-subtitle>
     </v-list-item-content>
   </v-list-item>
@@ -56,6 +61,53 @@ export default {
       }
 
       return null;
+    },
+    durationString() {
+      if (this.basket.startTime) {
+        if (this.basket.endTime) {
+          let duration = this.basket.endTime.toTimeNumber()
+            - this.basket.startTime.toTimeNumber();
+          return ` (~${duration.toTimeInput()})`;
+        }
+      }
+
+      return null;
+    },
+    problemsString() {
+      let string = '';
+      let first = true;
+
+      if (!this.basket.seamingCondition) {
+        if (first) {
+          first = false;
+        }
+
+        string += 'seaming gagal';
+      }
+
+      if (!this.basket.canMarkCondition) {
+        if (first) {
+          first = false;
+        }
+        else {
+          string += ', ';
+        }
+
+        string += 'can mark gagal';
+      }
+
+      if (!this.basket.indicatorCondition) {
+        if (first) {
+          first = false;
+        }
+        else {
+          string += ', ';
+        }
+
+        string += 'indikator gagal';
+      }
+
+      return string;
     },
   },
 }

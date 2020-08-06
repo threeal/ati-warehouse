@@ -27,7 +27,7 @@
               :disabled="submitting" hide-details dense outlined/>
         </v-col>
         <v-col cols="6">
-          <v-text-field v-model="layerQuantity" label="Jumlah Tingkat" type="number"
+          <v-text-field v-model="layerQuantity" label="Jumlah Layer" type="number"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="6">
@@ -36,6 +36,10 @@
         </v-col>
         <v-col cols="12">
           <v-text-field v-model="loader" label="Loader"
+              :disabled="submitting" clearable hide-details dense outlined/>
+        </v-col>
+        <v-col cols="12">
+          <v-text-field v-model="description" label="Keterangan"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="12">
@@ -122,6 +126,7 @@ export default {
       layerQuantity: null,
       canQuantity: null,
       loader: null,
+      description: null,
       seamingCondition: true,
       cleanCondition: true,
       noRustCondition: true,
@@ -164,6 +169,7 @@ export default {
         layerQuantity: this.layerQuantity,
         canQuantity: this.canQuantity,
         loader: this.loader,
+        description: this.description,
         seamingCondition: this.seamingCondition || false,
         cleanCondition: this.cleanCondition || false,
         noRustCondition: this.noRustCondition || false,

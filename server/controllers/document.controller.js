@@ -18,6 +18,7 @@ exports.findAll = (_, res) => {
             let productKind = productKinds.find(o => o.id === document.productKindId);
             data.push({
               id: document._id,
+              name: document.name,
               productKindId: document.productKindId,
               productKind: (productKind) ? productKind.name : null,
               productionDate: document.productionDate,
@@ -49,6 +50,7 @@ exports.create = (req, res) => {
   }
 
   const document = new Document({
+    name: req.body.name,
     productKindId: req.body.productKindId,
     productionDate: req.body.productionDate,
   });
@@ -77,6 +79,7 @@ exports.findOne = (req, res) => {
             .then((productKind) => {
               res.send({
                 id: document._id,
+                name: document.name,
                 productKindId: document.productKindId,
                 productKind: (productKind) ? productKind.name : null,
                 productionDate: document.productionDate,
@@ -115,6 +118,7 @@ exports.update = (req, res) => {
   }
 
   let newData = {
+    name: req.body.name,
     productKindId: req.body.productKindId,
     productionDate: req.body.productionDate,
   };
@@ -149,7 +153,9 @@ exports.remove = (req, res) => {
     Document.findByIdAndDelete(documentId)
       .then((data) => {
         if (data) {
-          const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
+          const condition = {
+            documentId: { $regex: new RegExp(documentId), $options: 'i' }
+          };
 
           PalletLoad.deleteMany(condition)
             .then(() => {

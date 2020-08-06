@@ -9,6 +9,10 @@
     <v-card-text>
       <v-row>
         <v-col cols="12">
+          <v-text-field v-model="name" label="Nama"
+              :disabled="submitting" hide-details dense outlined/>
+        </v-col>
+        <v-col cols="12">
           <v-select v-model="productKindSelect" :items="productKindList"
               label="Jenis Produk" no-data-text="Jenis produk kosong"
               item-text="name" item-value="id" return object
@@ -20,7 +24,7 @@
               :disabled="submitting" hide-details dense outlined/>
         </v-col>
         <v-col cols="12">
-          <v-btn @click="onAdd()" :disabled="submitting || !productKindSelect || !productionDate"
+          <v-btn @click="onAdd()" :disabled="addDisabled"
               :loading="submitting" color="success" block>
             <v-icon left>mdi-upload</v-icon> Submit Dokumen
           </v-btn>
@@ -45,12 +49,19 @@ export default {
   },
   data() {
     return {
+      name: null,
       productKindSelect: null,
       productKindList: [],
       productKindFetching: true,
       productionDate: (new Date()).toDateInput(),
       submitting: false,
     };
+  },
+  computed: {
+    addDisabled() {
+      return this.submitting || !this.name || !this.productKindSelect
+        || !this.productionDate;
+    },
   },
   methods: {
     reset() {
@@ -66,6 +77,7 @@ export default {
       this.submitting = true;
 
       let data = {
+        name: this.name,
         productKindId: this.productKindSelect,
         productionDate: this.productionDate,
       };

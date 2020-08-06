@@ -14,7 +14,7 @@ class XlsxService {
     let document = await DocumentService.findOne(documentId);
 
     let worksheet = workbook.addWorksheet(
-      (document.data) ? document.data.productKind : 'document'
+      (document.data) ? document.data.name : 'document'
     );
 
     worksheet.getCell('F1').value = 'Jenis Produk';
@@ -26,28 +26,28 @@ class XlsxService {
         ? document.data.productionDate.toLocaleDateString() : '-';
     }
 
-    worksheet.getCell('A2').value = 'Tanggal Muat';
-    worksheet.getCell('F2').value = 'Merek';
-
-    let palletLoad = await PalletLoadService.find(documentId);
-    if (palletLoad.data) {
-      worksheet.getCell('C2').value = (palletLoad.data.loadDate) ?
-        palletLoad.data.loadDate.toLocaleDateString() : '-';
-      worksheet.getCell('H2').value = palletLoad.data.brand;
-    }
-
-    worksheet.getCell('A3').value = 'Tanggal Bongkar';
-    worksheet.getCell('F3').value = 'Line';
+    worksheet.getCell('A2').value = 'Tanggal Bongkar';
+    worksheet.getCell('F2').value = 'Line';
 
     let basketUnload = await BasketUnloadService.find(documentId);
     if (basketUnload.data) {
-      worksheet.getCell('C3').value = (basketUnload.data.unloadDate)
+      worksheet.getCell('C2').value = (basketUnload.data.unloadDate)
         ? basketUnload.data.unloadDate.toLocaleDateString() : '-';
-      worksheet.getCell('H3').value = basketUnload.data.line;
+      worksheet.getCell('H2').value = basketUnload.data.line;
+    }
+
+    worksheet.getCell('A3').value = 'Tanggal Muat';
+    worksheet.getCell('F3').value = 'Merek';
+
+    let palletLoad = await PalletLoadService.find(documentId);
+    if (palletLoad.data) {
+      worksheet.getCell('C3').value = (palletLoad.data.loadDate) ?
+        palletLoad.data.loadDate.toLocaleDateString() : '-';
+      worksheet.getCell('H3').value = palletLoad.data.brand;
     }
 
     worksheet.mergeCells('A6:B6');
-    worksheet.getCell('A6').value = 'Jam Penuh';
+    worksheet.getCell('A6').value = 'Jam Pembongkaran';
     worksheet.getCell('A7').value = 'Mulai';
     worksheet.getCell('B7').value = 'Selesai';
 
@@ -55,149 +55,30 @@ class XlsxService {
     worksheet.getCell('C6').value = 'Durasi';
 
     worksheet.mergeCells('D6:D7');
-    worksheet.getCell('D6').value = 'No Palet';
+    worksheet.getCell('D6').value = 'No Basket';
 
     worksheet.mergeCells('E6:E7');
-    worksheet.getCell('E6').value = 'No Basket';
+    worksheet.getCell('E6').value = 'ID Basket';
 
-    worksheet.mergeCells('F6:F7');
-    worksheet.getCell('F6').value = 'Seaming';
+    worksheet.mergeCells('F6:H6');
+    worksheet.getCell('F6').value = 'Kondisi';
+    worksheet.getCell('F7').value = 'Seaming';
+    worksheet.getCell('G7').value = 'Can Mark';
+    worksheet.getCell('H7').value = 'Indikator';
 
-    worksheet.mergeCells('G6:I6');
-    worksheet.getCell('G6').value = 'Kondisi';
-    worksheet.getCell('G7').value = 'Bersih';
-    worksheet.getCell('H7').value = 'Tidak Karat';
-    worksheet.getCell('I7').value = 'Tidak Minyak';
+    worksheet.mergeCells('I6:J6');
+    worksheet.getCell('I6').value = 'Jumlah';
+    worksheet.getCell('I7').value = 'Basket';
+    worksheet.getCell('J7').value = 'Sisa';
 
-    worksheet.mergeCells('J6:L6');
-    worksheet.getCell('J6').value = 'Hasil Print';
-    worksheet.getCell('J7').value = 'B';
-    worksheet.getCell('K7').value = 'T';
-    worksheet.getCell('L7').value = 'A';
-
-    worksheet.mergeCells('M6:N6');
-    worksheet.getCell('M6').value = 'Jumlah';
-    worksheet.getCell('M7').value = 'Layer';
-    worksheet.getCell('N7').value = 'Sisa';
-
-    worksheet.mergeCells('O6:O7');
-    worksheet.getCell('O6').value = 'Loader';
-
-    worksheet.mergeCells('P6:P7');
-    worksheet.getCell('P6').value = 'Keterangan';
+    worksheet.mergeCells('K6:L6');
+    worksheet.getCell('K6').value = 'Rijek';
+    worksheet.getCell('K7').value = 'Jumlah';
+    worksheet.getCell('L7').value = 'Jenis';
 
     for (let i = 6; i <= 7; ++i) {
       let row = worksheet.getRow(i);
-      for (let j = 1; j <= 16; ++j) {
-        let cell = row.getCell(j);
-        cell.font = { bold: true };
-        cell.alignment = { vertical: 'middle', horizontal: 'center' };
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' },
-        };
-      }
-    }
-
-    let pallets = await PalletService.findAll(documentId);
-    if (pallets.data.length > 0) {
-      pallets.data.forEach((pallet, index) => {
-        worksheet.getCell(`A${index + 8}`).value = pallet.startTime || '-';
-        worksheet.getCell(`B${index + 8}`).value = pallet.endTime || '-';
-
-        worksheet.getCell(`C${index + 8}`).value = (() => {
-          if (pallet.startTime) {
-            if (pallet.endTime) {
-              let duration = pallet.endTime.toTimeNumber() - pallet.startTime.toTimeNumber();
-              return duration.toTimeInput();
-            }
-          }
-
-          return '-';
-        }) ();
-
-        worksheet.getCell(`D${index + 8}`).value = pallet.palletNumber || '-';
-        worksheet.getCell(`E${index + 8}`).value = (pallet.basketNumber)
-          ? pallet.basketNumbers.toListString() : '-';
-
-        worksheet.getCell(`F${index + 8}`).value = pallet.seaming || '-';
-
-        worksheet.getCell(`G${index + 8}`).value = '-';
-        worksheet.getCell(`H${index + 8}`).value = '-';
-        worksheet.getCell(`I${index + 8}`).value = '-';
-
-        worksheet.getCell(`J${index + 8}`).value = '-';
-        worksheet.getCell(`K${index + 8}`).value = '-';
-        worksheet.getCell(`L${index + 8}`).value = '-';
-
-        worksheet.getCell(`M${index + 8}`).value = pallet.stackQuantity || 0;
-        worksheet.getCell(`N${index + 8}`).value = pallet.canQuantity || 0;
-
-        worksheet.getCell(`O${index + 8}`).value = pallet.loader || '-';
-        worksheet.getCell(`P${index + 8}`).value = pallet.description || '-';
-      });
-
-      for (let i = 8; i < pallets.data.length + 8; ++i) {
-        let row = worksheet.getRow(i);
-        for (let j = 1; j <= 16; ++j) {
-          let cell = row.getCell(j);
-          cell.border = {
-            top: { style: 'thin' },
-            left: { style: 'thin' },
-            bottom: { style: 'thin' },
-            right: { style: 'thin' },
-          };
-        }
-      }
-    }
-    else {
-      worksheet.mergeCells('A8:P8');
-      let cell = worksheet.getCell('A8');
-      cell.value = 'Data Kosong';
-      cell.alignment = { vertical: 'middle', horizontal: 'center' };
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' },
-      };
-    }
-
-    worksheet.mergeCells('R6:S6');
-    worksheet.getCell('R6').value = 'Jam Pembongkaran';
-    worksheet.getCell('R7').value = 'Mulai';
-    worksheet.getCell('S7').value = 'Selesai';
-
-    worksheet.mergeCells('T6:T7');
-    worksheet.getCell('T6').value = 'Durasi';
-
-    worksheet.mergeCells('U6:U7');
-    worksheet.getCell('U6').value = 'No Basket';
-
-    worksheet.mergeCells('V6:V7');
-    worksheet.getCell('V6').value = 'ID Basket';
-
-    worksheet.mergeCells('W6:Y6');
-    worksheet.getCell('W6').value = 'Kondisi';
-    worksheet.getCell('W7').value = 'Seaming';
-    worksheet.getCell('X7').value = 'Can Mark';
-    worksheet.getCell('Y7').value = 'Indikator';
-
-    worksheet.mergeCells('Z6:AA6');
-    worksheet.getCell('Z6').value = 'Jumlah';
-    worksheet.getCell('Z7').value = 'Basket';
-    worksheet.getCell('AA7').value = 'Sisa';
-
-    worksheet.mergeCells('AB6:AC6');
-    worksheet.getCell('AB6').value = 'Rijek';
-    worksheet.getCell('AB7').value = 'Jumlah';
-    worksheet.getCell('AC7').value = 'Jenis';
-
-    for (let i = 6; i <= 7; ++i) {
-      let row = worksheet.getRow(i);
-      for (let j = 18; j <= 29; ++j) {
+      for (let j = 1; j <= 12; ++j) {
         let cell = row.getCell(j);
         cell.font = { bold: true };
         cell.alignment = { vertical: 'middle', horizontal: 'center' };
@@ -213,10 +94,10 @@ class XlsxService {
     let baskets = await BasketService.findAll(documentId);
     if (baskets.data.length > 0) {
       baskets.data.forEach((basket, index) => {
-        worksheet.getCell(`R${index + 8}`).value = basket.startTime || '-';
-        worksheet.getCell(`S${index + 8}`).value = basket.endTime || '-';
+        worksheet.getCell(`A${index + 8}`).value = basket.startTime || '-';
+        worksheet.getCell(`B${index + 8}`).value = basket.endTime || '-';
 
-        worksheet.getCell(`T${index + 8}`).value = (() => {
+        worksheet.getCell(`C${index + 8}`).value = (() => {
           if (basket.startTime) {
             if (basket.endTime) {
               let duration = basket.endTime.toTimeNumber() - basket.startTime.toTimeNumber();
@@ -227,23 +108,23 @@ class XlsxService {
           return '-';
         }) ();
 
-        worksheet.getCell(`U${index + 8}`).value = basket.basketNumber || '-';
-        worksheet.getCell(`V${index + 8}`).value = basket.basketId || '-';
+        worksheet.getCell(`D${index + 8}`).value = basket.basketNumber || '-';
+        worksheet.getCell(`E${index + 8}`).value = basket.basketId || '-';
 
-        worksheet.getCell(`W${index + 8}`).value = basket.seamingCondition || '-';
-        worksheet.getCell(`X${index + 8}`).value = basket.canMarkCondition || "-";
-        worksheet.getCell(`Y${index + 8}`).value = basket.IndicatorCondition || "-";
+        worksheet.getCell(`F${index + 8}`).value = (basket.seamingCondition) ? 'O' : 'X';
+        worksheet.getCell(`G${index + 8}`).value = (basket.canMarkCondition) ? 'O' : 'X';
+        worksheet.getCell(`H${index + 8}`).value = (basket.indicatorCondition) ? 'O' : 'X';
 
-        worksheet.getCell(`Z${index + 8}`).value = basket.basketQuantity || 0;
-        worksheet.getCell(`AA${index + 8}`).value = basket.canQuantity || 0;
+        worksheet.getCell(`I${index + 8}`).value = basket.trayQuantity || 0;
+        worksheet.getCell(`J${index + 8}`).value = basket.canQuantity || 0;
 
-        worksheet.getCell(`AB${index + 8}`).value = basket.rejectQuantity || 0;
-        worksheet.getCell(`AC${index + 8}`).value = basket.rejectKind || '-';
+        worksheet.getCell(`K${index + 8}`).value = basket.rejectQuantity || 0;
+        worksheet.getCell(`L${index + 8}`).value = basket.rejectKind || '-';
       });
 
       for (let i = 8; i < baskets.data.length + 8; ++i) {
         let row = worksheet.getRow(i);
-        for (let j = 18; j <= 29; ++j) {
+        for (let j = 1; j <= 12; ++j) {
           let cell = row.getCell(j);
           cell.border = {
             top: { style: 'thin' },
@@ -255,8 +136,127 @@ class XlsxService {
       }
     }
     else {
-      worksheet.mergeCells('R8:AC8');
-      let cell = worksheet.getCell('R8');
+      worksheet.mergeCells('A8:L8');
+      let cell = worksheet.getCell('A8');
+      cell.value = 'Data Kosong';
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+    }
+
+    worksheet.mergeCells('N6:O6');
+    worksheet.getCell('N6').value = 'Jam Penuh';
+    worksheet.getCell('N7').value = 'Mulai';
+    worksheet.getCell('O7').value = 'Selesai';
+
+    worksheet.mergeCells('P6:P7');
+    worksheet.getCell('P6').value = 'Durasi';
+
+    worksheet.mergeCells('Q6:Q7');
+    worksheet.getCell('Q6').value = 'No Palet';
+
+    worksheet.mergeCells('R6:R7');
+    worksheet.getCell('R6').value = 'No Basket';
+
+    worksheet.mergeCells('S6:S7');
+    worksheet.getCell('S6').value = 'Seaming';
+
+    worksheet.mergeCells('T6:V6');
+    worksheet.getCell('T6').value = 'Kondisi';
+    worksheet.getCell('T7').value = 'Bersih';
+    worksheet.getCell('U7').value = 'Tidak Karat';
+    worksheet.getCell('V7').value = 'Tidak Minyak';
+
+    worksheet.mergeCells('W6:Y6');
+    worksheet.getCell('W6').value = 'Hasil Print';
+    worksheet.getCell('W7').value = 'B';
+    worksheet.getCell('X7').value = 'T';
+    worksheet.getCell('Y7').value = 'A';
+
+    worksheet.mergeCells('Z6:AA6');
+    worksheet.getCell('Z6').value = 'Jumlah';
+    worksheet.getCell('Z7').value = 'Layer';
+    worksheet.getCell('AA7').value = 'Sisa';
+
+    worksheet.mergeCells('AB6:AB7');
+    worksheet.getCell('AB6').value = 'Loader';
+
+    worksheet.mergeCells('AC6:AC7');
+    worksheet.getCell('AC6').value = 'Keterangan';
+
+    for (let i = 6; i <= 7; ++i) {
+      let row = worksheet.getRow(i);
+      for (let j = 14; j <= 29; ++j) {
+        let cell = row.getCell(j);
+        cell.font = { bold: true };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+      }
+    }
+
+    let pallets = await PalletService.findAll(documentId);
+    if (pallets.data.length > 0) {
+      pallets.data.forEach((pallet, index) => {
+        worksheet.getCell(`N${index + 8}`).value = pallet.startTime || '-';
+        worksheet.getCell(`O${index + 8}`).value = pallet.endTime || '-';
+
+        worksheet.getCell(`P${index + 8}`).value = (() => {
+          if (pallet.startTime) {
+            if (pallet.endTime) {
+              let duration = pallet.endTime.toTimeNumber() - pallet.startTime.toTimeNumber();
+              return duration.toTimeInput();
+            }
+          }
+
+          return '-';
+        }) ();
+
+        worksheet.getCell(`Q${index + 8}`).value = pallet.palletNumber || '-';
+        worksheet.getCell(`R${index + 8}`).value = (pallet.basketNumbers)
+          ? pallet.basketNumbers.toListString() : '-';
+
+        worksheet.getCell(`S${index + 8}`).value = (pallet.seamingCondition) ? 'O' : 'X';
+
+        worksheet.getCell(`T${index + 8}`).value = (pallet.cleanCondition) ? 'O' : 'X';
+        worksheet.getCell(`U${index + 8}`).value = (pallet.noRustCondition) ? 'O' : 'X';
+        worksheet.getCell(`V${index + 8}`).value = (pallet.noOilyCondition) ? 'O' : 'X';
+
+        worksheet.getCell(`W${index + 8}`).value = (pallet.bottomPrintResult) ? 'O' : 'X';
+        worksheet.getCell(`X${index + 8}`).value = (pallet.middlePrintResult) ? 'O' : 'X';
+        worksheet.getCell(`Y${index + 8}`).value = (pallet.topPrintResult) ? 'O' : 'X';
+
+        worksheet.getCell(`Z${index + 8}`).value = pallet.layerQuantity || 0;
+        worksheet.getCell(`AA${index + 8}`).value = pallet.canQuantity || 0;
+
+        worksheet.getCell(`AB${index + 8}`).value = pallet.loader || '-';
+        worksheet.getCell(`AC${index + 8}`).value = pallet.description || '-';
+      });
+
+      for (let i = 8; i < pallets.data.length + 8; ++i) {
+        let row = worksheet.getRow(i);
+        for (let j = 14; j <= 29; ++j) {
+          let cell = row.getCell(j);
+          cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' },
+          };
+        }
+      }
+    }
+    else {
+      worksheet.mergeCells('N8:AC8');
+      let cell = worksheet.getCell('N8');
       cell.value = 'Data Kosong';
       cell.alignment = { vertical: 'middle', horizontal: 'center' };
       cell.border = {
@@ -269,9 +269,7 @@ class XlsxService {
 
     const buffer = await workbook.xlsx.writeBuffer();
 
-    let documentTitle = `${document.data.productionDate}-${document.data.productKind}`;
-    documentTitle = documentTitle.replace(/\s+/g, '-');
-
+    let documentTitle = `${document.data.productionDate}`;
     buffer.download(`${documentTitle}.xlsx`);
   }
 }
