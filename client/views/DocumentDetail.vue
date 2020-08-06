@@ -48,32 +48,14 @@
         </div>
         <v-card v-else>
           <v-tabs v-model="tab" background-color="primary" grow dark>
-            <v-tab href="#pallet-load">
-              Muat Palet
-            </v-tab>
             <v-tab href="#basket-unload">
               Bongkar Basket
             </v-tab>
+            <v-tab href="#pallet-load">
+              Muat Palet
+            </v-tab>
           </v-tabs>
           <v-tabs-items v-model="tab">
-            <v-tab-item value="pallet-load">
-              <v-container v-if="palletLoadFetching">
-                <div class="d-flex justify-center">
-                  <v-progress-circular color="primary" indeterminate/>
-                </div>
-              </v-container>
-              <PalletLoad v-else-if="palletLoadExist" :app="app"
-                  :deleteCallback="palletLoadReset"/>
-              <v-container v-else>
-                <v-container>
-                  <v-row>
-                    <v-btn color="primary" @click="palletLoadAdd = true" block>
-                      <v-icon left>mdi-plus-circle</v-icon> Tambah Data Muat Palet
-                    </v-btn>
-                  </v-row>
-                </v-container>
-              </v-container>
-            </v-tab-item>
             <v-tab-item value="basket-unload">
               <v-container v-if="basketUnloadFetching">
                 <div class="d-flex justify-center">
@@ -86,7 +68,25 @@
                 <v-container>
                   <v-row>
                     <v-btn color="primary" @click="basketUnloadAdd = true" block>
-                      <v-icon left>mdi-plus-circle</v-icon> Tambah Data Bongkar Basket
+                      <v-icon left>mdi-plus-thick</v-icon> Tambah Data Bongkar Basket
+                    </v-btn>
+                  </v-row>
+                </v-container>
+              </v-container>
+            </v-tab-item>
+            <v-tab-item value="pallet-load">
+              <v-container v-if="palletLoadFetching">
+                <div class="d-flex justify-center">
+                  <v-progress-circular color="primary" indeterminate/>
+                </div>
+              </v-container>
+              <PalletLoad v-else-if="palletLoadExist" :app="app"
+                  :deleteCallback="palletLoadReset"/>
+              <v-container v-else>
+                <v-container>
+                  <v-row>
+                    <v-btn color="primary" @click="palletLoadAdd = true" block>
+                      <v-icon left>mdi-plus-thick</v-icon> Tambah Data Muat Palet
                     </v-btn>
                   </v-row>
                 </v-container>
@@ -101,11 +101,11 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-dialog v-model="palletLoadAdd" max-width="480">
+    <v-dialog v-model="palletLoadAdd" max-width="480" scrollable>
       <PalletLoadAdd :app="app" :cancelCallback="onPalletLoadAddCancel"
           :successCallback="onPalletLoadAddSuccess"/>
     </v-dialog>
-    <v-dialog v-model="basketUnloadAdd" max-width="480">
+    <v-dialog v-model="basketUnloadAdd" max-width="480" scrollable>
       <BasketUnloadAdd :app="app" :cancelCallback="onBasketUnloadAddCancel"
           :successCallback="onBasketUnloadAddSuccess"/>
     </v-dialog>
@@ -137,6 +137,8 @@ export default {
     app: { type: Object, required: true },
   },
   data() {
+    let documentDetail = JSON.parse(localStorage.getItem('document-detail')) || {};
+
     return {
       fetching: true,
       productKind: null,
@@ -153,7 +155,7 @@ export default {
       basketUnloadFetching: true,
       basketUnloadExist: false,
       basketUnloadAdd: false,
-      tab: null,
+      tab: documentDetail.tab,
     };
   },
   computed: {
@@ -409,6 +411,11 @@ export default {
           this.app.log('Gagal mengambil daftar jenis produk, tidak ada jaringan');
         }
       });
+  },
+  destroyed() {
+    localStorage.setItem('document-detail', JSON.stringify({
+      tab: this.tab,
+    }));
   },
 }
 </script>

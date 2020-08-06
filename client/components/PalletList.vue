@@ -10,7 +10,7 @@
       <v-row dense>
         <v-col>
           <v-btn color="primary" @click="palletAdd = true" :disabled="fetching" block>
-            <v-icon left>mdi-plus-circle</v-icon> Tambah Data Palet
+            <v-icon left>mdi-plus-thick</v-icon> Tambah Data Palet
           </v-btn>
         </v-col>
       </v-row>
@@ -54,7 +54,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-dialog v-model="palletAdd" max-width="480">
+    <v-dialog v-model="palletAdd" max-width="480" scrollable>
       <PalletAdd :app="app" :cancelCallback="onPalletAddCancel"
           :successCallback="onPalletAddSuccess"/>
     </v-dialog>

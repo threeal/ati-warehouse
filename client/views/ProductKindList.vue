@@ -5,7 +5,7 @@
         <v-row dense>
           <v-col>
             <v-btn color="primary" @click="productKindAdd = true" :disabled="fetching" block>
-              <v-icon left>mdi-plus-circle</v-icon> Tambah Jenis Produk
+              <v-icon left>mdi-plus-thick</v-icon> Tambah Jenis Produk
             </v-btn>
           </v-col>
         </v-row>

@@ -26,14 +26,14 @@
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" hide-details dense outlined/>
           </v-col>
-          <v-col v-if="edit || (stackQuantity && stackQuantity > 0)"
+          <v-col v-if="edit || (layerQuantity && layerQuantity > 0)"
               :cols="(edit || (canQuantity && canQuantity > 0)) ? 6 : 12">
-            <v-text-field v-model="stackQuantity" label="Jumlah Tingkat" type="number"
+            <v-text-field v-model="layerQuantity" label="Jumlah Tingkat" type="number"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
           <v-col v-if="edit || (canQuantity && canQuantity > 0)"
-              :cols="(edit || (stackQuantity && stackQuantity > 0)) ? 6 : 12">
+              :cols="(edit || (layerQuantity && layerQuantity > 0)) ? 6 : 12">
             <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
@@ -42,6 +42,72 @@
             <v-text-field v-model="loader" label="Loader"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col cols="12">
+            <v-card>
+              <v-toolbar color="primary" dark flat dense>
+                <v-toolbar-title>Kondisi</v-toolbar-title>
+              </v-toolbar>
+              <v-card-text>
+                <div v-if="fetching" class="d-flex justify-center">
+                  <v-progress-circular color="primary" indeterminate/>
+                </div>
+                <v-row v-else>
+                  <v-col>
+                    <v-checkbox v-model="seamingCondition" label="Seaming"
+                        :off-icon="(edit) ? 'mdi-close-box' : 'mdi-close-thick'"
+                        :on-icon="(edit) ? 'mdi-checkbox-marked' : 'mdi-check-bold'"
+                        :readonly="!edit" :disabled="submitting" hide-details/>
+                    <v-checkbox v-model="cleanCondition" label="Bersih"
+                        :off-icon="(edit) ? 'mdi-close-box' : 'mdi-close-thick'"
+                        :on-icon="(edit) ? 'mdi-checkbox-marked' : 'mdi-check-bold'"
+                        :readonly="!edit" :disabled="submitting" hide-details/>
+                  </v-col>
+                  <v-col>
+                    <v-checkbox v-model="noRustCondition" label="Tidak Karat"
+                        :off-icon="(edit) ? 'mdi-close-box' : 'mdi-close-thick'"
+                        :on-icon="(edit) ? 'mdi-checkbox-marked' : 'mdi-check-bold'"
+                        :readonly="!edit" :disabled="submitting" hide-details/>
+                    <v-checkbox v-model="noOilyCondition" label="Tidak Minyak"
+                        :off-icon="(edit) ? 'mdi-close-box' : 'mdi-close-thick'"
+                        :on-icon="(edit) ? 'mdi-checkbox-marked' : 'mdi-check-bold'"
+                        :readonly="!edit" :disabled="submitting" hide-details/>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col cols="12">
+            <v-card>
+              <v-toolbar color="primary" dark flat dense>
+                <v-toolbar-title>Hasil Print</v-toolbar-title>
+              </v-toolbar>
+              <v-card-text>
+                <div v-if="fetching" class="d-flex justify-center">
+                  <v-progress-circular color="primary" indeterminate/>
+                </div>
+                <v-row v-else>
+                  <v-col>
+                    <v-checkbox v-model="bottomPrintResult" label="Bawah"
+                        :off-icon="(edit) ? 'mdi-close-box' : 'mdi-close-thick'"
+                        :on-icon="(edit) ? 'mdi-checkbox-marked' : 'mdi-check-bold'"
+                        :readonly="!edit" :disabled="submitting" hide-details/>
+                  </v-col>
+                  <v-col>
+                    <v-checkbox v-model="middlePrintResult" label="Tengah"
+                        :off-icon="(edit) ? 'mdi-close-box' : 'mdi-close-thick'"
+                        :on-icon="(edit) ? 'mdi-checkbox-marked' : 'mdi-check-bold'"
+                        :readonly="!edit" :disabled="submitting" hide-details/>
+                  </v-col>
+                  <v-col>
+                    <v-checkbox v-model="topPrintResult" label="Atas"
+                        :off-icon="(edit) ? 'mdi-close-box' : 'mdi-close-thick'"
+                        :on-icon="(edit) ? 'mdi-checkbox-marked' : 'mdi-check-bold'"
+                        :readonly="!edit" :disabled="submitting" hide-details/>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
           </v-col>
           <v-col cols="12">
             <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
@@ -82,8 +148,15 @@ export default {
       basketNumbers: null,
       startTime: null,
       endTime: null,
-      stackQuantity: null,
+      layerQuantity: null,
       canQuantity: null,
+      seamingCondition: null,
+      cleanCondition: null,
+      noRustCondition: null,
+      noOilyCondition: null,
+      bottomPrintResult: null,
+      middlePrintResult: null,
+      topPrintResult: null,
       loader: null,
     };
   },
@@ -91,7 +164,7 @@ export default {
     submitDisabled() {
       return this.submitting || !this.palletNumber || !this.basketNumbers
         || !this.startTime || !this.endTime || !this.loader
-        || (!this.stackQuantity && !this.canQuantity);
+        || (!this.layerQuantity && !this.canQuantity);
     }
   },
   methods: {
@@ -106,8 +179,15 @@ export default {
         basketNumbers: this.basketNumbers,
         startTime: this.startTime,
         endTime: this.endTime,
-        stackQuantity: this.stackQuantity,
+        layerQuantity: this.layerQuantity,
         canQuantity: this.canQuantity,
+        seamingCondition: this.seamingCondition || false,
+        cleanCondition: this.cleanCondition || false,
+        noRustCondition: this.noRustCondition || false,
+        noOilyCondition: this.noOilyCondition || false,
+        bottomPrintResult: this.bottomPrintResult || false,
+        middlePrintResult: this.middlePrintResult || false,
+        topPrintResult: this.topPrintResult || false,
         loader: this.loader,
       };
 
@@ -179,9 +259,16 @@ export default {
         this.basketNumbers = res.data.basketNumbers;
         this.startTime = res.data.startTime;
         this.endTime = res.data.endTime;
-        this.stackQuantity = res.data.stackQuantity;
+        this.layerQuantity = res.data.layerQuantity;
         this.canQuantity = res.data.canQuantity;
         this.loader = res.data.loader;
+        this.seamingCondition = res.data.seamingCondition;
+        this.cleanCondition = res.data.cleanCondition;
+        this.noRustCondition = res.data.noRustCondition;
+        this.noOilyCondition = res.data.noOilyCondition;
+        this.bottomPrintResult = res.data.bottomPrintResult;
+        this.middlePrintResult = res.data.middlePrintResult;
+        this.topPrintResult = res.data.topPrintResult;
 
         this.fetching = false;
       })

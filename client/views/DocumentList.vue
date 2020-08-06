@@ -11,7 +11,7 @@
         <v-row dense>
           <v-col>
             <v-btn color="primary" @click="documentAdd = true" :disabled="fetching" block>
-              <v-icon left>mdi-plus-circle</v-icon> Tambah Dokumen
+              <v-icon left>mdi-plus-thick</v-icon> Tambah Dokumen
             </v-btn>
           </v-col>
         </v-row>

@@ -10,7 +10,7 @@
       <v-row dense>
         <v-col>
           <v-btn color="primary" @click="basketAdd = true" :disabled="fetching" block>
-            <v-icon left>mdi-plus-circle</v-icon> Tambah Data Basket
+            <v-icon left>mdi-plus-thick</v-icon> Tambah Data Basket
           </v-btn>
         </v-col>
       </v-row>
@@ -54,7 +54,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-dialog v-model="basketAdd" max-width="480">
+    <v-dialog v-model="basketAdd" max-width="480" scrollable>
       <BasketAdd :app="app" :cancelCallback="onBasketAddCancel"
           :successCallback="onBasketAddSuccess"/>
     </v-dialog>

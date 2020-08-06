@@ -4,12 +4,12 @@
       <v-col cols="12" sm="8" md="6">
         <v-row>
           <v-col cols="6">
-            <v-text-field v-model="basketNumber" label="Nomor Basket"
+            <v-text-field v-model="basketNumber" label="No Basket"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
           <v-col cols="6">
-            <v-text-field v-model="basketId" label="Id Basket"
+            <v-text-field v-model="basketId" label="ID Basket"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
@@ -23,15 +23,15 @@
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" hide-details dense outlined/>
           </v-col>
-          <v-col v-if="edit || (basketQuantity && basketQuantity > 0)"
+          <v-col v-if="edit || (trayQuantity && trayQuantity > 0)"
               :cols="(edit || (canQuantity && canQuantity > 0)) ? 6 : 12">
-            <v-text-field v-model="basketQuantity" label="Jumlah Basket" type="number"
+            <v-text-field v-model="trayQuantity" label="Jumlah Tray" type="number"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
           <v-col v-if="edit || (canQuantity && canQuantity > 0)"
-              :cols="(edit || (basketQuantity && basketQuantity > 0)) ? 6 : 12">
-            <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
+              :cols="(edit || (trayQuantity && trayQuantity > 0)) ? 6 : 12">
+            <v-text-field v-model="canQuantity" label="Jumlah Kaleng" type="number"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
@@ -48,17 +48,37 @@
                 :loading="fetching" :disabled="fetching" readonly filled
                 hide-details dense outlined/>
           </v-col>
-          <v-col cols="4">
-            <v-checkbox v-model="seamingCondition" label="Seaming" :readonly="!edit"
-                off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
-          </v-col>
-          <v-col cols="4">
-            <v-checkbox v-model="canMarkCondition" label="Can Mark" :readonly="!edit"
-                off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
-          </v-col>
-          <v-col cols="4">
-            <v-checkbox v-model="indicatorCondition" label="Indicator" :readonly="!edit"
-                off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+          <v-col cols="12">
+            <v-card>
+              <v-toolbar color="primary" dark flat dense>
+                <v-toolbar-title>Kondisi</v-toolbar-title>
+              </v-toolbar>
+              <v-card-text>
+                <div v-if="fetching" class="d-flex justify-center">
+                  <v-progress-circular color="primary" indeterminate/>
+                </div>
+                <v-row v-else>
+                  <v-col>
+                    <v-checkbox v-model="seamingCondition" label="Seaming"
+                        :off-icon="(edit) ? 'mdi-close-box' : 'mdi-close-thick'"
+                        :on-icon="(edit) ? 'mdi-checkbox-marked' : 'mdi-check-bold'"
+                        :readonly="!edit" :disabled="submitting" hide-details/>
+                  </v-col>
+                  <v-col>
+                    <v-checkbox v-model="canMarkCondition" label="Can Mark"
+                        :off-icon="(edit) ? 'mdi-close-box' : 'mdi-close-thick'"
+                        :on-icon="(edit) ? 'mdi-checkbox-marked' : 'mdi-check-bold'"
+                        :readonly="!edit" :disabled="submitting" hide-details/>
+                  </v-col>
+                  <v-col>
+                    <v-checkbox v-model="indicatorCondition" label="Indicator"
+                        :off-icon="(edit) ? 'mdi-close-box' : 'mdi-close-thick'"
+                        :on-icon="(edit) ? 'mdi-checkbox-marked' : 'mdi-check-bold'"
+                        :readonly="!edit" :disabled="submitting" hide-details/>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
           </v-col>
           <v-col cols="12">
             <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
@@ -98,7 +118,7 @@ export default {
       basketId: null,
       startTime: null,
       endTime: null,
-      basketQuantity: null,
+      trayQuantity: null,
       canQuantity: null,
       rejectQuantity: null,
       rejectKind: null,
@@ -126,7 +146,7 @@ export default {
     },
     submitDisabled() {
       return this.submitting || !this.basketNumber || !this.basketId
-        || !this.startTime || !this.endTime || (!this.basketQuantity && !this.canQuantity)
+        || !this.startTime || !this.endTime || (!this.trayQuantity && !this.canQuantity)
         || (this.rejectQuantity > 0 && !this.rejectKind);
     },
   },
@@ -142,7 +162,7 @@ export default {
         basketId: this.basketId,
         startTime: this.startTime,
         endTime: this.endTime,
-        basketQuantity: this.basketQuantity,
+        trayQuantity: this.trayQuantity,
         canQuantity: this.canQuantity,
         rejectQuantity: this.rejectQuantity,
         rejectKind: this.rejectKind,
@@ -219,7 +239,7 @@ export default {
         this.basketId = res.data.basketId;
         this.startTime = res.data.startTime;
         this.endTime = res.data.endTime;
-        this.basketQuantity = res.data.basketQuantity;
+        this.trayQuantity = res.data.trayQuantity;
         this.canQuantity = res.data.canQuantity;
         this.rejectQuantity = res.data.rejectQuantity;
         this.rejectKind = res.data.rejectKind;

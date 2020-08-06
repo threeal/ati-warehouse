@@ -7,13 +7,14 @@
       <v-toolbar-title>Tambah Data Bongkar Basket</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
+      <v-divider inset vertical/>
       <v-row>
         <v-col cols="6">
-          <v-text-field v-model="basketNumber" label="Nomor Basket"
+          <v-text-field v-model="basketNumber" label="No Basket"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="6">
-          <v-text-field v-model="basketId" label="Id Basket"
+          <v-text-field v-model="basketId" label="ID Basket"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="6">
@@ -25,11 +26,11 @@
               :disabled="submitting" hide-details dense outlined/>
         </v-col>
         <v-col cols="6">
-          <v-text-field v-model="basketQuantity" label="Jumlah Basket" type="number"
+          <v-text-field v-model="trayQuantity" label="Jumlah Tray" type="number"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="6">
-          <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
+          <v-text-field v-model="canQuantity" label="Jumlah Kaleng" type="number"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="12">
@@ -41,26 +42,43 @@
               item-text="name" item-value="id" :disabled="submitting"
               hide-details dense outlined/>
         </v-col>
-        <v-col cols="4">
-          <v-checkbox v-model="seamingCondition" label="Seaming"
-              off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
-        </v-col>
-        <v-col cols="4">
-          <v-checkbox v-model="canMarkCondition" label="Can Mark"
-              off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
-        </v-col>
-        <v-col cols="4">
-          <v-checkbox v-model="indicatorCondition" label="Indicator"
-              off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
-        </v-col>
         <v-col cols="12">
-          <v-btn @click="onAdd()" :disabled="addDisabled"
-              :loading="submitting" color="success" block>
-            <v-icon left>mdi-upload</v-icon> Submit Data Basket
-          </v-btn>
+          <v-card>
+            <v-toolbar color="primary" dark flat dense>
+              <v-toolbar-title>Kondisi</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <v-row>
+                <v-col cols="4">
+                  <v-checkbox v-model="seamingCondition" label="Seaming" hide-details
+                      off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+                </v-col>
+                <v-col cols="4">
+                  <v-checkbox v-model="canMarkCondition" label="Can Mark" hide-details
+                      off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+                </v-col>
+                <v-col cols="4">
+                  <v-checkbox v-model="indicatorCondition" label="Indicator" hide-details
+                      off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
         </v-col>
       </v-row>
     </v-card-text>
+    <v-card-actions>
+      <v-container>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-btn @click="onAdd()" :disabled="addDisabled"
+                :loading="submitting" color="success" block>
+              <v-icon left>mdi-upload</v-icon> Submit Data Basket
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -82,7 +100,7 @@ export default {
       basketId: null,
       startTime: (new Date()).toTimeInput(),
       endTime: (new Date()).toTimeInput(),
-      basketQuantity: null,
+      trayQuantity: null,
       canQuantity: null,
       rejectQuantity: null,
       rejectKind: null,
@@ -102,7 +120,7 @@ export default {
   computed: {
     addDisabled() {
       return this.submitting || !this.basketNumber || !this.basketId
-        || !this.startTime || !this.endTime || (!this.basketQuantity && !this.canQuantity)
+        || !this.startTime || !this.endTime || (!this.trayQuantity && !this.canQuantity)
         || (this.rejectQuantity && this.rejectQuantity > 0 && !this.rejectKind);
     }
   },
@@ -112,13 +130,13 @@ export default {
       this.basketId = null;
       this.startTime = (new Date()).toTimeInput();
       this.endTime = (new Date()).toTimeInput();
-      this.basketQuantity = null;
+      this.trayQuantity = null;
       this.canQuantity = null;
       this.rejectQuantity = null;
       this.rejectKind = null;
-      this.seamingCondition = false;
-      this.canMarkCondition = false;
-      this.indicatorCondition = false;
+      this.seamingCondition = true;
+      this.canMarkCondition = true;
+      this.indicatorCondition = true;
     },
     onClose() {
       if (typeof this.cancelCallback === 'function') {
@@ -133,13 +151,13 @@ export default {
         basketId: this.basketId,
         startTime: this.startTime,
         endTime: this.endTime,
-        basketQuantity: this.basketQuantity,
+        trayQuantity: this.trayQuantity,
         canQuantity: this.canQuantity,
         rejectQuantity: this.rejectQuantity,
         rejectKind: this.rejectKind,
-        seamingCondition: this.seamingCondition,
-        canMarkCondition: this.canMarkCondition,
-        indicatorCondition: this.indicatorCondition,
+        seamingCondition: this.seamingCondition || false,
+        canMarkCondition: this.canMarkCondition || false,
+        indicatorCondition: this.indicatorCondition || false,
       };
 
       BasketService.create(this.$route.params.documentId, data)

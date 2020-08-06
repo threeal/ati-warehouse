@@ -7,6 +7,7 @@
       <v-toolbar-title>Tambah Data Bongkar Basket</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
+      <v-divider inset vertical/>
       <v-row>
         <v-col cols="12">
           <v-text-field v-model="palletNumber" label="Nomor Palet"
@@ -26,11 +27,11 @@
               :disabled="submitting" hide-details dense outlined/>
         </v-col>
         <v-col cols="6">
-          <v-text-field v-model="stackQuantity" label="Jumlah Tingkat" type="number"
+          <v-text-field v-model="layerQuantity" label="Jumlah Tingkat" type="number"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="6">
-          <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
+          <v-text-field v-model="canQuantity" label="Jumlah Kaleng" type="number"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="12">
@@ -38,13 +39,65 @@
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="12">
-          <v-btn @click="onAdd()" :disabled="addDisabled"
-              :loading="submitting" color="success" block>
-            Submit Data Palet
-          </v-btn>
+          <v-card>
+            <v-toolbar color="primary" dark flat dense>
+              <v-toolbar-title>Kondisi</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <v-row>
+                <v-col cols="6">
+                  <v-checkbox v-model="seamingCondition" label="Seaming" hide-details
+                      off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+                  <v-checkbox v-model="cleanCondition" label="Bersih" hide-details
+                      off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+                </v-col>
+                <v-col cols="6">
+                  <v-checkbox v-model="noRustCondition" label="Tidak Karat" hide-details
+                      off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+                  <v-checkbox v-model="noOilyCondition" label="Tidak Minyak" hide-details
+                      off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12">
+          <v-card>
+            <v-toolbar color="primary" dark flat dense>
+              <v-toolbar-title>Hasil Print</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <v-row>
+                <v-col cols="4">
+                  <v-checkbox v-model="bottomPrintResult" label="Bawah" hide-details
+                      off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+                </v-col>
+                <v-col cols="4">
+                  <v-checkbox v-model="middlePrintResult" label="Tengah" hide-details
+                      off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+                </v-col>
+                <v-col cols="4">
+                  <v-checkbox v-model="topPrintResult" label="Atas" hide-details
+                      off-icon="mdi-close-box" on-icon="mdi-checkbox-marked"/>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
         </v-col>
       </v-row>
     </v-card-text>
+    <v-card-actions>
+      <v-container>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-btn @click="onAdd()" :disabled="addDisabled"
+                :loading="submitting" color="success" block>
+              Submit Data Palet
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -66,9 +119,16 @@ export default {
       basketNumbers: null,
       startTime: (new Date()).toTimeInput(),
       endTime: (new Date()).toTimeInput(),
-      stackQuantity: null,
+      layerQuantity: null,
       canQuantity: null,
       loader: null,
+      seamingCondition: true,
+      cleanCondition: true,
+      noRustCondition: true,
+      noOilyCondition: true,
+      bottomPrintResult: true,
+      middlePrintResult: true,
+      topPrintResult: true,
       submitting: false,
     };
   },
@@ -76,7 +136,7 @@ export default {
     addDisabled() {
       return this.submitting || !this.palletNumber || !this.basketNumbers
         || !this.startTime || !this.endTime || !this.loader
-        || (!this.stackQuantity && !this.canQuantity);
+        || (!this.layerQuantity && !this.canQuantity);
     }
   },
   methods: {
@@ -85,7 +145,7 @@ export default {
       this.basketNumbers = null;
       this.startTime = (new Date()).toTimeInput();
       this.endTime = (new Date()).toTimeInput();
-      this.stackQuantity = null;
+      this.layerQuantity = null;
       this.canQuantity = null;
     },
     onClose() {
@@ -101,9 +161,16 @@ export default {
         basketNumbers: this.basketNumbers,
         startTime: this.startTime,
         endTime: this.endTime,
-        stackQuantity: this.stackQuantity,
+        layerQuantity: this.layerQuantity,
         canQuantity: this.canQuantity,
         loader: this.loader,
+        seamingCondition: this.seamingCondition || false,
+        cleanCondition: this.cleanCondition || false,
+        noRustCondition: this.noRustCondition || false,
+        noOilyCondition: this.noOilyCondition || false,
+        bottomPrintResult: this.bottomPrintResult || false,
+        middlePrintResult: this.middlePrintResult || false,
+        topPrintResult: this.topPrintResult || false,
       };
 
       PalletService.create(this.$route.params.documentId, data)

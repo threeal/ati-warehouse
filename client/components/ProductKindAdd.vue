@@ -7,19 +7,26 @@
       <v-toolbar-title>Tambah Jenis Produk</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
+      <v-divider inset vertical/>
       <v-row>
         <v-col cols="12">
           <v-text-field v-model="name" label="Nama"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
-        <v-col cols="12">
-          <v-btn @click="onAdd()" :disabled="submitting || !name"
-              :loading="submitting" color="success" block>
-            <v-icon left>mdi-upload</v-icon> Submit Jenis Produk
-          </v-btn>
-        </v-col>
       </v-row>
     </v-card-text>
+    <v-card-actions>
+      <v-container>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-btn @click="onAdd()" :disabled="submitting || !name"
+                :loading="submitting" color="success" block>
+              <v-icon left>mdi-upload</v-icon> Submit Jenis Produk
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-actions>
   </v-card>
 </template>
 

@@ -37,8 +37,8 @@ export default {
       let basket = null;
       let can = null;
 
-      if (this.basket.basketQuantity && this.basket.basketQuantity > 0) {
-        basket = `${this.basket.basketQuantity} Basket`;
+      if (this.basket.trayQuantity && this.basket.trayQuantity > 0) {
+        basket = `${this.basket.trayQuantity} Tray`;
       }
 
       if (this.basket.canQuantity && this.basket.canQuantity > 0) {

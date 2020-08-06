@@ -7,6 +7,7 @@
       <v-toolbar-title>Tambah Data Bongkar Basket</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
+      <v-divider inset vertical/>
       <v-row>
         <v-col cols="12">
           <v-text-field v-model="unloadDate" label="Tanggal Bongkar" type="date"
@@ -16,14 +17,20 @@
           <v-text-field v-model="line" label="Line"
               :disabled="submitting" clearable dense hide-details outlined/>
         </v-col>
-        <v-col cols="12">
-          <v-btn @click="onAdd()" :disabled="submitting || !unloadDate || !line"
-              :loading="submitting" color="success" block>
-            <v-icon left>mdi-upload</v-icon> Submit Data
-          </v-btn>
-        </v-col>
       </v-row>
     </v-card-text>
+    <v-card-actions>
+      <v-container>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-btn @click="onAdd()" :disabled="submitting || !unloadDate || !line"
+                :loading="submitting" color="success" block>
+              <v-icon left>mdi-upload</v-icon> Submit Data
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card-actions>
   </v-card>
 </template>
 

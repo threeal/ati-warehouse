@@ -34,9 +34,16 @@ exports.create = (req, res) => {
       basketNumbers: req.body.basketNumbers,
       startTime: req.body.startTime,
       endTime: req.body.endTime,
-      stackQuantity: req.body.stackQuantity,
+      layerQuantity: req.body.layerQuantity,
       canQuantity: req.body.canQuantity,
       loader: req.body.loader,
+      seamingCondition: req.body.seamingCondition,
+      cleanCondition: req.body.cleanCondition,
+      noRustCondition: req.body.noRustCondition,
+      noOilyCondition: req.body.noOilyCondition,
+      bottomPrintResult: req.body.bottomPrintResult,
+      middlePrintResult: req.body.middlePrintResult,
+      topPrintResult: req.body.topPrintResult,
   });
 
   // setTimeout(() => {
@@ -85,9 +92,25 @@ exports.update = (req, res) => {
       message: 'content could not be empty!',
     });
   }
+  let newData = {
+    palletNumber: req.body.palletNumber,
+    basketNumbers: req.body.basketNumbers,
+    startTime: req.body.startTime,
+    endTime: req.body.endTime,
+    layerQuantity: req.body.layerQuantity,
+    canQuantity: req.body.canQuantity,
+    loader: req.body.loader,
+    seamingCondition: req.body.seamingCondition,
+    cleanCondition: req.body.cleanCondition,
+    noRustCondition: req.body.noRustCondition,
+    noOilyCondition: req.body.noOilyCondition,
+    bottomPrintResult: req.body.bottomPrintResult,
+    middlePrintResult: req.body.middlePrintResult,
+    topPrintResult: req.body.topPrintResult,
+  };
 
   // setTimeout(() => {
-    Pallet.findByIdAndUpdate(palletId, req.body, { useFindAndModify: false })
+    Pallet.findByIdAndUpdate(palletId, newData, { useFindAndModify: false })
       .then((data) => {
         if (data) {
           res.send({

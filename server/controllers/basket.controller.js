@@ -34,7 +34,7 @@ exports.create = (req, res) => {
       basketId: req.body.basketId,
       startTime: req.body.startTime,
       endTime: req.body.endTime,
-      basketQuantity: req.body.basketQuantity,
+      trayQuantity: req.body.trayQuantity,
       canQuantity: req.body.canQuantity,
       rejectQuantity: req.body.rejectQuantity,
       rejectKind: req.body.rejectKind,
@@ -89,13 +89,13 @@ exports.update = (req, res) => {
       message: 'content could not be empty!',
     });
   }
-  
+
   const newData = {
     basketNumber: req.body.basketNumber,
     basketId: req.body.basketId,
     startTime: req.body.startTime,
     endTime: req.body.endTime,
-    basketQuantity: req.body.basketQuantity,
+    trayQuantity: req.body.trayQuantity,
     canQuantity: req.body.canQuantity,
     rejectQuantity: req.body.rejectQuantity,
     rejectKind: req.body.rejectKind,
