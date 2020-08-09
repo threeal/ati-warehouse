@@ -1,13 +1,13 @@
 <template>
   <v-card>
-    <v-toolbar color="primary" dark flat>
-      <v-btn icon dark @click="onClose()">
+    <v-toolbar class="flex-grow-0" color="primary" dark flat>
+      <v-btn v-if="typeof cancelCallback === 'function'" @click="onClose()" icon dark>
         <v-icon>mdi-close</v-icon>
       </v-btn>
-      <v-toolbar-title>Tambah Data Bongkar Basket</v-toolbar-title>
+      <v-toolbar-title>Tambah Data Basket</v-toolbar-title>
     </v-toolbar>
     <v-card-text>
-      <v-divider inset vertical/>
+      <v-divider v-if="typeof cancelCallback === 'function'" inset vertical/>
       <v-row>
         <v-col cols="6">
           <v-text-field v-model="basketNumber" label="No Basket"
@@ -191,9 +191,6 @@ export default {
           }
         });
     },
-  },
-  created() {
-    this.app.setAppBar(true, 'Tambah Data Basket');
   },
 }
 </script>

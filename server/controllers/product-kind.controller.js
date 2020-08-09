@@ -12,7 +12,7 @@ exports.findAll = (_, res) => {
           message: err.message || 'some error occured while retrieving product kinds',
         });
       });
-  // }, 33);
+  // }, 299);
 };
 
 exports.create = (req, res) => {
@@ -36,7 +36,7 @@ exports.create = (req, res) => {
           message: err.message || 'some error occured while creating the product kind',
         });
       });
-  // }, 33);
+  // }, 299);
 };
 
 exports.findOne = (req, res) => {
@@ -61,7 +61,7 @@ exports.findOne = (req, res) => {
             + `${productKindId}`,
         });
       });
-  // }, 33);
+  // }, 299);
 };
 
 exports.update = (req, res) => {
@@ -97,7 +97,7 @@ exports.update = (req, res) => {
             || `some error occured while updating product kind with id ${productKindId}`,
         });
       });
-  // }, 33);
+  // }, 299);
 };
 
 exports.remove = (req, res) => {
@@ -123,5 +123,5 @@ exports.remove = (req, res) => {
             || `some error occured while removing product kind with id ${productKindId}`,
         });
       });
-  // }, 33);
+  // }, 299);
 };

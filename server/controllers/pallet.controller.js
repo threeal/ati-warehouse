@@ -16,7 +16,7 @@ exports.findAll = (req, res) => {
             `some error occured while retrieving pallets with document id ${documentId}`,
         });
       });
-  // }, 33);
+  // }, 299);
 };
 
 exports.create = (req, res) => {
@@ -58,7 +58,7 @@ exports.create = (req, res) => {
             || `some error occured while creating pallet with document id ${documentId}`,
         });
       });
-  // }, 33);
+  // }, 299);
 };
 
 exports.findOne = (req, res) => {
@@ -82,7 +82,7 @@ exports.findOne = (req, res) => {
             || `some error occured while retrieving pallet with id ${palletId}`,
         });
       });
-  // }, 33);
+  // }, 299);
 };
 
 exports.update = (req, res) => {
@@ -131,7 +131,7 @@ exports.update = (req, res) => {
             || `some error occured while updating pallet with id ${palletId}`,
         });
       });
-  // }, 33);
+  // }, 299);
 };
 
 exports.remove = (req, res) => {
@@ -157,5 +157,5 @@ exports.remove = (req, res) => {
             || `some error occured while removing pallet with id ${palletId}`,
         });
       });
-  // }, 33);
+  // }, 299);
 };

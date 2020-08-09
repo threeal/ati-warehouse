@@ -40,7 +40,7 @@ exports.signIn = (req, res) => {
             || `some error occured while signing in user ${username}`,
         });
       });
-  // }, 33);
+  // }, 299);
 };
 
 exports.signUp = (req, res) => {
@@ -74,5 +74,5 @@ exports.signUp = (req, res) => {
           message: err.message || 'some error occured while signing up the user',
         });
       });
-  // }, 33);
+  // }, 299);
 };

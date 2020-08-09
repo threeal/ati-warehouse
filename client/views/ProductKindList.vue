@@ -1,56 +1,54 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" sm="8" md="4">
-        <v-row dense>
-          <v-col>
-            <v-btn color="primary" @click="productKindAdd = true" :disabled="fetching" block>
-              <v-icon left>mdi-plus-thick</v-icon> Tambah Jenis Produk
-            </v-btn>
-          </v-col>
-        </v-row>
+      <v-col class="hidden-md-and-up" cols="12" sm="8" md="4">
+        <v-btn color="primary" @click="productKindAdd = true" :disabled="fetching" block>
+          <v-icon left>mdi-plus-thick</v-icon> Tambah Jenis Produk
+        </v-btn>
+      </v-col>
+      <v-col class="hidden-sm-and-down" cols="4">
+        <ProductKindAdd :app="app" :successCallback="onProductKindAddSuccess"/>
       </v-col>
       <v-col cols="12" sm="8" md="6">
         <v-card>
-          <v-toolbar color="primary" dark flat>
+          <v-toolbar color="primary" dark flat dense>
             <v-toolbar-title>Daftar Jenis Produk</v-toolbar-title>
           </v-toolbar>
-          <v-card-text>
-            <v-list>
-              <div v-if="fetching">
-                <v-list-item two-line>
+          <v-list>
+            <div v-if="fetching">
+              <v-list-item two-line>
+                <v-list-item-content>
+                  <v-progress-circular color="primary" indeterminate/>
+                </v-list-item-content>
+              </v-list-item>
+            </div>
+            <div v-else-if="productKinds.length > 0">
+              <div v-for="(productKind, index) in productKinds" :key="index">
+                <v-divider v-if="index > 0"/>
+                <v-list-item  @click="onProductKindClick(productKind.id)" link>
                   <v-list-item-content>
-                    <v-progress-circular color="primary" indeterminate/>
-                  </v-list-item-content>
-                </v-list-item>
-              </div>
-              <div v-else-if="productKinds.length > 0">
-                <div v-for="(productKind, index) in productKinds" :key="index">
-                  <v-divider v-if="index > 0"/>
-                  <v-list-item  @click="onProductKindClick(productKind.id)" link>
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        {{ productKind.name }}
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </div>
-              </div>
-              <div v-else>
-                <v-list-item two-line>
-                  <v-list-item-content>
-                    <v-list-item-title class="d-flex justify-center">
-                      Jenis Produk Kosong
+                    <v-list-item-title>
+                      {{ productKind.name }}
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </div>
-            </v-list>
-          </v-card-text>
+            </div>
+            <div v-else>
+              <v-list-item two-line>
+                <v-list-item-content>
+                  <v-list-item-title class="d-flex justify-center">
+                    Jenis Produk Kosong
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </div>
+          </v-list>
         </v-card>
       </v-col>
     </v-row>
-    <v-dialog v-model="productKindAdd" max-width="480">
+    <v-dialog v-if="$vuetify.breakpoint.smAndDown" v-model="productKindAdd"
+        :fullscreen="$vuetify.breakpoint.xsOnly" max-width="65%" scrollable>
       <ProductKindAdd :app="app" :cancelCallback="onProductKIndAddCancel"
           :successCallback="onProductKindAddSuccess"/>
     </v-dialog>

@@ -1,84 +1,88 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col cols="12" sm="8" md="4">
-        <v-row>
-          <v-col>
+      <v-col class="hidden-md-and-up" cols="12" sm="8">
+        <v-select v-model="selectedFilter" :items="filters" label="Filter Dokumen"
+            :disabled="fetching" hide-details dense outlined/>
+      </v-col>
+      <v-col class="hidden-md-and-up" cols="12" sm="8">
+        <v-btn color="primary" @click="documentAdd = true" :disabled="fetching" block>
+          <v-icon left>mdi-plus-thick</v-icon> Tambah Dokumen
+        </v-btn>
+      </v-col>
+      <v-col class="hidden-sm-and-down" cols="4">
+        <DocumentAdd :app="app" :successCallback="onDocumentAddSuccess"/>
+      </v-col>
+      <v-col cols="12" sm="8" md="6">
+        <v-row :no-gutters="$vuetify.breakpoint.smAndDown">
+          <v-col class="hidden-sm-and-down" cols="12">
             <v-select v-model="selectedFilter" :items="filters" label="Filter Dokumen"
                 :disabled="fetching" hide-details dense outlined/>
           </v-col>
-        </v-row>
-        <v-row dense>
-          <v-col>
-            <v-btn color="primary" @click="documentAdd = true" :disabled="fetching" block>
-              <v-icon left>mdi-plus-thick</v-icon> Tambah Dokumen
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col cols="12" sm="8" md="6">
-        <v-card>
-          <v-toolbar color="primary" dark flat>
-            <v-toolbar-title>Daftar Dokumen</v-toolbar-title>
-          </v-toolbar>
-          <v-card-text>
-            <v-list>
-              <div v-if="fetching">
-                <v-list-item two-line>
-                  <v-list-item-content>
-                    <v-progress-circular color="primary" indeterminate/>
-                  </v-list-item-content>
-                </v-list-item>
-              </div>
-              <div v-else-if="documents.length > 0">
-                <div v-for="(document, index) in documents" :key="index">
-                  <v-divider v-if="index > 0"/>
-                  <v-list-item  @click="onDocumentClick(document.id)"
-                      two-line link>
+          <v-col cols="12">
+            <v-card>
+              <v-toolbar color="primary" dark flat dense>
+                <v-toolbar-title>Daftar Dokumen</v-toolbar-title>
+              </v-toolbar>
+              <v-list>
+                <div v-if="fetching">
+                  <v-list-item two-line>
                     <v-list-item-content>
-                      <v-list-item-title>
-                        <span v-if="document.name">
-                        {{ document.name }}
-                        </span>
-                        <i v-else>
-                          (Dokumen Tanpa Nama)
-                        </i>
-                      </v-list-item-title>
-                      <v-list-item-subtitle>
-                        <div class="d-flex justify-space-between">
-                          <span v-if="document.productKind">
-                          {{ document.productKind }}
-                          </span>
-                          <i v-else>
-                            (Jenis Produk Hilang)
-                          </i>
-                          <span v-if="document.productionDate">
-                          {{ document.productionDate.toLocaleDateString() }}
-                          </span>
-                          <i v-else>
-                            (Tanggal Produksi Hilang)
-                          </i>
-                        </div>
-                      </v-list-item-subtitle>
+                      <v-progress-circular color="primary" indeterminate/>
                     </v-list-item-content>
                   </v-list-item>
                 </div>
-              </div>
-              <div v-else>
-                <v-list-item two-line>
-                  <v-list-item-content>
-                    <v-list-item-title class="d-flex justify-center">
-                      Dokumen Kosong
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </div>
-            </v-list>
-          </v-card-text>
-        </v-card>
+                <div v-else-if="documents.length > 0">
+                  <div v-for="(document, index) in documents" :key="index">
+                    <v-divider v-if="index > 0"/>
+                    <v-list-item  @click="onDocumentClick(document.id)"
+                        two-line link>
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          <span v-if="document.name">
+                          {{ document.name }}
+                          </span>
+                          <i v-else>
+                            (Dokumen Tanpa Nama)
+                          </i>
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                          <div class="d-flex justify-space-between">
+                            <span v-if="document.productKind">
+                            {{ document.productKind }}
+                            </span>
+                            <i v-else>
+                              (Jenis Produk Hilang)
+                            </i>
+                            <span v-if="document.productionDate">
+                            {{ document.productionDate.toLocaleDateString() }}
+                            </span>
+                            <i v-else>
+                              (Tanggal Produksi Hilang)
+                            </i>
+                          </div>
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </div>
+                </div>
+                <div v-else>
+                  <v-list-item two-line>
+                    <v-list-item-content>
+                      <v-list-item-title class="d-flex justify-center">
+                        Dokumen Kosong
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </div>
+              </v-list>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
-    <v-dialog v-model="documentAdd" max-width="480">
+    <v-dialog v-if="$vuetify.breakpoint.smAndDown" v-model="documentAdd"
+        :fullscreen="$vuetify.breakpoint.xsOnly" max-width="65%" scrollable>
       <DocumentAdd :app="app" :cancelCallback="onDocumentAddCancel"
           :successCallback="onDocumentAddSuccess"/>
     </v-dialog>

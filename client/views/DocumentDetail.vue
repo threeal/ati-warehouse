@@ -106,11 +106,13 @@
         </v-btn>
       </v-col>
     </v-row>
-    <v-dialog v-model="palletLoadAdd" max-width="480" scrollable>
+    <v-dialog v-model="palletLoadAdd" :fullscreen="$vuetify.breakpoint.xsOnly"
+        :max-width="($vuetify.breakpoint.smAndDown) ? '65%' : '45%'" scrollable>
       <PalletLoadAdd :app="app" :cancelCallback="onPalletLoadAddCancel"
           :successCallback="onPalletLoadAddSuccess"/>
     </v-dialog>
-    <v-dialog v-model="basketUnloadAdd" max-width="480" scrollable>
+    <v-dialog v-model="basketUnloadAdd" :fullscreen="$vuetify.breakpoint.xsOnly"
+        :max-width="($vuetify.breakpoint.smAndDown) ? '65%' : '45%'" scrollable>
       <BasketUnloadAdd :app="app" :cancelCallback="onBasketUnloadAddCancel"
           :successCallback="onBasketUnloadAddSuccess"/>
     </v-dialog>
