@@ -5,6 +5,10 @@
         <v-card>
           <v-toolbar color="primary" dark flat>
             <v-toolbar-title>Masuk</v-toolbar-title>
+            <v-spacer/>
+            <v-btn @click="app.swapTheme()" icon dark>
+              <v-icon>mdi-theme-light-dark</v-icon>
+            </v-btn>
           </v-toolbar>
           <v-card-text>
             <v-row>

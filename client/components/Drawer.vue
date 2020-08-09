@@ -4,7 +4,7 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">
-            Project-I
+            ATI Warehouse
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>

@@ -1,5 +1,7 @@
 # project-i
 
+Warehose database internship project for PT ATI
+
 ## Project setup
 ```
 yarn install

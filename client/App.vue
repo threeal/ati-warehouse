@@ -2,7 +2,9 @@
   <v-app>
     <v-app-bar v-if="appBar" app color="primary" dark>
       <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = true"/>
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
+      <v-toolbar-title>
+        <b class="hidden-sm-and-down">ATI Warehouse | </b>{{ title }}
+      </v-toolbar-title>
       <v-spacer class="hidden-sm-and-down"/>
       <v-btn v-for="link in links" :key="link.title" class="hidden-sm-and-down"
           @click="link.onClick()" text>
@@ -53,6 +55,13 @@ export default {
           },
         },
         {
+          title: 'Tema',
+          icon: 'mdi-theme-light-dark',
+          onClick: () => {
+            this.swapTheme();
+          },
+        },
+        {
           title: 'Keluar',
           icon: 'mdi-logout',
           onClick: () => {
@@ -72,7 +81,7 @@ export default {
     setAppBar(enable, title) {
       this.appBar = enable;
       this.title = title;
-      document.title = `${this.title} | Project-I`;
+      document.title = `${this.title} | ATI Warehouse`;
     },
     routePush(path) {
       if (this.$route.path != path) {
@@ -84,6 +93,20 @@ export default {
         this.$router.replace(path);
       }
     },
+    swapTheme() {
+      let theme = {
+        dark: !this.$vuetify.theme.dark,
+      };
+
+      this.$vuetify.theme.dark = theme.dark || false;
+      localStorage.setItem('theme', JSON.stringify(theme));
+    },
+  },
+  mounted() {
+    const theme = JSON.parse(localStorage.getItem('theme'));
+    if (theme) {
+      this.$vuetify.theme.dark = theme.dark || false;
+    }
   },
 }
 </script>
