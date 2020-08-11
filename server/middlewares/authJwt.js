@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config.js');
+
 const models = require('../models');
 const User = models.User;
 
@@ -9,14 +10,15 @@ exports.verifyToken = (req, res, next) => {
   if (token) {
     jwt.verify(token, config.secret, (err, decoded) => {
       if (err) {
-        res.status(401).send({ message: 'unauthorized' });
+        res.status(401).send({ message: 'unauthorized access' });
       }
       else {
         req.userId = decoded.id;
 
         User.findById(req.userId)
-          .then((data) => {
-            if (data.verified) {
+          .then((user) => {
+            if (user.verified) {
+              req.admin = user.admin;
               next();
             }
             else {
@@ -24,9 +26,7 @@ exports.verifyToken = (req, res, next) => {
             }
           })
           .catch((err) => {
-            res.status(500).send({
-              message: err.message || 'some error occured while verifying the user',
-            });
+            res.status(500).send({ message: err.message });
           });
       }
     });
@@ -36,13 +36,10 @@ exports.verifyToken = (req, res, next) => {
   }
 };
 
-exports.isVerified = (req, res, next) => {
-};
-
 exports.isAdmin = (req, res, next) => {
   User.findById(req.userId)
-    .then((data) => {
-      if (data.admin) {
+    .then((user) => {
+      if (user.admin) {
         next();
       }
       else {
@@ -50,8 +47,6 @@ exports.isAdmin = (req, res, next) => {
       }
     })
     .catch((err) => {
-      res.status(500).send({
-        message: err.message || 'some error occured while verifying the user',
-      });
+      res.status(500).send({ message: err.message });
     });
 };

@@ -8,9 +8,12 @@ exports.find = (req, res) => {
 
   // setTimeout(() => {
     BasketUnload.findOne(condition)
-      .then((data) => {
-        if (data) {
-          res.send(data);
+      .then((basketUnload) => {
+        if (basketUnload) {
+          res.send({
+            unloadDate: basketUnload.unloadDate,
+            line: basketUnload.line,
+          });
         }
         else {
           res.status(404).send({
@@ -19,19 +22,14 @@ exports.find = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while retrieving basket unload with document id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
 
 exports.create = (req, res) => {
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
   const basketUnload = new BasketUnload({
@@ -42,13 +40,11 @@ exports.create = (req, res) => {
 
   // setTimeout(() => {
     basketUnload.save(basketUnload)
-      .then((data) => {
-        res.send(data);
+      .then(() => {
+        res.send({ message: 'basket unload was created successfully' });
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message || 'some error occured while creating the basket unload',
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -58,18 +54,19 @@ exports.update = (req, res) => {
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
 
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
+  const newBasketUnload = {
+    unloadDate: req.body.unloadDate,
+    line: req.body.line,
+  };
+
   // setTimeout(() => {
-    BasketUnload.findOneAndUpdate(condition, req.body, { useFindAndModify: false })
-      .then((data) => {
-        if (data) {
-          res.send({
-            message: 'basket unload was updated successfully',
-          });
+    BasketUnload.findOneAndUpdate(condition, newBasketUnload, { useFindAndModify: false })
+      .then((basketUnload) => {
+        if (basketUnload) {
+          res.send({ message: 'basket unload was updated successfully' });
         }
         else {
           res.status(404).send({
@@ -78,10 +75,7 @@ exports.update = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while updating basket unload with document id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -92,19 +86,14 @@ exports.remove = (req, res) => {
 
   // setTimeout(() => {
     BasketUnload.deleteMany(condition)
-      .then((data) => {
-        if (data) {
+      .then((basketUnload) => {
+        if (basketUnload) {
           Basket.deleteMany(condition)
             .then(() => {
-              res.send({
-                message: 'basket unload was removed successfully',
-              });
+              res.send({ message: 'basket unload was removed successfully' });
             })
             .catch((err) => {
-              res.status(500).send({
-                message: err.message
-                  || `some error occured while removing basket with document id ${documentId}`,
-              });
+              res.status(500).send({ message: err.message });
             });
         }
         else {
@@ -114,10 +103,7 @@ exports.remove = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while removing basket unload with document id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };

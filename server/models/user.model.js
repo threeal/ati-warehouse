@@ -2,6 +2,7 @@ module.exports = (mongoose) => {
   let schema = mongoose.Schema(
     {
       username: String,
+      fullname: String,
       password: String,
       verified: Boolean,
       admin: Boolean,

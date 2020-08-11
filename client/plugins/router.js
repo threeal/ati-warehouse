@@ -18,16 +18,6 @@ const router = new Router({
       component: () => import('../views/Register'),
     },
     {
-      path: '/product-kind',
-      name: 'product-kind-list',
-      component: () => import('../views/ProductKindList'),
-    },
-    {
-      path: '/product-kind/:productKindId',
-      name: 'product-kind-detail',
-      component: () => import('../views/ProductKindDetail'),
-    },
-    {
       path: '/document',
       name: 'document-list',
       component: () => import('../views/DocumentList'),
@@ -46,6 +36,26 @@ const router = new Router({
       path: '/document/:documentId/basket/:basketId',
       name: 'basket-detail',
       component: () => import('../views/BasketDetail'),
+    },
+    {
+      path: '/product-kind',
+      name: 'product-kind-list',
+      component: () => import('../views/ProductKindList'),
+    },
+    {
+      path: '/product-kind/:productKindId',
+      name: 'product-kind-detail',
+      component: () => import('../views/ProductKindDetail'),
+    },
+    {
+      path: '/user',
+      name: 'user-list',
+      component: () => import('../views/UserList'),
+    },
+    {
+      path: '/user/:userId',
+      name: 'user-detail',
+      component: () => import('../views/UserDetail'),
     },
   ],
 });

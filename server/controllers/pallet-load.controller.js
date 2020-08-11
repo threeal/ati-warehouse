@@ -8,9 +8,12 @@ exports.find = (req, res) => {
 
   // setTimeout(() => {
     PalletLoad.findOne(condition)
-      .then((data) => {
-        if (data) {
-          res.send(data);
+      .then((palletLoad) => {
+        if (palletLoad) {
+          res.send({
+            loadDate: palletLoad.loadDate,
+            brand: palletLoad.brand,
+          });
         }
         else {
           res.status(404).send({
@@ -19,19 +22,14 @@ exports.find = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while retrieving pallet load with document id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
 
 exports.create = (req, res) => {
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
   const palletLoad = new PalletLoad({
@@ -42,13 +40,11 @@ exports.create = (req, res) => {
 
   // setTimeout(() => {
     palletLoad.save(palletLoad)
-      .then((data) => {
-        res.send(data);
+      .then(() => {
+        res.send({ message: 'pallet load was created successfully' });
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message || 'some error occured while creating the pallet load',
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -58,18 +54,19 @@ exports.update = (req, res) => {
   const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
 
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
+  const newPalletLoad = {
+    loadDate: req.body.loadDate,
+    brand: req.body.brand,
+  };
+
   // setTimeout(() => {
-    PalletLoad.findOneAndUpdate(condition, req.body, { useFindAndModify: false })
-      .then((data) => {
-        if (data) {
-          res.send({
-            message: 'pallet load was updated successfully',
-          });
+    PalletLoad.findOneAndUpdate(condition, newPalletLoad, { useFindAndModify: false })
+      .then((palletLoad) => {
+        if (palletLoad) {
+          res.send({ message: 'pallet load was updated successfully' });
         }
         else {
           res.status(404).send({
@@ -78,10 +75,7 @@ exports.update = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while updating pallet load with document id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -92,19 +86,14 @@ exports.remove = (req, res) => {
 
   // setTimeout(() => {
     PalletLoad.deleteMany(condition)
-      .then((data) => {
-        if (data) {
+      .then((palletLoad) => {
+        if (palletLoad) {
           Pallet.deleteMany(condition)
             .then(() => {
-              res.send({
-                message: 'pallet load was removed successfully',
-              });
+              res.send({ message: 'pallet load was removed successfully' });
             })
             .catch((err) => {
-              res.status(500).send({
-                message: err.message
-                  || `some error occured while removing pallet with document id ${documentId}`,
-              });
+              res.status(500).send({ message: err.message });
             });
         }
         else {
@@ -114,10 +103,7 @@ exports.remove = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while removing pallet load with document id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };

@@ -1,18 +1,10 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <v-col class="hidden-md-and-up" cols="12" sm="8" md="4">
-        <v-btn color="primary" @click="productKindAdd = true" :disabled="fetching" block>
-          <v-icon left>mdi-plus-thick</v-icon> Tambah Jenis Produk
-        </v-btn>
-      </v-col>
-      <v-col class="hidden-sm-and-down" cols="4">
-        <ProductKindAdd :app="app" :successCallback="onProductKindAddSuccess"/>
-      </v-col>
       <v-col cols="12" sm="8" md="6">
         <v-card>
           <v-toolbar color="primary" dark flat dense>
-            <v-toolbar-title>Daftar Jenis Produk</v-toolbar-title>
+            <v-toolbar-title>Daftar Pengguna</v-toolbar-title>
           </v-toolbar>
           <v-list>
             <div v-if="fetching">
@@ -22,14 +14,23 @@
                 </v-list-item-content>
               </v-list-item>
             </div>
-            <div v-else-if="productKinds.length > 0">
-              <div v-for="(productKind, index) in productKinds" :key="index">
+            <div v-else-if="users.length > 0">
+              <div v-for="(user, index) in users" :key="index">
                 <v-divider v-if="index > 0"/>
-                <v-list-item  @click="onProductKindClick(productKind.id)" link>
+                <v-list-item  @click="onUserClick(user.id)" link>
                   <v-list-item-content>
                     <v-list-item-title>
-                      {{ productKind.name }}
+                      {{ user.fullname || 'Anonim' }}
                     </v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ user.username }}
+                      <span v-if="!user.verified" class="error--text">
+                        (belum diverifikasi)
+                      </span>
+                      <span v-else-if="user.admin" class="success--text">
+                        (admin)
+                      </span>
+                    </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </div>
@@ -38,7 +39,7 @@
               <v-list-item two-line>
                 <v-list-item-content>
                   <v-list-item-title class="d-flex justify-center">
-                    Jenis Produk Kosong
+                    Pengguna Kosong
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -47,42 +48,33 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-dialog v-if="$vuetify.breakpoint.smAndDown" v-model="productKindAdd"
-        :fullscreen="$vuetify.breakpoint.xsOnly" max-width="65%" scrollable>
-      <ProductKindAdd :app="app" :cancelCallback="onProductKIndAddCancel"
-          :successCallback="onProductKindAddSuccess"/>
-    </v-dialog>
   </v-container>
 </template>
 
 <script>
-import ProductKindAdd from '../components/ProductKindAdd'
-import ProductKindService from '../services/ProductKindService'
+import UserService from '../services/UserService'
 import AuthService from '../services/AuthService'
 
 export default {
-  name: 'product-kind-list',
-  components: {
-    ProductKindAdd,
-  },
+  name: 'user-list',
   props: {
     app: { type: Object, required: true },
   },
   data() {
     return {
       fetching: true,
-      productKindAdd: false,
-      productKinds: [],
+      users: [],
     };
   },
   methods: {
     reset() {
-      this.productKinds = [];
+      this.users = [];
       this.fetching = true;
 
-      ProductKindService.findAll()
+      UserService.findAll()
         .then((res) => {
-          this.productKinds = res.data;
+          console.log(res.data);
+          this.users = res.data;
           this.fetching = false;
         })
         .catch((err) => {
@@ -93,29 +85,27 @@ export default {
               AuthService.signOut();
               this.app.routeReplace('/login');
             }
+            else if (err.response.status === 403) {
+              this.app.log('Akses tidak diijinkan');
+
+              this.app.routeReplace('/login');
+            }
             else {
-              this.app.log('Gagal mengambil daftar jenis produk,'
+              this.app.log('Gagal mengambil daftar pengguna,'
                 + ` kesalahan server (${err.response.status})`);
             }
           }
           else {
-            this.app.log('Gagal mengambil daftar jenis produk, tidak ada jaringan');
+            this.app.log('Gagal mengambil daftar pengguna, tidak ada jaringan');
           }
         });
     },
-    onProductKIndAddCancel() {
-      this.productKindAdd = false;
-    },
-    onProductKindAddSuccess() {
-      this.productKindAdd = false;
-      this.reset();
-    },
-    onProductKindClick(productKindId) {
-      this.app.routePush(`/product-kind/${productKindId}`);
+    onUserClick(userId) {
+      this.app.routePush(`/user/${userId}`);
     },
   },
   created() {
-    this.app.setAppBar(true, 'Daftar Jenis Produk');
+    this.app.setAppBar(true, 'Daftar Pengguna');
   },
   mounted() {
     this.reset();

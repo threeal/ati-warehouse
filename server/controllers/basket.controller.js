@@ -7,14 +7,30 @@ exports.findAll = (req, res) => {
 
   // setTimeout(() => {
     Basket.find(condition)
-      .then((data) => {
-        res.send(data);
+      .then((baskets) => {
+        let filteredBaskets = [];
+
+        baskets.forEach((basket) => {
+          filteredBaskets.push({
+            id: basket._id,
+            basketNumber: basket.basketNumber,
+            basketId: basket.basketId,
+            startTime: basket.startTime,
+            endTime: basket.endTime,
+            trayQuantity: basket.trayQuantity,
+            canQuantity: basket.canQuantity,
+            rejectQuantity: basket.rejectQuantity,
+            rejectKind: basket.rejectKind,
+            seamingCondition: basket.seamingCondition,
+            canMarkCondition: basket.canMarkCondition,
+            indicatorCondition: basket.indicatorCondition,
+          });
+        });
+
+        res.send(filteredBaskets);
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message ||
-            `some error occured while retrieving baskets with document id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -23,9 +39,7 @@ exports.create = (req, res) => {
   const documentId = req.params.documentId;
 
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
   const basket = new Basket({
@@ -45,14 +59,11 @@ exports.create = (req, res) => {
 
   // setTimeout(() => {
     basket.save(basket)
-      .then((data) => {
-        res.send(data);
+      .then(() => {
+        res.send({ message: 'basket was created successfully' });
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while creating basket with document id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -62,21 +73,29 @@ exports.findOne = (req, res) => {
 
   // setTimeout(() => {
     Basket.findById(basketId)
-      .then((data) => {
-        if (data) {
-          res.send(data);
+      .then((basket) => {
+        if (basket) {
+          res.send({
+            id: basket._id,
+            basketNumber: basket.basketNumber,
+            basketId: basket.basketId,
+            startTime: basket.startTime,
+            endTime: basket.endTime,
+            trayQuantity: basket.trayQuantity,
+            canQuantity: basket.canQuantity,
+            rejectQuantity: basket.rejectQuantity,
+            rejectKind: basket.rejectKind,
+            seamingCondition: basket.seamingCondition,
+            canMarkCondition: basket.canMarkCondition,
+            indicatorCondition: basket.indicatorCondition,
+          });
         }
         else {
-          res.status(404).send({
-            message: `basket with id ${basketId} not found`,
-          });
+          res.status(404).send({ message: `basket with id ${basketId} not found` });
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while retrieving basket with id ${basketId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -85,12 +104,10 @@ exports.update = (req, res) => {
   const basketId = req.params.basketId;
 
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
-  const newData = {
+  const newBasket = {
     basketNumber: req.body.basketNumber,
     basketId: req.body.basketId,
     startTime: req.body.startTime,
@@ -105,24 +122,17 @@ exports.update = (req, res) => {
   };
 
   // setTimeout(() => {
-    Basket.findByIdAndUpdate(basketId, newData, { useFindAndModify: false })
-      .then((data) => {
-        if (data) {
-          res.send({
-            message: 'basket was updated successfully',
-          });
+    Basket.findByIdAndUpdate(basketId, newBasket, { useFindAndModify: false })
+      .then((basket) => {
+        if (basket) {
+          res.send({ message: 'basket was updated successfully' });
         }
         else {
-          res.status(404).send({
-            message: `cannot update basket with id ${basketId}`,
-          });
+          res.status(404).send({ message: `cannot update basket with id ${basketId}` });
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while updating basket with id ${basketId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -132,23 +142,16 @@ exports.remove = (req, res) => {
 
   // setTimeout(() => {
     Basket.findByIdAndDelete(basketId)
-      .then((data) => {
-        if (data) {
-          res.send({
-            message: 'basket was removed successfully',
-          });
+      .then((basket) => {
+        if (basket) {
+          res.send({ message: 'basket was removed successfully' });
         }
         else {
-          res.status(404).send({
-            message: `cannot remove basket with id ${basketId}`,
-          });
+          res.status(404).send({ message: `cannot remove basket with id ${basketId}` });
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while removing basket with id ${basketId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };

@@ -4,22 +4,27 @@ const ProductKind = models.ProductKind;
 exports.findAll = (_, res) => {
   // setTimeout(() => {
     ProductKind.find()
-      .then((data) => {
-        res.send(data);
+      .then((productKinds) => {
+        let filteredProductKinds = [];
+
+        productKinds.forEach((productKind) => {
+          filteredProductKinds.push({
+            id: productKind._id,
+            name: productKind.name,
+          });
+        });
+
+        res.send(filteredProductKinds);
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message || 'some error occured while retrieving product kinds',
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
 
 exports.create = (req, res) => {
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
   const productKind = new ProductKind({
@@ -28,13 +33,11 @@ exports.create = (req, res) => {
 
   // setTimeout(() => {
     productKind.save(productKind)
-      .then((data) => {
-        res.send(data);
+      .then(() => {
+        res.send({ message: 'product kind was created successfully' });
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message || 'some error occured while creating the product kind',
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -44,9 +47,12 @@ exports.findOne = (req, res) => {
 
   // setTimeout(() => {
     ProductKind.findById(productKindId)
-      .then((data) => {
-        if (data) {
-          res.send(data);
+      .then((productKind) => {
+        if (productKind) {
+          res.send({
+            id: productKind._id,
+            name: productKind.name,
+          });
         }
         else {
           res.status(404).send({
@@ -55,11 +61,7 @@ exports.findOne = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || 'some error occured while retrieving product kind with id'
-            + `${productKindId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -68,22 +70,19 @@ exports.update = (req, res) => {
   const productKindId = req.params.productKindId;
 
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
-  let newData = {
+  let newProductKind = {
     name: req.body.name,
   };
 
   // setTimeout(() => {
-    ProductKind.findByIdAndUpdate(productKindId, newData, { useFindAndModify: false })
-      .then((data) => {
-        if (data) {
-          res.send({
-            message: 'product kind was updated successfully',
-          });
+    ProductKind.findByIdAndUpdate(productKindId, newProductKind,
+        { useFindAndModify: false })
+      .then((productKind) => {
+        if (productKind) {
+          res.send({ message: 'product kind was updated successfully' });
         }
         else {
           res.status(404).send({
@@ -92,10 +91,7 @@ exports.update = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while updating product kind with id ${productKindId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -105,11 +101,9 @@ exports.remove = (req, res) => {
 
   // setTimeout(() => {
     ProductKind.findByIdAndDelete(productKindId)
-      .then((data) => {
-        if (data) {
-          res.send({
-            message: 'product kind was removed successfully',
-          });
+      .then((productKind) => {
+        if (productKind) {
+          res.send({ message: 'product kind was removed successfully' });
         }
         else {
           res.status(404).send({
@@ -118,10 +112,7 @@ exports.remove = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while removing product kind with id ${productKindId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };

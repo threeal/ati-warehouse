@@ -7,14 +7,34 @@ exports.findAll = (req, res) => {
 
   // setTimeout(() => {
     Pallet.find(condition)
-      .then((data) => {
-        res.send(data);
+      .then((pallets) => {
+        let filteredPallets = [];
+
+        pallets.forEach((pallet) => {
+          filteredPallets.push({
+            id: pallet._id,
+            palletNumber: pallet.palletNumber,
+            basketNumbers: pallet.basketNumbers,
+            startTime: pallet.startTime,
+            endTime: pallet.endTime,
+            layerQuantity: pallet.layerQuantity,
+            canQuantity: pallet.canQuantity,
+            loader: pallet.loader,
+            seamingCondition: pallet.seamingCondition,
+            cleanCondition: pallet.cleanCondition,
+            noRustCondition: pallet.noRustCondition,
+            noOilyCondition: pallet.noOilyCondition,
+            bottomPrintResult: pallet.bottomPrintResult,
+            middlePrintResult: pallet.middlePrintResult,
+            topPrintResult: pallet.topPrintResult,
+            description: pallet.description,
+          });
+        });
+
+        res.send(filteredPallets);
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message ||
-            `some error occured while retrieving pallets with document id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -23,9 +43,7 @@ exports.create = (req, res) => {
   const documentId = req.params.documentId;
 
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
   const pallet = new Pallet({
@@ -49,14 +67,11 @@ exports.create = (req, res) => {
 
   // setTimeout(() => {
     pallet.save(pallet)
-      .then((data) => {
-        res.send(data);
+      .then(() => {
+        res.send({ message: 'pallet was created successfully' });
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while creating pallet with document id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -66,21 +81,33 @@ exports.findOne = (req, res) => {
 
   // setTimeout(() => {
     Pallet.findById(palletId)
-      .then((data) => {
-        if (data) {
-          res.send(data);
+      .then((pallet) => {
+        if (pallet) {
+          res.send({
+            id: pallet._id,
+            palletNumber: pallet.palletNumber,
+            basketNumbers: pallet.basketNumbers,
+            startTime: pallet.startTime,
+            endTime: pallet.endTime,
+            layerQuantity: pallet.layerQuantity,
+            canQuantity: pallet.canQuantity,
+            loader: pallet.loader,
+            seamingCondition: pallet.seamingCondition,
+            cleanCondition: pallet.cleanCondition,
+            noRustCondition: pallet.noRustCondition,
+            noOilyCondition: pallet.noOilyCondition,
+            bottomPrintResult: pallet.bottomPrintResult,
+            middlePrintResult: pallet.middlePrintResult,
+            topPrintResult: pallet.topPrintResult,
+            description: pallet.description,
+          });
         }
         else {
-          res.status(404).send({
-            message: `pallet with id ${palletId} not found`,
-          });
+          res.status(404).send({ message: `pallet with id ${palletId} not found` });
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while retrieving pallet with id ${palletId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -93,7 +120,8 @@ exports.update = (req, res) => {
       message: 'content could not be empty!',
     });
   }
-  let newData = {
+
+  let newPallet = {
     palletNumber: req.body.palletNumber,
     basketNumbers: req.body.basketNumbers,
     startTime: req.body.startTime,
@@ -112,24 +140,17 @@ exports.update = (req, res) => {
   };
 
   // setTimeout(() => {
-    Pallet.findByIdAndUpdate(palletId, newData, { useFindAndModify: false })
-      .then((data) => {
-        if (data) {
-          res.send({
-            message: 'pallet was updated successfully',
-          });
+    Pallet.findByIdAndUpdate(palletId, newPallet, { useFindAndModify: false })
+      .then((pallet) => {
+        if (pallet) {
+          res.send({ message: 'pallet was updated successfully' });
         }
         else {
-          res.status(404).send({
-            message: `cannot update pallet with id ${palletId}`,
-          });
+          res.status(404).send({ message: `cannot update pallet with id ${palletId}` });
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while updating pallet with id ${palletId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -139,23 +160,16 @@ exports.remove = (req, res) => {
 
   // setTimeout(() => {
     Pallet.findByIdAndDelete(palletId)
-      .then((data) => {
-        if (data) {
-          res.send({
-            message: 'pallet was removed successfully',
-          });
+      .then((pallet) => {
+        if (pallet) {
+          res.send({ message: 'pallet was removed successfully' });
         }
         else {
-          res.status(404).send({
-            message: `cannot remove pallet with id ${palletId}`,
-          });
+          res.status(404).send({ message: `cannot remove pallet with id ${palletId}` });
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while removing pallet with id ${palletId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };

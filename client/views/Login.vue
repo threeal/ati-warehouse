@@ -71,8 +71,16 @@ export default {
       };
 
       AuthService.signIn(data)
-        .then(() => {
-          this.app.routeReplace('/document');
+        .then((res) => {
+          if (res.data.accessToken) {
+            localStorage.setItem('user', JSON.stringify(res.data));
+
+            this.app.user = res.data;
+            this.app.routeReplace('/document');
+          }
+          else {
+            this.app.log('Gagal masuk, akses tidak diijinkan');
+          }
         })
         .catch((err) => {
           if (err.response) {

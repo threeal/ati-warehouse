@@ -12,11 +12,11 @@ exports.findAll = (_, res) => {
       .then((productKinds) => {
         Document.find()
         .then((documents) => {
-          let data = [];
+          let filteredDocuments = [];
 
-          documents.forEach((document, index) => {
+          documents.forEach((document) => {
             let productKind = productKinds.find(o => o.id === document.productKindId);
-            data.push({
+            filteredDocuments.push({
               id: document._id,
               name: document.name,
               productKindId: document.productKindId,
@@ -25,28 +25,21 @@ exports.findAll = (_, res) => {
             });
           });
 
-          res.send(data);
+          res.send(filteredDocuments);
         })
         .catch((err) => {
-          console.log(err);
-          res.status(500).send({
-            message: err.message || 'some error occured while retrieving documents',
-          });
+          res.status(500).send({ message: err.message });
         });
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message || 'some error occured while retrieving documents',
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
 
 exports.create = (req, res) => {
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
   const document = new Document({
@@ -57,13 +50,11 @@ exports.create = (req, res) => {
 
   // setTimeout(() => {
     document.save(document)
-      .then((data) => {
-        res.send(data);
+      .then(() => {
+        res.send({ message: 'document was created successfully' });
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message || 'some error occured while creating the document',
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -86,24 +77,15 @@ exports.findOne = (req, res) => {
               });
             })
             .catch((err) => {
-              res.status(500).send({
-                message: err.message
-                  || 'some error occured while retrieving product kind with id'
-                  + `${productKindId}`,
-              });
+              res.status(500).send({ message: err.message });
             });
         }
         else {
-          res.status(404).send({
-            message: `document with id ${documentId} not found`,
-          });
+          res.status(404).send({ message: `document with id ${documentId} not found` });
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while retrieving document with id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -112,24 +94,20 @@ exports.update = (req, res) => {
   const documentId = req.params.documentId;
 
   if (!req.body) {
-    return res.status(400).send({
-      message: 'content could not be empty!',
-    });
+    return res.status(400).send({ message: 'content could not be empty!' });
   }
 
-  let newData = {
+  let newDocument = {
     name: req.body.name,
     productKindId: req.body.productKindId,
     productionDate: req.body.productionDate,
   };
 
   // setTimeout(() => {
-    Document.findByIdAndUpdate(documentId, newData, { useFindAndModify: false })
-      .then((data) => {
-        if (data) {
-          res.send({
-            message: 'document was updated successfully',
-          });
+    Document.findByIdAndUpdate(documentId, newDocument, { useFindAndModify: false })
+      .then((document) => {
+        if (document) {
+          res.send({ message: 'document was updated successfully' });
         }
         else {
           res.status(404).send({
@@ -138,10 +116,7 @@ exports.update = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while updating document with id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };
@@ -151,8 +126,8 @@ exports.remove = (req, res) => {
 
   // setTimeout(() => {
     Document.findByIdAndDelete(documentId)
-      .then((data) => {
-        if (data) {
+      .then((document) => {
+        if (document) {
           const condition = {
             documentId: { $regex: new RegExp(documentId), $options: 'i' }
           };
@@ -165,36 +140,22 @@ exports.remove = (req, res) => {
                     .then(() => {
                       Basket.deleteMany(condition)
                         .then(() => {
-                          res.send({
-                            message: 'document was removed successfully',
-                          });
+                          res.send({ message: 'document was removed successfully' });
                         })
                         .catch((err) => {
-                          res.status(500).send({
-                            message: err.message
-                              || `some error occured while removing basket with document id ${documentId}`,
-                          });
+                          res.status(500).send({ message: err.message });
                         });
                     })
                     .catch((err) => {
-                      res.status(500).send({
-                        message: err.message
-                          || `some error occured while removing basket unload with document id ${documentId}`,
-                      });
+                      res.status(500).send({ message: err.message });
                     });
                 })
                 .catch((err) => {
-                  res.status(500).send({
-                    message: err.message
-                      || `some error occured while removing pallet with document id ${documentId}`,
-                  });
+                  res.status(500).send({ message: err.message });
                 });
             })
             .catch((err) => {
-              res.status(500).send({
-                message: err.message
-                  || `some error occured while removing pallet load with document id ${documentId}`,
-              });
+              res.status(500).send({ message: err.message });
             });
         }
         else {
@@ -204,10 +165,7 @@ exports.remove = (req, res) => {
         }
       })
       .catch((err) => {
-        res.status(500).send({
-          message: err.message
-            || `some error occured while removing document with id ${documentId}`,
-        });
+        res.status(500).send({ message: err.message });
       });
   // }, 299);
 };

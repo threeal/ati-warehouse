@@ -14,12 +14,7 @@ class AuthService {
   }
 
   signIn(data) {
-    return http.post('/api/auth/sign-in', data)
-      .then((res) => {
-        if (res.data.accessToken) {
-          localStorage.setItem('user', JSON.stringify(res.data));
-        }
-      });
+    return http.post('/api/auth/sign-in', data);
   }
 
   signOut() {

@@ -6,10 +6,12 @@
         <b class="hidden-sm-and-down">ATI Warehouse | </b>{{ title }}
       </v-toolbar-title>
       <v-spacer class="hidden-sm-and-down"/>
-      <v-btn v-for="link in links" :key="link.title" class="hidden-sm-and-down"
-          @click="link.onClick()" text>
-        <v-icon left>{{ link.icon }}</v-icon> {{ link.title }}
-      </v-btn>
+      <div v-for="link in links" :key="link.title">
+        <v-btn v-if="!link.admin || user.admin" class="hidden-sm-and-down"
+            @click="link.onClick()" text>
+          <v-icon left>{{ link.icon }}</v-icon> {{ link.title }}
+        </v-btn>
+      </div>
     </v-app-bar>
     <Drawer v-if="appBar && $vuetify.breakpoint.smAndDown" class="hidden-md-and-up"
         :app="this" :links="links"/>
@@ -39,6 +41,7 @@ export default {
       title: '',
       drawer: false,
       appBar: false,
+      user: {},
       links: [
         {
           title: 'Daftar Dokumen',
@@ -52,6 +55,14 @@ export default {
           icon: 'mdi-view-list',
           onClick: () => {
             this.routePush('/product-kind');
+          },
+        },
+        {
+          admin: true,
+          title: 'Daftar Pengguna',
+          icon: 'mdi-view-list',
+          onClick: () => {
+            this.routePush('/user');
           },
         },
         {

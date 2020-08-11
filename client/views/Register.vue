@@ -20,6 +20,12 @@
             </v-row>
             <v-row>
               <v-col>
+                <v-text-field v-model="fullname" label="Nama Lengkap"
+                    :disabled="submitting" dense hide-details="auto" outlined/>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
                 <v-text-field v-model="password" label="Kata Sandi" type="password"
                     :error-messages="passwordError" :disabled="submitting"
                     dense hide-details="auto" outlined/>
@@ -61,6 +67,7 @@ export default {
   data() {
     return {
       username: null,
+      fullname: null,
       password: null,
       passwordConfirm: null,
       submitting: false,
@@ -95,7 +102,7 @@ export default {
       return null;
     },
     registerDisabled() {
-      return !this.username || !this.password || !this.passwordConfirm
+      return !this.username || !this.fullname || !this.password || !this.passwordConfirm
         || this.usernameError !== null || this.passwordError !== null
         || this.passwordConfirmError !== null;
     },
@@ -106,6 +113,7 @@ export default {
 
       let data = {
         username: this.username,
+        fullname: this.fullname,
         password: this.password,
       };
 
