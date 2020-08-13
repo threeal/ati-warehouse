@@ -46,6 +46,11 @@ class XlsxService {
       worksheet.getCell('H3').value = palletLoad.data.brand;
     }
 
+    worksheet.getCell('K1').value = 'Basket (Jumlah)';
+    worksheet.getCell('K2').value = 'Palet (jumlah)';
+    worksheet.getCell('K3').value = 'Selisih';
+    
+
     worksheet.mergeCells('A6:B6');
     worksheet.getCell('A6').value = 'Jam Pembongkaran';
     worksheet.getCell('A7').value = 'Mulai';
