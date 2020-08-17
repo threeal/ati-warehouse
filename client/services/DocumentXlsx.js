@@ -7,8 +7,8 @@ import BasketUnloadService from './BasketUnloadService'
 import PalletService from './PalletService';
 import BasketService from './BasketService';
 
-class XlsxService {
-  async generateDocument(documentId) {
+class DocumentXlsx {
+  async download(documentId) {
     let workbook = new Excel.Workbook();
 
     let document = await DocumentService.findOne(documentId);
@@ -49,7 +49,7 @@ class XlsxService {
     worksheet.getCell('K1').value = 'Basket (Jumlah)';
     worksheet.getCell('K2').value = 'Palet (jumlah)';
     worksheet.getCell('K3').value = 'Selisih';
-    
+
 
     worksheet.mergeCells('A6:B6');
     worksheet.getCell('A6').value = 'Jam Pembongkaran';
@@ -274,9 +274,9 @@ class XlsxService {
 
     const buffer = await workbook.xlsx.writeBuffer();
 
-    let documentTitle = `${document.data.productionDate}`;
+    let documentTitle = (document.data) ? `${document.data.name}` : 'document';
     buffer.download(`${documentTitle}.xlsx`);
   }
 }
 
-export default new XlsxService()
+export default new DocumentXlsx()

@@ -22,6 +22,12 @@
           <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
         </v-btn>
       </v-col>
+      <v-col cols="12">
+        <v-btn @click="onDownload()" :disabled="downloading" :loading="downloading"
+            color="primary" block>
+          <v-icon left>mdi-download</v-icon> Unduh XLSX
+        </v-btn>
+      </v-col>
     </v-row>
     <div v-if="fetching" class="d-flex justify-center">
       <v-progress-circular color="primary" indeterminate/>
@@ -45,6 +51,7 @@
 import PalletList from './PalletList'
 import PalletLoadService from '../services/PalletLoadService'
 import AuthService from '../services/AuthService'
+import PalletLoadXlsx from '../services/PalletLoadXlsx'
 import '../plugins/utility'
 
 export default {
@@ -60,6 +67,7 @@ export default {
     return {
       fetching: true,
       submitting: false,
+      downloading: false,
       edit: false,
       loadDate: null,
       brand: null,
@@ -105,6 +113,38 @@ export default {
           }
           else {
             this.app.log('Detail data muat palet gagal diperbaharui, tidak ada jaringan');
+          }
+        });
+    },
+    onDownload() {
+      this.downloading = true;
+      PalletLoadXlsx.download(this.$route.params.documentId)
+        .then(() => {
+          this.app.log('Data muat palet berhasil diunduh');
+
+          this.downloading = false;
+        })
+        .catch((err) => {
+          this.downloading = false;
+
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Sesi habis, harap masuk kembali');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Gagal mengunduh data muat palet dalam bentuk xlsx,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else if (err.request) {
+            this.app.log('Gagal mengunduh dokumen dalam bentuk xlsx, tidak ada jaringan');
+          }
+          else {
+            this.app.log('Gagal mengunduh data muat palet dalam bentuk xlsx,'
+              + ` kesalahan klien (${err.message})`);
           }
         });
     },
