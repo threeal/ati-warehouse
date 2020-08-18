@@ -34,7 +34,7 @@
           </v-col>
           <v-col v-if="edit || (canQuantity && canQuantity > 0)"
               :cols="(edit || (layerQuantity && layerQuantity > 0)) ? 6 : 12">
-            <v-text-field v-model="canQuantity" label="Sisa Kaleng" type="number"
+            <v-text-field v-model="canQuantity" label="Jumlah Kaleng" type="number"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
@@ -43,8 +43,8 @@
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
-          <v-col v-if="edit || description" cols="12">
-            <v-text-field v-model="description" label="Keterangan"
+          <v-col v-if="edit || remarks" cols="12">
+            <v-text-field v-model="remarks" label="Keterangan"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
@@ -156,7 +156,7 @@ export default {
       layerQuantity: null,
       canQuantity: null,
       loader: null,
-      description: null,
+      remarks: null,
       seamingCondition: null,
       cleanCondition: null,
       noRustCondition: null,
@@ -188,7 +188,7 @@ export default {
         layerQuantity: this.layerQuantity,
         canQuantity: this.canQuantity,
         loader: this.loader,
-        description: this.description,
+        remarks: this.remarks,
         seamingCondition: this.seamingCondition || false,
         cleanCondition: this.cleanCondition || false,
         noRustCondition: this.noRustCondition || false,
@@ -269,7 +269,7 @@ export default {
         this.layerQuantity = res.data.layerQuantity;
         this.canQuantity = res.data.canQuantity;
         this.loader = res.data.loader;
-        this.description = res.data.description;
+        this.remarks = res.data.remarks;
         this.seamingCondition = res.data.seamingCondition;
         this.cleanCondition = res.data.cleanCondition;
         this.noRustCondition = res.data.noRustCondition;

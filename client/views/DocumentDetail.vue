@@ -129,7 +129,7 @@ import ProductKindService from '../services/ProductKindService'
 import PalletLoadService from '../services/PalletLoadService'
 import BasketUnloadService from '../services/BasketUnloadService'
 import AuthService from '../services/AuthService'
-import XlsxService from '../services/XlsxService'
+import DocumentXlsx from '../services/DocumentXlsx'
 import '../plugins/utility'
 
 export default {
@@ -225,7 +225,7 @@ export default {
     },
     onDownload() {
       this.downloading = true;
-      XlsxService.generateDocument(this.$route.params.documentId)
+      DocumentXlsx.download(this.$route.params.documentId)
         .then(() => {
           this.app.log('Dokumen berhasil diunduh');
 
