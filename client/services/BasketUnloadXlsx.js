@@ -6,23 +6,53 @@ import BasketUnloadService from './BasketUnloadService'
 import BasketService from './BasketService';
 
 class BasketUnloadXlsx {
+
   async download(documentId) {
+    let workbook = new Excel.Workbook();
+
+    let data = {};
 
     let document = await DocumentService.findOne(documentId);
+    if (document.data) {
+      data.productKind = document.data.productKind;
+      data.productionDate = document.data.productionDate;
+    }
+
     let basketUnload = await BasketUnloadService.find(documentId);
+    if (basketUnload.data) {
+      data.unloadDate = basketUnload.data.unloadDate;
+      data.line = basketUnload.data.line;
+    }
+
     let baskets = await BasketService.findAll(documentId);
+    data.baskets = baskets.data || [];
 
-    let workbook = new Excel.Workbook();
-    let worksheet = workbook.addWorksheet('WH-23 2018-01-13', {
-      pageSetup: {
-        printArea: 'A1:AB54',
-      },
-      views: [
-        { showGridLines: false },
-      ],
-    });
+    for (let i = 0; i * 48 < data.baskets.length || i === 0; ++i) {
+      let worksheet = workbook.addWorksheet(`Sheet${i+1}`, {
+        pageSetup: {
+          printArea: 'A1:AB54',
+        },
+        views: [
+          { showGridLines: false },
+        ],
+      });
 
-    // setup column width
+      this.fillWorksheet(worksheet, {
+        productKind: data.productKind,
+        productionDate: data.productionDate,
+        line: data.line,
+        unloadDate: data.unloadDate,
+        baskets: data.baskets.slice(i * 48, (i + 1) * 48),
+      });
+    }
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    let documentTitle = (document.data) ? `${document.data.name}` : 'document';
+    buffer.download(`${documentTitle}.xlsx`);
+  }
+
+  fillWorksheet(worksheet, data) {
     worksheet.getColumn('A').width = 54 * 0.15;
     worksheet.getColumn('B').width = 20 * 0.15;
     worksheet.getColumn('C').width = 20 * 0.15;
@@ -52,7 +82,6 @@ class BasketUnloadXlsx {
     worksheet.getColumn('AA').width = 36 * 0.15;
     worksheet.getColumn('AB').width = 40 * 0.15;
 
-    // setup rows height
     worksheet.getRow(1).height = 16 * 0.75;
     worksheet.getRow(2).height = 15 * 0.75;
     worksheet.getRow(3).height = 3 * 0.75;
@@ -124,9 +153,7 @@ class BasketUnloadXlsx {
 
     worksheet.mergeCells('B7:D7');
     cell = worksheet.getCell('B7');
-    if (basketUnload.data) {
-      cell.value = basketUnload.data.line;
-    }
+    cell.value = data.line;
     cell.font = { name: 'Arial Narrow', size: 12 };
     cell.alignment = { horizontal: 'center', vertical: 'middle' };
     cell.border = fullBorder;
@@ -145,19 +172,17 @@ class BasketUnloadXlsx {
 
     worksheet.mergeCells('V4:AB4');
     cell = worksheet.getCell('V4');
-    if (basketUnload.data) {
-      if (basketUnload.data.unloadDate) {
-        let dates = basketUnload.data.unloadDate.split('-');
-        cell.value = {
-          richText: [
-            { text: dates[0], font: { bold: false } },
-            { text: '  -     ' },
-            { text: dates[1], font: { bold: false } },
-            { text: '     -      ' },
-            { text: dates[2], font: { bold: false } },
-          ],
-        };
-      }
+    if (data.unloadDate) {
+      let dates = data.unloadDate.split('-');
+      cell.value = {
+        richText: [
+          { text: dates[0], font: { bold: false } },
+          { text: '  -     ' },
+          { text: dates[1], font: { bold: false } },
+          { text: '     -      ' },
+          { text: dates[2], font: { bold: false } },
+        ],
+      };
     }
     else {
       cell.value = '-              -';
@@ -187,19 +212,17 @@ class BasketUnloadXlsx {
 
     worksheet.mergeCells('V6:AB6');
     cell = worksheet.getCell('V6');
-    if (document.data) {
-      if (document.data.productionDate) {
-        let dates = document.data.productionDate.split('-');
-        cell.value = {
-          richText: [
-            { text: dates[0], font: { bold: false } },
-            { text: '  -     ' },
-            { text: dates[1], font: { bold: false } },
-            { text: '     -      ' },
-            { text: dates[2], font: { bold: false } },
-          ],
-        };
-      }
+    if (data.productionDate) {
+      let dates = data.productionDate.split('-');
+      cell.value = {
+        richText: [
+          { text: dates[0], font: { bold: false } },
+          { text: '  -     ' },
+          { text: dates[1], font: { bold: false } },
+          { text: '     -      ' },
+          { text: dates[2], font: { bold: false } },
+        ],
+      };
     }
     else {
       cell.value = '-              -';
@@ -222,9 +245,7 @@ class BasketUnloadXlsx {
 
     worksheet.mergeCells('V7:AB7');
     cell = worksheet.getCell('V7');
-    if (document.data) {
-      cell.value = document.data.productKind;
-    }
+    cell.value = data.productKind;
     cell.font = { name: 'Arial Narrow', size: 12 };
     cell.alignment = { horizontal: 'center', vertical: 'middle' };
     cell.border = fullBorder;
@@ -443,20 +464,20 @@ class BasketUnloadXlsx {
       cell.border = fullBorder;
     });
 
-    for (let i = 0; i <= 48; ++i) {
+    for (let i = 0; i < 48; ++i) {
       let basket = {};
-      if (baskets.data) {
-        if (i < baskets.data.length) {
-          basket = baskets.data[i];
+      if (data.baskets) {
+        if (i < data.baskets.length) {
+          basket = data.baskets[i];
         }
       }
 
-      if (i <= 24) {
+      if (i < 24) {
         cell = worksheet.getCell(`A${11+i}`);
       }
       else {
-        worksheet.mergeCells(`N${11+i-25}:P${11+i-25}`);
-        cell = worksheet.getCell(`N${11+i-25}`);
+        worksheet.mergeCells(`N${11+i-24}:P${11+i-24}`);
+        cell = worksheet.getCell(`N${11+i-24}`);
       }
       if (basket.startTime) {
         let times = basket.startTime.split(':');
@@ -472,12 +493,12 @@ class BasketUnloadXlsx {
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.border = fullBorder;
 
-      if (i <= 24) {
+      if (i < 24) {
         worksheet.mergeCells(`B${11+i}:D${11+i}`);
         cell = worksheet.getCell(`B${11+i}`);
       }
       else {
-        cell = worksheet.getCell(`Q${11+i-25}`);
+        cell = worksheet.getCell(`Q${11+i-24}`);
       }
       if (basket.endTime) {
         let times = basket.endTime.split(':');
@@ -493,12 +514,12 @@ class BasketUnloadXlsx {
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.border = fullBorder;
 
-      if (i <= 24) {
+      if (i < 24) {
         cell = worksheet.getCell(`E${11+i}`);
       }
       else {
-        worksheet.mergeCells(`R${11+i-25}:S${11+i-25}`);
-        cell = worksheet.getCell(`R${11+i-25}`);
+        worksheet.mergeCells(`R${11+i-24}:S${11+i-24}`);
+        cell = worksheet.getCell(`R${11+i-24}`);
       }
       if (basket.basketNumber) {
         cell.value = basket.basketNumber;
@@ -507,12 +528,12 @@ class BasketUnloadXlsx {
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.border = fullBorder;
 
-      if (i <= 24) {
+      if (i < 24) {
         cell = worksheet.getCell(`F${11+i}`);
       }
       else {
-        worksheet.mergeCells(`T${11+i-25}:U${11+i-25}`);
-        cell = worksheet.getCell(`T${11+i-25}`);
+        worksheet.mergeCells(`T${11+i-24}:U${11+i-24}`);
+        cell = worksheet.getCell(`T${11+i-24}`);
       }
       if (basket.basketId) {
         cell.value = basket.basketId;
@@ -521,11 +542,11 @@ class BasketUnloadXlsx {
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.border = fullBorder;
 
-      if (i <= 24) {
+      if (i < 24) {
         cell = worksheet.getCell(`G${11+i}`);
       }
       else {
-        cell = worksheet.getCell(`V${11+i-25}`);
+        cell = worksheet.getCell(`V${11+i-24}`);
       }
       if (typeof basket.seamingCondition !== 'undefined') {
         cell.value = (basket.seamingCondition) ? 'O' : 'X';
@@ -534,11 +555,11 @@ class BasketUnloadXlsx {
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.border = fullBorder;
 
-      if (i <= 24) {
+      if (i < 24) {
         cell = worksheet.getCell(`H${11+i}`);
       }
       else {
-        cell = worksheet.getCell(`W${11+i-25}`);
+        cell = worksheet.getCell(`W${11+i-24}`);
       }
       if (typeof basket.canMarkCondition !== 'undefined') {
         cell.value = (basket.canMarkCondition) ? 'O' : 'X';
@@ -547,11 +568,11 @@ class BasketUnloadXlsx {
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.border = fullBorder;
 
-      if (i <= 24) {
+      if (i < 24) {
         cell = worksheet.getCell(`I${11+i}`);
       }
       else {
-        cell = worksheet.getCell(`X${11+i-25}`);
+        cell = worksheet.getCell(`X${11+i-24}`);
       }
       if (typeof basket.indicatorCondition !== 'undefined') {
         cell.value = (basket.indicatorCondition) ? 'O' : 'X';
@@ -560,12 +581,12 @@ class BasketUnloadXlsx {
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.border = fullBorder;
 
-      if (i <= 24) {
+      if (i < 24) {
         cell = worksheet.getCell(`J${11+i}`);
       }
       else {
-        worksheet.mergeCells(`Y${11+i-25}:Z${11+i-25}`);
-        cell = worksheet.getCell(`Y${11+i-25}`);
+        worksheet.mergeCells(`Y${11+i-24}:Z${11+i-24}`);
+        cell = worksheet.getCell(`Y${11+i-24}`);
       }
       if (basket.trayQuantity) {
         if (basket.canQuantity) {
@@ -582,11 +603,11 @@ class BasketUnloadXlsx {
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.border = fullBorder;
 
-      if (i <= 24) {
+      if (i < 24) {
         cell = worksheet.getCell(`K${11+i}`);
       }
       else {
-        cell = worksheet.getCell(`AA${11+i-25}`);
+        cell = worksheet.getCell(`AA${11+i-24}`);
       }
       if (basket.rejectQuantity) {
         cell.value = basket.rejectQuantity;
@@ -595,11 +616,11 @@ class BasketUnloadXlsx {
       cell.alignment = { horizontal: 'center', vertical: 'middle' };
       cell.border = fullBorder;
 
-      if (i <= 24) {
+      if (i < 24) {
         cell = worksheet.getCell(`L${11+i}`);
       }
       else {
-        cell = worksheet.getCell(`AB${11+i-25}`);
+        cell = worksheet.getCell(`AB${11+i-24}`);
       }
       if (basket.rejectKind) {
         cell.value = basket.rejectKind;
@@ -1019,11 +1040,6 @@ class BasketUnloadXlsx {
     worksheet.mergeCells('Y50:AB52');
     cell = worksheet.getCell('Y50');
     cell.border = fullBorder;
-
-    const buffer = await workbook.xlsx.writeBuffer();
-
-    let documentTitle = (document.data) ? `${document.data.name}` : 'document';
-    buffer.download(`${documentTitle}.xlsx`);
   }
 }
 
