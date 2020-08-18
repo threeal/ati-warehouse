@@ -39,7 +39,7 @@
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="12">
-          <v-text-field v-model="description" label="Keterangan"
+          <v-text-field v-model="remarks" label="Keterangan"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="12">
@@ -126,7 +126,7 @@ export default {
       layerQuantity: null,
       canQuantity: null,
       loader: null,
-      description: null,
+      remarks: null,
       seamingCondition: true,
       cleanCondition: true,
       noRustCondition: true,
@@ -169,7 +169,7 @@ export default {
         layerQuantity: this.layerQuantity,
         canQuantity: this.canQuantity,
         loader: this.loader,
-        description: this.description,
+        remarks: this.remarks,
         seamingCondition: this.seamingCondition || false,
         cleanCondition: this.cleanCondition || false,
         noRustCondition: this.noRustCondition || false,

@@ -27,7 +27,7 @@ exports.findAll = (req, res) => {
             bottomPrintResult: pallet.bottomPrintResult,
             middlePrintResult: pallet.middlePrintResult,
             topPrintResult: pallet.topPrintResult,
-            description: pallet.description,
+            remarks: pallet.remarks,
           });
         });
 
@@ -62,7 +62,7 @@ exports.create = (req, res) => {
       bottomPrintResult: req.body.bottomPrintResult,
       middlePrintResult: req.body.middlePrintResult,
       topPrintResult: req.body.topPrintResult,
-      description: req.body.description,
+      remarks: req.body.remarks,
   });
 
   // setTimeout(() => {
@@ -99,7 +99,7 @@ exports.findOne = (req, res) => {
             bottomPrintResult: pallet.bottomPrintResult,
             middlePrintResult: pallet.middlePrintResult,
             topPrintResult: pallet.topPrintResult,
-            description: pallet.description,
+            remarks: pallet.remarks,
           });
         }
         else {
@@ -136,7 +136,7 @@ exports.update = (req, res) => {
     bottomPrintResult: req.body.bottomPrintResult,
     middlePrintResult: req.body.middlePrintResult,
     topPrintResult: req.body.topPrintResult,
-    description: req.body.description,
+    remarks: req.body.remarks,
   };
 
   // setTimeout(() => {

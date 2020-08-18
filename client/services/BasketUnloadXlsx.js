@@ -6,7 +6,6 @@ import BasketUnloadService from './BasketUnloadService'
 import BasketService from './BasketService';
 
 class BasketUnloadXlsx {
-
   async download(documentId) {
     let workbook = new Excel.Workbook();
 
@@ -14,6 +13,7 @@ class BasketUnloadXlsx {
 
     let document = await DocumentService.findOne(documentId);
     if (document.data) {
+      data.name = document.data.name;
       data.productKind = document.data.productKind;
       data.productionDate = document.data.productionDate;
     }
@@ -40,16 +40,18 @@ class BasketUnloadXlsx {
       this.fillWorksheet(worksheet, {
         productKind: data.productKind,
         productionDate: data.productionDate,
-        line: data.line,
         unloadDate: data.unloadDate,
+        line: data.line,
         baskets: data.baskets.slice(i * 48, (i + 1) * 48),
       });
     }
 
     const buffer = await workbook.xlsx.writeBuffer();
 
-    let documentTitle = (document.data) ? `${document.data.name}` : 'document';
-    buffer.download(`${documentTitle}.xlsx`);
+    let documentTitle = (data.name)
+      ? `${data.name.replace(/\s/g , "-")}`
+      : 'dokumen';
+    buffer.download(`${documentTitle}-bongkar-basket.xlsx`);
   }
 
   fillWorksheet(worksheet, data) {
@@ -721,7 +723,7 @@ class BasketUnloadXlsx {
       ],
     };
     cell.font = { name: 'Arial Narrow', size: 9 };
-    cell.alignment = { horizontal: 'left', vertical: 'top',wrapText: true };
+    cell.alignment = { horizontal: 'left', vertical: 'top', wrapText: true };
     cell.border = fullBorder;
 
     worksheet.mergeCells('R36:V40');

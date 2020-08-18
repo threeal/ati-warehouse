@@ -16,7 +16,7 @@ module.exports = (mongoose) => {
       bottomPrintResult: Boolean,
       middlePrintResult: Boolean,
       topPrintResult: Boolean,
-      description: String,
+      remarks: String,
     },
     { timestamp: true },
   );

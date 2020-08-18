@@ -243,7 +243,7 @@ class DocumentXlsx {
         worksheet.getCell(`AA${index + 8}`).value = pallet.canQuantity || 0;
 
         worksheet.getCell(`AB${index + 8}`).value = pallet.loader || '-';
-        worksheet.getCell(`AC${index + 8}`).value = pallet.description || '-';
+        worksheet.getCell(`AC${index + 8}`).value = pallet.remarks || '-';
       });
 
       for (let i = 8; i < pallets.data.length + 8; ++i) {

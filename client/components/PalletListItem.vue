@@ -21,7 +21,7 @@
             Loader {{ pallet.loader }}
           </div>
         </div>
-        <div>{{ pallet.description }}</div >
+        <div>{{ pallet.remarks }}</div >
         <div class="error--text">{{ conditionString }}</div >
         <div class="error--text">{{ printResultString }}</div >
       </v-list-item-subtitle>
