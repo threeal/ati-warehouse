@@ -493,6 +493,70 @@ class PalletLoadXlsx {
     cell.alignment = { horizontal: 'center', vertical: 'middle' };
     cell.border = fullBorder;
 
+    worksheet.mergeCells('M45:O45');
+    cell = worksheet.getCell('M45');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('M46:O47');
+    cell = worksheet.getCell('M46');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('M48:O48');
+    cell = worksheet.getCell('M48');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('M49:O49');
+    cell = worksheet.getCell('M49');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('M50:O50');
+    cell = worksheet.getCell('M50');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('M51:O51');
+    cell = worksheet.getCell('M51');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('M52:O52');
+    cell = worksheet.getCell('M52');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('I46:L47');
+    cell = worksheet.getCell('I46');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('I48:L48');
+    cell = worksheet.getCell('I48');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('I49:L49');
+    cell = worksheet.getCell('I49');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('I50:L50');
+    cell = worksheet.getCell('I50');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('I51:L51');
+    cell = worksheet.getCell('I51');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('I52:L52');
+    cell = worksheet.getCell('I52');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('I56:M57');
+    cell = worksheet.getCell('I56');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('N56:N57');
+    cell = worksheet.getCell('N56');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('O56:O57');
+    cell = worksheet.getCell('O56');
+    cell.border = fullBorder;
+
     worksheet.mergeCells('N5:O5');
     cell = worksheet.getCell('N5');
     if (data.productionDate) {
