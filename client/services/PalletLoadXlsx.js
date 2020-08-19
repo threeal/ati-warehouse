@@ -208,6 +208,291 @@ class PalletLoadXlsx {
     cell.alignment = { vertical: 'middle' };
     cell.border = fullBorder;
 
+    worksheet.mergeCells('A7:A9');
+    cell = worksheet.getCell('A7');
+    cell.value = {
+      richText: [
+        { text: 'Jam Penuh\n' },
+        { text: 'Pallet Full Time', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('B7:B9');
+    cell = worksheet.getCell('B7');
+    cell.value = {
+      richText: [
+        { text: 'No. Pallet\n' },
+        { text: 'Pallet No.', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('C7:D9');
+    cell = worksheet.getCell('C7');
+    cell.value = {
+      richText: [
+        { text: 'Nomor Basket\n' },
+        { text: 'Basket Number', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('E7:E9');
+    cell = worksheet.getCell('E7');
+    cell.value = {
+      richText: [
+        { text: 'Kondisi\n Seaming\n' },
+        { text: 'Seaming\n Condition', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('F7:I8');
+    cell = worksheet.getCell('F7');
+    cell.value = {
+      richText: [
+        { text: 'Kondisi/' },
+        { text: 'Condition', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    cell = worksheet.getCell('F9');
+    cell.value = {
+      richText: [
+        { text: 'Bersih/\n' },
+        { text: 'Clean', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 7 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle', textRotation: 90 };
+    cell.border = fullBorder;
+
+    cell = worksheet.getCell('G9');
+    cell.value = {
+      richText: [
+        { text: 'Tdk Karat/\n' },
+        { text: 'No Rust', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 7 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle', textRotation: 90 };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('H9:I9');
+    cell = worksheet.getCell('H9');
+    cell.value = {
+      richText: [
+        { text: 'Tdk Minyak/\n' },
+        { text: 'No Oily', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 7 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle', textRotation: 90 };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('J7:L8');
+    cell = worksheet.getCell('J7');
+    cell.value = {
+      richText: [
+        { text: 'Hasil Print' },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    cell = worksheet.getCell('J9');
+    cell.value = {
+      richText: [
+        { text: 'B' },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    cell = worksheet.getCell('K9');
+    cell.value = {
+      richText: [
+        { text: 'T' },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    cell = worksheet.getCell('L9');
+    cell.value = {
+      richText: [
+        { text: 'A' },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('M7:M9');
+    cell = worksheet.getCell('M7');
+    cell.value = {
+      richText: [
+        { text: 'Jumlah\n' },
+        { text: 'Quantity\n' },
+        { text: '(Layer)' },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('N7:N9');
+    cell = worksheet.getCell('N7');
+    cell.value = {
+      richText: [
+        { text: 'Loader' },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('O7:O9');
+    cell = worksheet.getCell('O7');
+    cell.value = {
+      richText: [
+        { text: 'Keterangan/\n' },
+        { text: 'Remark', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 9 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('A44:A46');
+    cell = worksheet.getCell('A44');
+    cell.value = {
+      richText: [
+        { text: 'KODE PRINT\n' },
+        { text: 'Print Code', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 11 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('B44:G46');
+    cell = worksheet.getCell('B44');
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('A48:G50');
+    cell = worksheet.getCell('A48');
+    cell.value = {
+      richText: [
+        { text: 'O = OK (Memenuhi Syarat/ ' },
+        { text: 'Qualified)', font: { italic: true } },
+        { text: '                    / = Tidak Ada Data/ ' },
+        { text: 'No Data\n', font: { italic: true } },
+        { text: 'X = Tidak Memenuhi Syarat/ ' },
+        { text: 'Not Qualified', font: { italic: true } },
+        { text: '            Z = Berhenti/ ' },
+        { text: 'Stop\n', font: { italic: true } },
+        { text: 'B : Bawah           T : Tengah           A : Atas' },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 11 };
+    cell.alignment = { horizontal: 'left', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('I44:L45');
+    cell = worksheet.getCell('I44');
+    cell.value = {
+      richText: [
+        { text: 'Rijek (pcs)\n' },
+        { text: 'Reject', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 11 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('M44:O44');
+    cell = worksheet.getCell('M44');
+    cell.value = {
+      richText: [
+        { text: 'Keterangan/ ' },
+        { text: 'Remarks', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 11 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('I54:M54');
+    cell = worksheet.getCell('I54');
+    cell.value = {
+      richText: [
+        { text: 'Penanggung Jawab\n' },
+        { text: 'In Charge', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 11 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('I55:M55');
+    cell = worksheet.getCell('I55');
+    cell.value = {
+      richText: [
+        { text: 'Unit Head Warehouse' },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 10 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    cell = worksheet.getCell('N55');
+    cell.value = {
+      richText: [
+        { text: 'ADM Warehouse' },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 10 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    cell = worksheet.getCell('O55');
+    cell.value = {
+      richText: [
+        { text: 'QC Proses' },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 10 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
+    worksheet.mergeCells('N54:O54');
+    cell = worksheet.getCell('N54');
+    cell.value = {
+      richText: [
+        { text: 'Diperiksa Oleh\n' },
+        { text: 'Checked By', font: { italic: true } },
+      ],
+    };
+    cell.font = { name: 'Arial Narrow', size: 11 };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border = fullBorder;
+
     worksheet.mergeCells('N5:O5');
     cell = worksheet.getCell('N5');
     if (data.productionDate) {
