@@ -10,11 +10,11 @@
       <v-divider v-if="typeof cancelCallback === 'function'" inset vertical/>
       <v-row>
         <v-col cols="12">
-          <v-text-field v-model="palletNumber" label="Nomor Palet"
+          <v-text-field v-model="palletNumber" label="Nomor Palet" type="number"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="12">
-          <v-combobox v-model="basketNumbers" label="Nomor Basket"
+          <v-combobox v-model="basketNumbers" label="Nomor Basket" type="number"
               :disabled="submitting" clearable hide-details outlined
               multiple chips deletable-chips/>
         </v-col>
@@ -119,7 +119,7 @@ export default {
   },
   data() {
     return {
-      palletNumber: null,
+      palletNumber: 1,
       basketNumbers: null,
       startTime: (new Date()).toTimeInput(),
       endTime: (new Date()).toTimeInput(),
@@ -145,14 +145,6 @@ export default {
     }
   },
   methods: {
-    reset() {
-      this.palletNumber = null;
-      this.basketNumbers = null;
-      this.startTime = (new Date()).toTimeInput();
-      this.endTime = (new Date()).toTimeInput();
-      this.layerQuantity = null;
-      this.canQuantity = null;
-    },
     onClose() {
       if (typeof this.cancelCallback === 'function') {
         this.cancelCallback();
@@ -184,7 +176,18 @@ export default {
           this.app.log('Data palet berhasil ditambahkan');
 
           this.submitting = false;
-          this.reset();
+
+          this.palletNumber = this.palletNumber + 1;
+          this.basketNumbers = null;
+          this.startTime = this.endTime;
+          this.remarks = null;
+          this.seamingCondition = true;
+          this.cleanCondition = true;
+          this.noRustCondition = true;
+          this.noOilyCondition = true;
+          this.bottomPrintResult = true;
+          this.middlePrintResult = true;
+          this.topPrintResult = true;
 
           if (typeof this.successCallback === 'function') {
             this.successCallback();
@@ -210,6 +213,29 @@ export default {
           }
         });
     },
+  },
+  mounted() {
+    PalletService.findAll(this.$route.params.documentId)
+      .then((res) => {
+        if (res.data) {
+          let lastPallet = res.data[res.data.length - 1];
+
+          this.palletNumber = lastPallet.palletNumber + 1;
+          this.startTime = lastPallet.endTime;
+          this.endTime = lastPallet.endTime;
+          this.loader = lastPallet.loader;
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            this.app.log('Sesi habis, harap masuk kembali');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+        }
+      });
   },
 }
 </script>

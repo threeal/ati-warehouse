@@ -1,17 +1,29 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="8">
+      <v-col cols="12" sm="8">
         <v-text-field v-if="!edit" v-model="unloadDateLocale" label="Tanggal Bongkar"
             :disabled="fetching" :loading="fetching" readonly filled outlined
             dense hide-details/>
         <v-text-field v-else v-model="unloadDate" label="Tanggal Bongkar" type="date"
             :disabled="submitting" outlined dense hide-details/>
       </v-col>
-      <v-col cols="4">
+      <v-col cols="12" sm="4">
         <v-text-field v-model="line" label="Line"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
             :filled="!edit" :clearable="edit" outlined dense hide-details/>
+      </v-col>
+      <v-col v-if="!edit" :cols="(canQuantity > 0) ? 6 : 12">
+        <v-text-field v-model="trayQuantity" label="Jumlah Tray" :disabled="fetching"
+            :loading="fetching" readonly filled outlined dense hide-details/>
+      </v-col>
+      <v-col v-if="!edit && canQuantity > 0" cols="6">
+        <v-text-field v-model="canQuantity" label="Jumlah Kaleng" :disabled="fetching"
+            :loading="fetching" readonly filled outlined dense hide-details/>
+      </v-col>
+      <v-col v-if="!edit" cols="12">
+        <v-text-field v-model="totalCan" label="Total Kaleng" :disabled="fetching"
+            :loading="fetching" readonly filled outlined dense hide-details/>
       </v-col>
       <v-col cols="12">
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
@@ -34,7 +46,7 @@
     </div>
     <v-row v-else>
       <v-col>
-        <BasketList :app="app"/>
+        <BasketList :app="app" :reset-callback="reset"/>
       </v-col>
     </v-row>
     <v-row>
@@ -71,6 +83,9 @@ export default {
       edit: false,
       unloadDate: null,
       line: null,
+      trayQuantity: null,
+      canQuantity: null,
+      totalCan: null,
     };
   },
   computed: {
@@ -79,6 +94,34 @@ export default {
     },
   },
   methods: {
+    reset() {
+      BasketUnloadService.find(this.$route.params.documentId)
+        .then((res) => {
+          this.fetching = false;
+          this.unloadDate = res.data.unloadDate;
+          this.line = res.data.line;
+          this.trayQuantity = res.data.trayQuantity;
+          this.canQuantity = res.data.canQuantity;
+          this.totalCan = res.data.totalCan;
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.status === 401) {
+              this.app.log('Sesi habis, harap masuk kembali');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Gagal mengambil detail data bongkar basket,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Gagal mengambil detail data bongkar basket, tidak ada jaringan');
+          }
+        });
+    },
     onEdit() {
       this.edit = true;
     },
@@ -185,29 +228,7 @@ export default {
     },
   },
   mounted() {
-    BasketUnloadService.find(this.$route.params.documentId)
-      .then((res) => {
-        this.fetching = false;
-        this.unloadDate = res.data.unloadDate;
-        this.line = res.data.line;
-      })
-      .catch((err) => {
-        if (err.response) {
-          if (err.response.status === 401) {
-            this.app.log('Sesi habis, harap masuk kembali');
-
-            AuthService.signOut();
-            this.app.routeReplace('/login');
-          }
-          else {
-            this.app.log('Gagal mengambil detail data bongkar basket,'
-              + ` kesalahan server (${err.response.status})`);
-          }
-        }
-        else {
-          this.app.log('Gagal mengambil detail data bongkar basket, tidak ada jaringan');
-        }
-      });
+    this.reset();
   },
 }
 </script>

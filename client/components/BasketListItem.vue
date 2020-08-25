@@ -63,12 +63,8 @@ export default {
       return null;
     },
     durationString() {
-      if (this.basket.startTime) {
-        if (this.basket.endTime) {
-          let duration = this.basket.endTime.toTimeNumber()
-            - this.basket.startTime.toTimeNumber();
-          return ` (~${duration.toTimeInput()})`;
-        }
+      if (this.basket.durationTime) {
+        return ` (~${this.basket.durationTime})`;
       }
 
       return null;

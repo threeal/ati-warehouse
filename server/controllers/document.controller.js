@@ -128,9 +128,7 @@ exports.remove = (req, res) => {
     Document.findByIdAndDelete(documentId)
       .then((document) => {
         if (document) {
-          const condition = {
-            documentId: { $regex: new RegExp(documentId), $options: 'i' }
-          };
+          const condition = { documentId: documentId };
 
           PalletLoad.deleteMany(condition)
             .then(() => {

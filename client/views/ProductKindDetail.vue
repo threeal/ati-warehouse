@@ -9,6 +9,18 @@
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
           <v-col cols="12">
+            <v-text-field v-model="cansPerBasketTray" label="Kaleng Per Tray Basket"
+                type="number" :disabled="fetching || submitting" :loading="fetching"
+                :readonly="!edit" :filled="!edit" :clearable="edit"
+                hide-details dense outlined/>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field v-model="cansPerPalletLayer" label="Kaleng Per Layer Palet"
+                type="number" :disabled="fetching || submitting" :loading="fetching"
+                :readonly="!edit" :filled="!edit" :clearable="edit"
+                hide-details dense outlined/>
+          </v-col>
+          <v-col cols="12">
             <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
               <v-icon left>mdi-pencil</v-icon> Ubah Detail
             </v-btn>
@@ -43,6 +55,8 @@ export default {
       submitting: false,
       edit: false,
       name: null,
+      cansPerBasketTray: null,
+      cansPerPalletLayer: null,
     };
   },
   computed: {
@@ -59,6 +73,8 @@ export default {
 
       let data = {
         name: this.name,
+        cansPerBasketTray: this.cansPerBasketTray,
+        cansPerPalletLayer: this.cansPerPalletLayer,
       };
 
       ProductKindService.update(this.$route.params.productKindId, data)
@@ -124,6 +140,8 @@ export default {
     ProductKindService.findOne(this.$route.params.productKindId)
       .then((res) => {
         this.name = res.data.name;
+        this.cansPerBasketTray = res.data.cansPerBasketTray;
+        this.cansPerPalletLayer = res.data.cansPerPalletLayer;
 
         this.fetching = false;
       })

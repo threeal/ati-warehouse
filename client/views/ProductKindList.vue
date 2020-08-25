@@ -25,11 +25,19 @@
             <div v-else-if="productKinds.length > 0">
               <div v-for="(productKind, index) in productKinds" :key="index">
                 <v-divider v-if="index > 0"/>
-                <v-list-item  @click="onProductKindClick(productKind.id)" link>
+                <v-list-item  @click="onProductKindClick(productKind.id)" two-line link>
                   <v-list-item-content>
                     <v-list-item-title>
                       {{ productKind.name }}
                     </v-list-item-title>
+                    <v-list-item-subtitle>
+                      <span>
+                        {{ productKind.cansPerBasketTray }} Kaleng per Tray Basket,
+                      </span>
+                      <span>
+                        {{ productKind.cansPerPalletLayer }} Kaleng per Layer Pallet
+                      </span>
+                    </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </div>

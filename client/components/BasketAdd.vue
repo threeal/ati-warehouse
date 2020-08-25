@@ -10,11 +10,11 @@
       <v-divider v-if="typeof cancelCallback === 'function'" inset vertical/>
       <v-row>
         <v-col cols="6">
-          <v-text-field v-model="basketNumber" label="No Basket"
+          <v-text-field v-model="basketNumber" label="No Basket" type="number"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="6">
-          <v-text-field v-model="basketId" label="ID Basket"
+          <v-text-field v-model="basketId" label="ID Basket" type="number"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
         <v-col cols="6">
@@ -96,7 +96,7 @@ export default {
   },
   data() {
     return {
-      basketNumber: null,
+      basketNumber: 1,
       basketId: null,
       startTime: (new Date()).toTimeInput(),
       endTime: (new Date()).toTimeInput(),
@@ -125,19 +125,6 @@ export default {
     }
   },
   methods: {
-    reset() {
-      this.basketNumber = null;
-      this.basketId = null;
-      this.startTime = (new Date()).toTimeInput();
-      this.endTime = (new Date()).toTimeInput();
-      this.trayQuantity = null;
-      this.canQuantity = null;
-      this.rejectQuantity = null;
-      this.rejectKind = null;
-      this.seamingCondition = true;
-      this.canMarkCondition = true;
-      this.indicatorCondition = true;
-    },
     onClose() {
       if (typeof this.cancelCallback === 'function') {
         this.cancelCallback();
@@ -165,7 +152,15 @@ export default {
           this.app.log('Data basket berhasil ditambahkan');
 
           this.submitting = false;
-          this.reset();
+
+          this.basketNumber = this.basketNumber + 1;
+          this.basketId = null;
+          this.startTime = this.endTime;
+          this.rejectQuantity = null;
+          this.rejectKind = null;
+          this.seamingCondition = true;
+          this.canMarkCondition = true;
+          this.indicatorCondition = true;
 
           if (typeof this.successCallback === 'function') {
             this.successCallback();
@@ -191,6 +186,28 @@ export default {
           }
         });
     },
+  },
+  mounted() {
+    BasketService.findAll(this.$route.params.documentId)
+      .then((res) => {
+        if (res.data) {
+          let lastBasket = res.data[res.data.length - 1];
+
+          this.basketNumber = lastBasket.basketNumber + 1;
+          this.startTime = lastBasket.endTime;
+          this.endTime = lastBasket.endTime;
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 401) {
+            this.app.log('Sesi habis, harap masuk kembali');
+
+            AuthService.signOut();
+            this.app.routeReplace('/login');
+          }
+        }
+      });
   },
 }
 </script>

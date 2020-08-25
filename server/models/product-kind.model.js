@@ -2,6 +2,8 @@ module.exports = (mongoose) => {
   let schema = mongoose.Schema(
     {
       name: String,
+      cansPerBasketTray: Number,
+      cansPerPalletLayer: Number,
     },
     { timestamp: true },
   );

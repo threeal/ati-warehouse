@@ -1,19 +1,42 @@
 const models = require('../models');
+const ProductKind = models.ProductKind;
+const Document = models.Document;
 const PalletLoad = models.PalletLoad;
 const Pallet = models.Pallet;
 
 exports.find = (req, res) => {
   const documentId = req.params.documentId;
-  const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
+  const condition = { documentId: documentId };
 
   // setTimeout(() => {
     PalletLoad.findOne(condition)
       .then((palletLoad) => {
         if (palletLoad) {
-          res.send({
-            loadDate: palletLoad.loadDate,
-            brand: palletLoad.brand,
-          });
+          Document.findById(documentId)
+            .then((document) => {
+              ProductKind.findById((document) ? document.productKindId : '')
+                .then((productKind) => {
+                  Pallet.find(condition)
+                    .then((pallets) => {
+                      res.send({
+                        loadDate: palletLoad.loadDate,
+                        brand: palletLoad.brand,
+                        layerQuantity: palletLoad.layerQuantity(pallets),
+                        canQuantity: palletLoad.canQuantity(pallets),
+                        totalCan: palletLoad.totalCan(pallets, productKind),
+                      });
+                    })
+                    .catch((err) => {
+                      res.status(500).send({ message: err.message });
+                    });
+                })
+                .catch((err) => {
+                  res.status(500).send({ message: err.message });
+                });
+            })
+            .catch((err) => {
+              res.status(500).send({ message: err.message });
+            });
         }
         else {
           res.status(404).send({
@@ -51,7 +74,7 @@ exports.create = (req, res) => {
 
 exports.update = (req, res) => {
   const documentId = req.params.documentId;
-  const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
+  const condition = { documentId: documentId };
 
   if (!req.body) {
     return res.status(400).send({ message: 'content could not be empty!' });
@@ -82,7 +105,7 @@ exports.update = (req, res) => {
 
 exports.remove = (req, res) => {
   const documentId = req.params.documentId;
-  const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
+  const condition = { documentId: documentId };
 
   // setTimeout(() => {
     PalletLoad.deleteMany(condition)

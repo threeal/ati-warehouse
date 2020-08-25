@@ -4,13 +4,13 @@
       <v-col cols="12" sm="8" md="6">
         <v-row>
           <v-col :cols="(edit) ? 12 : 6">
-            <v-text-field v-model="palletNumber" label="Nomor Palet"
+            <v-text-field v-model="palletNumber" label="Nomor Palet" type="number"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
           <v-col :cols="(edit) ? 12 : 6">
             <v-combobox v-if="edit" v-model="basketNumbers" label="Nomor Basket"
-                :disabled="submitting" clearable hide-details outlined
+                type="number" :disabled="submitting" clearable hide-details outlined
                 multiple chips deletable-chips/>
             <v-text-field v-else :value="basketNumbers.toListString()"
                 label="Nomor Basket" :disabled="fetching" :loading="fetching"

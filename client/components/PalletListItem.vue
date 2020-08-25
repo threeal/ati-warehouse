@@ -48,12 +48,8 @@ export default {
       return null;
     },
     durationString() {
-      if (this.pallet.startTime) {
-        if (this.pallet.endTime) {
-          let duration = this.pallet.endTime.toTimeNumber()
-            - this.pallet.startTime.toTimeNumber();
-          return ` (~${duration.toTimeInput()})`;
-        }
+      if (this.pallet.durationTime) {
+        return ` (~${this.pallet.durationTime})`;
       }
 
       return null;

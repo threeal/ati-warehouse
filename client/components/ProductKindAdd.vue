@@ -13,6 +13,14 @@
           <v-text-field v-model="name" label="Nama"
               :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
+        <v-col cols="12">
+          <v-text-field v-model="cansPerBasketTray" label="Kaleng Per Tray Basket"
+              type="number" :disabled="submitting" clearable hide-details dense outlined/>
+        </v-col>
+        <v-col cols="12">
+          <v-text-field v-model="cansPerPalletLayer" label="Kaleng Per Layer Palet"
+              type="number" :disabled="submitting" clearable hide-details dense outlined/>
+        </v-col>
       </v-row>
     </v-card-text>
     <v-card-actions>
@@ -45,12 +53,16 @@ export default {
   data() {
     return {
       name: null,
+      cansPerBasketTray: null,
+      cansPerPalletLayer: null,
       submitting: false,
     };
   },
   methods: {
     reset() {
       this.name = null;
+      this.cansPerBasketTray = null;
+      this.cansPerPalletLayer = null;
     },
     onClose() {
       if (typeof this.cancelCallback === 'function') {
@@ -62,6 +74,8 @@ export default {
 
       let data = {
         name: this.name,
+        cansPerBasketTray: this.cansPerBasketTray,
+        cansPerPalletLayer: this.cansPerPalletLayer,
       };
 
       ProductKindService.create(data)

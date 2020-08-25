@@ -8,7 +8,7 @@ const config = require("../config/auth.config");
 
 exports.signIn = (req, res) => {
   let username = req.body.username;
-  const condition = { username: { $regex: new RegExp(username), $options: 'i' } };
+  const condition = { username: username };
 
   // setTimeout(() => {
     User.findOne(condition)
@@ -45,8 +45,8 @@ exports.signIn = (req, res) => {
 };
 
 exports.signUp = (req, res) => {
-  let username = req.body.username;
-  const condition = { username: { $regex: new RegExp(username), $options: 'i' } };
+  const username = req.body.username;
+  const condition = { username: username };
 
   // setTimeout(() => {
     User.findOne(condition)

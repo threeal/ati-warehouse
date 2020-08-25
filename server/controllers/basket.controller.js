@@ -3,7 +3,7 @@ const Basket = models.Basket;
 
 exports.findAll = (req, res) => {
   const documentId = req.params.documentId;
-  const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
+  const condition = { documentId: documentId };
 
   // setTimeout(() => {
     Basket.find(condition)
@@ -17,6 +17,7 @@ exports.findAll = (req, res) => {
             basketId: basket.basketId,
             startTime: basket.startTime,
             endTime: basket.endTime,
+            durationTime: basket.durationTime(),
             trayQuantity: basket.trayQuantity,
             canQuantity: basket.canQuantity,
             rejectQuantity: basket.rejectQuantity,
@@ -81,6 +82,7 @@ exports.findOne = (req, res) => {
             basketId: basket.basketId,
             startTime: basket.startTime,
             endTime: basket.endTime,
+            durationTime: basket.durationTime(),
             trayQuantity: basket.trayQuantity,
             canQuantity: basket.canQuantity,
             rejectQuantity: basket.rejectQuantity,

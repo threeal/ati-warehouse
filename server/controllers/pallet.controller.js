@@ -3,7 +3,7 @@ const Pallet = models.Pallet;
 
 exports.findAll = (req, res) => {
   const documentId = req.params.documentId;
-  const condition = { documentId: { $regex: new RegExp(documentId), $options: 'i' } };
+  const condition = { documentId: documentId };
 
   // setTimeout(() => {
     Pallet.find(condition)
@@ -17,6 +17,7 @@ exports.findAll = (req, res) => {
             basketNumbers: pallet.basketNumbers,
             startTime: pallet.startTime,
             endTime: pallet.endTime,
+            durationTime: pallet.durationTime(),
             layerQuantity: pallet.layerQuantity,
             canQuantity: pallet.canQuantity,
             loader: pallet.loader,
@@ -89,6 +90,7 @@ exports.findOne = (req, res) => {
             basketNumbers: pallet.basketNumbers,
             startTime: pallet.startTime,
             endTime: pallet.endTime,
+            durationTime: pallet.durationTime(),
             layerQuantity: pallet.layerQuantity,
             canQuantity: pallet.canQuantity,
             loader: pallet.loader,

@@ -11,6 +11,8 @@ exports.findAll = (_, res) => {
           filteredProductKinds.push({
             id: productKind._id,
             name: productKind.name,
+            cansPerBasketTray: productKind.cansPerBasketTray,
+            cansPerPalletLayer: productKind.cansPerPalletLayer,
           });
         });
 
@@ -29,6 +31,8 @@ exports.create = (req, res) => {
 
   const productKind = new ProductKind({
     name: req.body.name,
+    cansPerBasketTray: req.body.cansPerBasketTray,
+    cansPerPalletLayer: req.body.cansPerPalletLayer,
   });
 
   // setTimeout(() => {
@@ -52,6 +56,8 @@ exports.findOne = (req, res) => {
           res.send({
             id: productKind._id,
             name: productKind.name,
+            cansPerBasketTray: productKind.cansPerBasketTray,
+            cansPerPalletLayer: productKind.cansPerPalletLayer,
           });
         }
         else {
@@ -75,6 +81,8 @@ exports.update = (req, res) => {
 
   let newProductKind = {
     name: req.body.name,
+    cansPerBasketTray: req.body.cansPerBasketTray,
+    cansPerPalletLayer: req.body.cansPerPalletLayer,
   };
 
   // setTimeout(() => {

@@ -64,6 +64,7 @@ export default {
   },
   props: {
     app: { type: Object, required: true },
+    resetCallback: { type: Function },
   },
   data() {
     let sorts = [
@@ -81,13 +82,14 @@ export default {
   },
   methods: {
     reset() {
-      this.baskets = [];
-      this.fetching = true;
-
       BasketService.findAll(this.$route.params.documentId)
         .then((res) => {
           this.baskets = res.data;
           this.fetching = false;
+
+          if (typeof this.resetCallback === 'function') {
+            this.resetCallback();
+          }
         })
         .catch((err) => {
           if (err.response) {

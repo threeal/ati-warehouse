@@ -4,12 +4,12 @@
       <v-col cols="12" sm="8" md="6">
         <v-row>
           <v-col cols="6">
-            <v-text-field v-model="basketNumber" label="No Basket"
+            <v-text-field v-model="basketNumber" label="No Basket" type="number"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
           <v-col cols="6">
-            <v-text-field v-model="basketId" label="ID Basket"
+            <v-text-field v-model="basketId" label="ID Basket" type="number"
                 :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
                 :filled="!edit" :clearable="edit" hide-details dense outlined/>
           </v-col>
