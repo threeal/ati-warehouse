@@ -29,7 +29,7 @@
             <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
               <v-icon left>mdi-pencil</v-icon> Ubah Detail
             </v-btn>
-            <v-btn v-else @click="onSave()" :disabled="submitting || submitDisabled"
+            <v-btn v-else @click="onSave()" :disabled="submitDisabled"
                 :loading="submitting" color="success" block>
               <v-icon left>mdi-content-save</v-icon> Simpan Perubahan
             </v-btn>
@@ -67,7 +67,8 @@ export default {
   },
   computed: {
     submitDisabled() {
-      return this.submitting || !this.name;
+      return this.submitting || !this.name || !this.cansPerBasketTray
+          || !this.cansPerPalletLayer || !this.cansPerCase;
     }
   },
   methods: {

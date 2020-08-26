@@ -31,7 +31,7 @@
       <v-container>
         <v-row no-gutters>
           <v-col cols="12">
-            <v-btn @click="onAdd()" :disabled="submitting || !name"
+            <v-btn @click="onAdd()" :disabled="submitDisabled"
                 :loading="submitting" color="success" block>
               <v-icon left>mdi-upload</v-icon> Submit Jenis Produk
             </v-btn>
@@ -62,6 +62,12 @@ export default {
       cansPerCase: null,
       submitting: false,
     };
+  },
+  computed: {
+    submitDisabled() {
+      return this.submitting || !this.name || !this.cansPerBasketTray
+          || !this.cansPerPalletLayer || !this.cansPerCase;
+    }
   },
   methods: {
     reset() {
