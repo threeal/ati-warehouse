@@ -42,6 +42,20 @@ module.exports = (mongoose) => {
     return quantity;
   });
 
+  schema.method('rejectQuantity', function(baskets) {
+    let quantity = 0;
+
+    if (baskets) {
+      baskets.forEach((basket) => {
+        if (basket.rejectQuantity) {
+          quantity += basket.rejectQuantity;
+        }
+      });
+    }
+
+    return quantity;
+  });
+
   schema.method('totalCan', function(baskets, productKind) {
     let total = this.canQuantity(baskets);
 
@@ -75,6 +89,28 @@ module.exports = (mongoose) => {
 
         return averageDuration.toTimeInput();
       }
+    }
+
+    return null;
+  });
+
+  schema.method('totalCase', function(baskets, productKind) {
+    if (productKind) {
+      if (productKind.cansPerCase > 0) {
+        let total = this.totalCan(baskets, productKind);
+        return Math.floor(total / productKind.cansPerCase);
+      }
+    }
+
+    return null;
+  });
+
+  schema.method('totalCasePerHour', function(baskets, productKind) {
+    let duration = this.totalDuration(baskets).toTimeNumber();
+    if (duration > 0) {
+      let total = this.totalCase(baskets, productKind);
+      let hours = duration / 60;
+      return Math.floor(total / hours);
     }
 
     return null;

@@ -13,6 +13,7 @@ exports.findAll = (_, res) => {
             name: productKind.name,
             cansPerBasketTray: productKind.cansPerBasketTray,
             cansPerPalletLayer: productKind.cansPerPalletLayer,
+            cansPerCase: productKind.cansPerCase,
           });
         });
 
@@ -33,6 +34,7 @@ exports.create = (req, res) => {
     name: req.body.name,
     cansPerBasketTray: req.body.cansPerBasketTray,
     cansPerPalletLayer: req.body.cansPerPalletLayer,
+    cansPerCase: req.body.cansPerCase,
   });
 
   // setTimeout(() => {
@@ -58,6 +60,7 @@ exports.findOne = (req, res) => {
             name: productKind.name,
             cansPerBasketTray: productKind.cansPerBasketTray,
             cansPerPalletLayer: productKind.cansPerPalletLayer,
+            cansPerCase: productKind.cansPerCase,
           });
         }
         else {
@@ -83,6 +86,7 @@ exports.update = (req, res) => {
     name: req.body.name,
     cansPerBasketTray: req.body.cansPerBasketTray,
     cansPerPalletLayer: req.body.cansPerPalletLayer,
+    cansPerCase: req.body.cansPerCase
   };
 
   // setTimeout(() => {

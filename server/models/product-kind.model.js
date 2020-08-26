@@ -4,6 +4,7 @@ module.exports = (mongoose) => {
       name: String,
       cansPerBasketTray: Number,
       cansPerPalletLayer: Number,
+      cansPerCase: Number,
     },
     { timestamp: true },
   );

@@ -21,8 +21,16 @@
         <v-text-field v-model="canQuantity" label="Jumlah Kaleng" :disabled="fetching"
             :loading="fetching" readonly filled outlined dense hide-details/>
       </v-col>
-      <v-col v-if="!edit" cols="12">
+      <v-col v-if="!edit" cols="6">
         <v-text-field v-model="totalCan" label="Total Kaleng" :disabled="fetching"
+            :loading="fetching" readonly filled outlined dense hide-details/>
+      </v-col>
+      <v-col v-if="!edit" cols="6">
+        <v-text-field v-model="totalCase" label="Total Case" :disabled="fetching"
+            :loading="fetching" readonly filled outlined dense hide-details/>
+      </v-col>
+      <v-col v-if="!edit" cols="12">
+        <v-text-field v-model="totalCasePerHour" label="Total Case per Jam" :disabled="fetching"
             :loading="fetching" readonly filled outlined dense hide-details/>
       </v-col>
       <v-col v-if="!edit" cols="6">
@@ -55,7 +63,7 @@
     </div>
     <v-row v-else>
       <v-col>
-        <PalletList :app="app" :reset-callback="reset"/>
+        <PalletList :app="app" :resetCallback="reset"/>
       </v-col>
     </v-row>
     <v-row>
@@ -83,6 +91,7 @@ export default {
   props: {
     app: { type: Object, required: true },
     deleteCallback: { type: Function },
+    resetCallback: { type: Function },
   },
   data() {
     return {
@@ -95,6 +104,8 @@ export default {
       layerQuantity: 0,
       canQuantity: 0,
       totalCan: 0,
+      totalCase: 0,
+      totalCasePerHour: 0,
       totalDuration: '00:00',
       averageDuration: '00:00',
     };
@@ -114,8 +125,14 @@ export default {
           this.layerQuantity = res.data.layerQuantity || 0;
           this.canQuantity = res.data.canQuantity || 0;
           this.totalCan = res.data.totalCan || 0;
+          this.totalCase = res.data.totalCase || 0;
+          this.totalCasePerHour = res.data.totalCasePerHour || 0;
           this.totalDuration = res.data.totalDuration || '00:00';
           this.averageDuration = res.data.averageDuration || '00:00';
+
+          if (typeof this.resetCallback === 'function') {
+            this.resetCallback();
+          }
         })
         .catch((err) => {
           if (err.response) {

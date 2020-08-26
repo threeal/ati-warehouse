@@ -21,6 +21,10 @@
           <v-text-field v-model="cansPerPalletLayer" label="Kaleng Per Layer Palet"
               type="number" :disabled="submitting" clearable hide-details dense outlined/>
         </v-col>
+        <v-col cols="12">
+          <v-text-field v-model="cansPerCase" label="Kaleng Per Case" type="number"
+              :disabled="submitting" clearable hide-details dense outlined/>
+        </v-col>
       </v-row>
     </v-card-text>
     <v-card-actions>
@@ -55,6 +59,7 @@ export default {
       name: null,
       cansPerBasketTray: null,
       cansPerPalletLayer: null,
+      cansPerCase: null,
       submitting: false,
     };
   },
@@ -76,6 +81,7 @@ export default {
         name: this.name,
         cansPerBasketTray: this.cansPerBasketTray,
         cansPerPalletLayer: this.cansPerPalletLayer,
+        cansPerCase: this.cansPerCase,
       };
 
       ProductKindService.create(data)

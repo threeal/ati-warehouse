@@ -73,7 +73,7 @@
                 </div>
               </v-container>
               <BasketUnload v-else-if="basketUnloadExist" :app="app"
-                  :deleteCallback="basketUnloadReset"/>
+                  :deleteCallback="basketUnloadReset" :resetCallback="reset"/>
               <v-container v-else>
                 <v-container>
                   <v-row>
@@ -91,7 +91,7 @@
                 </div>
               </v-container>
               <PalletLoad v-else-if="palletLoadExist" :app="app"
-                  :deleteCallback="palletLoadReset"/>
+                  :deleteCallback="palletLoadReset" :resetCallback="reset"/>
               <v-container v-else>
                 <v-container>
                   <v-row>
@@ -188,6 +188,43 @@ export default {
     }
   },
   methods: {
+    reset() {
+      DocumentService.findOne(this.$route.params.documentId)
+        .then((res) => {
+          this.name = res.data.name;
+          this.productKind = res.data.productKind;
+          this.productKindSelect = res.data.productKindId;
+          this.productionDate = res.data.productionDate;
+          this.deltaTotalCan = res.data.deltaTotalCan || 0;
+
+          this.fetching = false;
+
+          if (this.palletLoadFetching) {
+            this.palletLoadReset();
+          }
+
+          if (this.basketUnloadFetching) {
+            this.basketUnloadReset();
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            if (err.response.status === 401) {
+                this.app.log('Sesi habis, harap masuk kembali');
+
+              AuthService.signOut();
+              this.app.routeReplace('/login');
+            }
+            else {
+              this.app.log('Gagal mengambil dokumen,'
+                + ` kesalahan server (${err.response.status})`);
+            }
+          }
+          else {
+            this.app.log('Gagal mengambil dokumen, tidak ada jaringan');
+          }
+        });
+    },
     onEdit() {
       this.edit = true;
     },
@@ -369,36 +406,7 @@ export default {
     this.app.setAppBar(true, 'Detail Dokumen');
   },
   mounted() {
-    DocumentService.findOne(this.$route.params.documentId)
-      .then((res) => {
-        this.name = res.data.name;
-        this.productKind = res.data.productKind;
-        this.productKindSelect = res.data.productKindId;
-        this.productionDate = res.data.productionDate;
-        this.deltaTotalCan = res.data.deltaTotalCan || 0;
-
-        this.fetching = false;
-
-        this.palletLoadReset();
-        this.basketUnloadReset();
-      })
-      .catch((err) => {
-        if (err.response) {
-          if (err.response.status === 401) {
-              this.app.log('Sesi habis, harap masuk kembali');
-
-            AuthService.signOut();
-            this.app.routeReplace('/login');
-          }
-          else {
-            this.app.log('Gagal mengambil dokumen,'
-              + ` kesalahan server (${err.response.status})`);
-          }
-        }
-        else {
-          this.app.log('Gagal mengambil dokumen, tidak ada jaringan');
-        }
-      });
+    this.reset();
 
     ProductKindService.findAll()
       .then((res) => {

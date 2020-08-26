@@ -26,6 +26,9 @@ exports.find = (req, res) => {
                         totalCan: palletLoad.totalCan(pallets, productKind),
                         totalDuration: palletLoad.totalDuration(pallets),
                         averageDuration: palletLoad.averageDuration(pallets),
+                        totalCase: palletLoad.totalCase(pallets, productKind),
+                        totalCasePerHour: palletLoad.totalCasePerHour(
+                            pallets, productKind),
                       });
                     })
                     .catch((err) => {

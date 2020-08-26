@@ -21,6 +21,11 @@
                 hide-details dense outlined/>
           </v-col>
           <v-col cols="12">
+            <v-text-field v-model="cansPerCase" label="Kaleng Per Case" type="number"
+                :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
+                :filled="!edit" :clearable="edit" hide-details dense outlined/>
+          </v-col>
+          <v-col cols="12">
             <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
               <v-icon left>mdi-pencil</v-icon> Ubah Detail
             </v-btn>
@@ -57,6 +62,7 @@ export default {
       name: null,
       cansPerBasketTray: null,
       cansPerPalletLayer: null,
+      cansPerCase: null,
     };
   },
   computed: {
@@ -75,6 +81,7 @@ export default {
         name: this.name,
         cansPerBasketTray: this.cansPerBasketTray,
         cansPerPalletLayer: this.cansPerPalletLayer,
+        cansPerCase: this.cansPerCase,
       };
 
       ProductKindService.update(this.$route.params.productKindId, data)

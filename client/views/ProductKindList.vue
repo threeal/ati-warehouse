@@ -36,9 +36,12 @@
                           {{ productKind.cansPerBasketTray || 0 }} Kaleng per Tray Basket
                         </span>
                         <span>
-                          {{ productKind.cansPerPalletLayer || 0 }} Kaleng per Layer Pallet
+                          {{ productKind.cansPerCase || 0 }} Kaleng per Case
                         </span>
                       </div>
+                      <span>
+                        {{ productKind.cansPerPalletLayer || 0 }} Kaleng per Layer Pallet
+                      </span>
                     </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>

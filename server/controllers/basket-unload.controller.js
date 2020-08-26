@@ -24,9 +24,13 @@ exports.find = (req, res) => {
                         line: basketUnload.line,
                         trayQuantity: basketUnload.trayQuantity(baskets),
                         canQuantity: basketUnload.canQuantity(baskets),
+                        rejectQuantity: basketUnload.rejectQuantity(baskets),
                         totalCan: basketUnload.totalCan(baskets, productKind),
                         totalDuration: basketUnload.totalDuration(baskets),
                         averageDuration: basketUnload.averageDuration(baskets),
+                        totalCase: basketUnload.totalCase(baskets, productKind),
+                        totalCasePerHour: basketUnload.totalCasePerHour(
+                            baskets, productKind),
                       });
                     })
                     .catch((err) => {

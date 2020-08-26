@@ -84,5 +84,27 @@ module.exports = (mongoose) => {
     return null;
   });
 
+  schema.method('totalCase', function(pallets, productKind) {
+    if (productKind) {
+      if (productKind.cansPerCase > 0) {
+        let total = this.totalCan(pallets, productKind);
+        return Math.floor(total / productKind.cansPerCase);
+      }
+    }
+
+    return null;
+  });
+
+  schema.method('totalCasePerHour', function(pallets, productKind) {
+    let duration = this.totalDuration(pallets).toTimeNumber();
+    if (duration > 0) {
+      let total = this.totalCase(pallets, productKind);
+      let hours = duration / 60;
+      return Math.floor(total / hours);
+    }
+
+    return null;
+  });
+
   return mongoose.model('pallet-load', schema);
 };
