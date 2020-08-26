@@ -105,7 +105,7 @@ module.exports = (mongoose) => {
     return null;
   });
 
-  schema.method('totalCasePerHour', function(baskets, productKind) {
+  schema.method('casePerHour', function(baskets, productKind) {
     let duration = this.totalDuration(baskets).toTimeNumber();
     if (duration > 0) {
       let total = this.totalCase(baskets, productKind);

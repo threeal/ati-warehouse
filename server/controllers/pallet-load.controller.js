@@ -27,7 +27,7 @@ exports.find = (req, res) => {
                         totalDuration: palletLoad.totalDuration(pallets),
                         averageDuration: palletLoad.averageDuration(pallets),
                         totalCase: palletLoad.totalCase(pallets, productKind),
-                        totalCasePerHour: palletLoad.totalCasePerHour(
+                        casePerHour: palletLoad.casePerHour(
                             pallets, productKind),
                       });
                     })

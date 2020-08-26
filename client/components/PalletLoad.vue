@@ -30,7 +30,7 @@
             :loading="fetching" readonly filled outlined dense hide-details/>
       </v-col>
       <v-col v-if="!edit" cols="12">
-        <v-text-field v-model="totalCasePerHour" label="Total Case per Jam" :disabled="fetching"
+        <v-text-field v-model="casePerHour" label="Case per Jam" :disabled="fetching"
             :loading="fetching" readonly filled outlined dense hide-details/>
       </v-col>
       <v-col v-if="!edit" cols="6">
@@ -105,7 +105,7 @@ export default {
       canQuantity: 0,
       totalCan: 0,
       totalCase: 0,
-      totalCasePerHour: 0,
+      casePerHour: 0,
       totalDuration: '00:00',
       averageDuration: '00:00',
     };
@@ -126,7 +126,7 @@ export default {
           this.canQuantity = res.data.canQuantity || 0;
           this.totalCan = res.data.totalCan || 0;
           this.totalCase = res.data.totalCase || 0;
-          this.totalCasePerHour = res.data.totalCasePerHour || 0;
+          this.casePerHour = res.data.casePerHour || 0;
           this.totalDuration = res.data.totalDuration || '00:00';
           this.averageDuration = res.data.averageDuration || '00:00';
 

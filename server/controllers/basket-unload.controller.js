@@ -29,7 +29,7 @@ exports.find = (req, res) => {
                         totalDuration: basketUnload.totalDuration(baskets),
                         averageDuration: basketUnload.averageDuration(baskets),
                         totalCase: basketUnload.totalCase(baskets, productKind),
-                        totalCasePerHour: basketUnload.totalCasePerHour(
+                        casePerHour: basketUnload.casePerHour(
                             baskets, productKind),
                       });
                     })
