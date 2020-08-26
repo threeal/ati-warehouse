@@ -1,14 +1,14 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" sm="8">
+      <v-col cols="12" md="6">
         <v-text-field v-if="!edit" v-model="unloadDateLocale" label="Tanggal Bongkar"
             :disabled="fetching" :loading="fetching" readonly filled outlined
             dense hide-details/>
         <v-text-field v-else v-model="unloadDate" label="Tanggal Bongkar" type="date"
             :disabled="submitting" outlined dense hide-details/>
       </v-col>
-      <v-col cols="12" sm="4">
+      <v-col cols="12" md="6">
         <v-text-field v-model="line" label="Line"
             :disabled="fetching || submitting" :loading="fetching" :readonly="!edit"
             :filled="!edit" :clearable="edit" outlined dense hide-details/>
@@ -24,6 +24,15 @@
       <v-col v-if="!edit" cols="12">
         <v-text-field v-model="totalCan" label="Total Kaleng" :disabled="fetching"
             :loading="fetching" readonly filled outlined dense hide-details/>
+      </v-col>
+      <v-col v-if="!edit" cols="6">
+        <v-text-field v-model="totalDuration" label="Total Durasi" :disabled="fetching"
+            :loading="fetching" readonly filled outlined dense hide-details/>
+      </v-col>
+      <v-col v-if="!edit" cols="6">
+        <v-text-field v-model="averageDuration" label="Rata-rata Durasi"
+            :disabled="fetching" :loading="fetching" readonly filled
+            outlined dense hide-details/>
       </v-col>
       <v-col cols="12">
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
@@ -83,9 +92,11 @@ export default {
       edit: false,
       unloadDate: null,
       line: null,
-      trayQuantity: null,
-      canQuantity: null,
-      totalCan: null,
+      trayQuantity: 0,
+      canQuantity: 0,
+      totalCan: 0,
+      totalDuration: '00:00',
+      averageDuration: '00:00',
     };
   },
   computed: {
@@ -100,9 +111,11 @@ export default {
           this.fetching = false;
           this.unloadDate = res.data.unloadDate;
           this.line = res.data.line;
-          this.trayQuantity = res.data.trayQuantity;
-          this.canQuantity = res.data.canQuantity;
-          this.totalCan = res.data.totalCan;
+          this.trayQuantity = res.data.trayQuantity || 0;
+          this.canQuantity = res.data.canQuantity || 0;
+          this.totalCan = res.data.totalCan || 0;
+          this.totalDuration = res.data.totalDuration || '00:00';
+          this.averageDuration = res.data.averageDuration || '00:00';
         })
         .catch((err) => {
           if (err.response) {

@@ -25,6 +25,15 @@
         <v-text-field v-model="totalCan" label="Total Kaleng" :disabled="fetching"
             :loading="fetching" readonly filled outlined dense hide-details/>
       </v-col>
+      <v-col v-if="!edit" cols="6">
+        <v-text-field v-model="totalDuration" label="Total Durasi" :disabled="fetching"
+            :loading="fetching" readonly filled outlined dense hide-details/>
+      </v-col>
+      <v-col v-if="!edit" cols="6">
+        <v-text-field v-model="averageDuration" label="Rata-rata Durasi"
+            :disabled="fetching" :loading="fetching" readonly filled
+            outlined dense hide-details/>
+      </v-col>
       <v-col cols="12">
         <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
           <v-icon left>mdi-pencil</v-icon> Ubah Detail
@@ -83,9 +92,11 @@ export default {
       edit: false,
       loadDate: null,
       brand: null,
-      layerQuantity: null,
-      canQuantity: null,
-      totalCan: null,
+      layerQuantity: 0,
+      canQuantity: 0,
+      totalCan: 0,
+      totalDuration: '00:00',
+      averageDuration: '00:00',
     };
   },
   computed: {
@@ -100,9 +111,11 @@ export default {
           this.fetching = false;
           this.loadDate = res.data.loadDate;
           this.brand = res.data.brand;
-          this.layerQuantity = res.data.layerQuantity;
-          this.canQuantity = res.data.canQuantity;
-          this.totalCan = res.data.totalCan;
+          this.layerQuantity = res.data.layerQuantity || 0;
+          this.canQuantity = res.data.canQuantity || 0;
+          this.totalCan = res.data.totalCan || 0;
+          this.totalDuration = res.data.totalDuration || '00:00';
+          this.averageDuration = res.data.averageDuration || '00:00';
         })
         .catch((err) => {
           if (err.response) {

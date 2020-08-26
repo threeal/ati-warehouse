@@ -53,7 +53,7 @@ Number.prototype.toTimeInput = function() {
     first = 0;
   }
 
-  let second = this % 60;
+  let second = Math.floor(this % 60);
   if (second < 0) {
     second = 0;
   }

@@ -54,5 +54,31 @@ module.exports = (mongoose) => {
     return total;
   });
 
+  schema.method('totalDuration', function(baskets) {
+    let total = 0;
+
+    if (baskets) {
+      baskets.forEach((basket) => {
+        let duration = basket.durationTime();
+        total += (duration) ? duration.toTimeNumber() : 0;
+      });
+    }
+
+    return total.toTimeInput();
+  });
+
+  schema.method('averageDuration', function(baskets) {
+    if (baskets) {
+      if (baskets.length > 0) {
+        let totalDuration = this.totalDuration(baskets).toTimeNumber();
+        let averageDuration = totalDuration / baskets.length;
+
+        return averageDuration.toTimeInput();
+      }
+    }
+
+    return null;
+  });
+
   return mongoose.model('basket-unload', schema);
 };

@@ -1,5 +1,7 @@
 const { Schema } = require("mongoose");
 
+require('../../client/plugins/utility.js');
+
 module.exports = (mongoose) => {
   let schema = mongoose.Schema(
     {
@@ -54,6 +56,32 @@ module.exports = (mongoose) => {
     }
 
     return total;
+  });
+
+  schema.method('totalDuration', function(pallets) {
+    let total = 0;
+
+    if (pallets) {
+      pallets.forEach((pallet) => {
+        let duration = pallet.durationTime();
+        total += (duration) ? duration.toTimeNumber() : 0;
+      });
+    }
+
+    return total.toTimeInput();
+  });
+
+  schema.method('averageDuration', function(pallets) {
+    if (pallets) {
+      if (pallets.length > 0) {
+        let totalDuration = this.totalDuration(pallets).toTimeNumber();
+        let averageDuration = totalDuration / pallets.length;
+
+        return averageDuration.toTimeInput();
+      }
+    }
+
+    return null;
   });
 
   return mongoose.model('pallet-load', schema);

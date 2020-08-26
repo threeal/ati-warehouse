@@ -25,6 +25,11 @@
             <v-text-field v-else v-model="productionDate" label="Tanggal Produksi" type="date"
                 :disabled="submitting" outlined dense hide-details/>
           </v-col>
+          <v-col v-if="!edit" cols="12">
+            <v-text-field v-model="deltaTotalCan" label="Selisih Total Kaleng"
+                :disabled="fetching" :loading="fetching" readonly filled
+                outlined dense hide-details/>
+          </v-col>
           <v-col cols="12">
             <v-btn v-if="!edit" @click="onEdit()" :disabled="fetching" color="primary" block>
               <v-icon left>mdi-pencil</v-icon> Ubah Detail
@@ -154,6 +159,7 @@ export default {
       productKindList: [],
       productKindFetching: true,
       productionDate: null,
+      deltaTotalCan: null,
       submitting: false,
       downloading: false,
       edit: false,
@@ -369,6 +375,7 @@ export default {
         this.productKind = res.data.productKind;
         this.productKindSelect = res.data.productKindId;
         this.productionDate = res.data.productionDate;
+        this.deltaTotalCan = res.data.deltaTotalCan || 0;
 
         this.fetching = false;
 

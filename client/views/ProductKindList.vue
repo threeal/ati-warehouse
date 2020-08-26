@@ -31,12 +31,14 @@
                       {{ productKind.name }}
                     </v-list-item-title>
                     <v-list-item-subtitle>
-                      <span>
-                        {{ productKind.cansPerBasketTray }} Kaleng per Tray Basket,
-                      </span>
-                      <span>
-                        {{ productKind.cansPerPalletLayer }} Kaleng per Layer Pallet
-                      </span>
+                      <div class="d-flex justify-space-between">
+                        <span>
+                          {{ productKind.cansPerBasketTray || 0 }} Kaleng per Tray Basket
+                        </span>
+                        <span>
+                          {{ productKind.cansPerPalletLayer || 0 }} Kaleng per Layer Pallet
+                        </span>
+                      </div>
                     </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>

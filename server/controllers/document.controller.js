@@ -68,13 +68,33 @@ exports.findOne = (req, res) => {
         if (document) {
           ProductKind.findById(document.productKindId)
             .then((productKind) => {
-              res.send({
-                id: document._id,
-                name: document.name,
-                productKindId: document.productKindId,
-                productKind: (productKind) ? productKind.name : null,
-                productionDate: document.productionDate,
-              });
+              let condition = { documentId: documentId };
+
+              Basket.find(condition)
+                .then((baskets) => {
+                  Pallet.find(condition)
+                    .then((pallets) => {
+                      res.send({
+                        id: document._id,
+                        name: document.name,
+                        productKindId: document.productKindId,
+                        productKind: (productKind) ? productKind.name : null,
+                        productionDate: document.productionDate,
+                        totalBasketUnloadCan: document.totalBasketUnloadCan(
+                            baskets, productKind),
+                        totalPalletLoadCan: document.totalPalletLoadCan(
+                            pallets, productKind),
+                        deltaTotalCan: document.deltaTotalCan(
+                            baskets, pallets, productKind),
+                      });
+                    })
+                    .catch((err) => {
+                      res.status(500).send({ message: err.message });
+                    });
+                })
+                .catch((err) => {
+                  res.status(500).send({ message: err.message });
+                });
             })
             .catch((err) => {
               res.status(500).send({ message: err.message });

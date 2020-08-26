@@ -24,6 +24,8 @@ exports.find = (req, res) => {
                         layerQuantity: palletLoad.layerQuantity(pallets),
                         canQuantity: palletLoad.canQuantity(pallets),
                         totalCan: palletLoad.totalCan(pallets, productKind),
+                        totalDuration: palletLoad.totalDuration(pallets),
+                        averageDuration: palletLoad.averageDuration(pallets),
                       });
                     })
                     .catch((err) => {

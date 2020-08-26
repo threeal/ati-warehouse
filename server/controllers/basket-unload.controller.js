@@ -25,6 +25,8 @@ exports.find = (req, res) => {
                         trayQuantity: basketUnload.trayQuantity(baskets),
                         canQuantity: basketUnload.canQuantity(baskets),
                         totalCan: basketUnload.totalCan(baskets, productKind),
+                        totalDuration: basketUnload.totalDuration(baskets),
+                        averageDuration: basketUnload.averageDuration(baskets),
                       });
                     })
                     .catch((err) => {
