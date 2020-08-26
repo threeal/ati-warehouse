@@ -140,8 +140,8 @@ export default {
   computed: {
     addDisabled() {
       return this.submitting || !this.palletNumber || !this.basketNumbers
-        || !this.startTime || !this.endTime || !this.loader
-        || (!this.layerQuantity && !this.canQuantity);
+        || (this.basketNumbers.length <= 0) || !this.startTime || !this.endTime
+        || !this.loader || (!this.layerQuantity && !this.canQuantity);
     }
   },
   methods: {
