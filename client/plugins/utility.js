@@ -48,12 +48,18 @@ String.prototype.toTimeNumber = function() {
 }
 
 Number.prototype.toTimeInput = function() {
-  let first = Math.floor(this / 60);
+  let value = this;
+
+  while (value < 0) {
+    value += 24 * 60;
+  }
+
+  let first = Math.floor(value / 60);
   if (first < 0) {
     first = 0;
   }
 
-  let second = Math.floor(this % 60);
+  let second = Math.floor(value % 60);
   if (second < 0) {
     second = 0;
   }
