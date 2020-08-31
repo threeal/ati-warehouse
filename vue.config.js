@@ -13,7 +13,7 @@ module.exports = {
     },
   },
   pwa: {
-    name: 'Project-I',
+    name: 'ATI Warehouse',
     themeColor: '#1976D2',
   },
 }

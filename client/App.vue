@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { register } from 'register-service-worker'
 import Drawer from './components/Drawer'
 import Toast from './components/Toast'
 import Confirmation from './components/Confirmation'
@@ -117,6 +118,18 @@ export default {
     const theme = JSON.parse(localStorage.getItem('theme'));
     if (theme) {
       this.$vuetify.theme.dark = theme.dark || false;
+    }
+
+    if (process.env.NODE_ENV === 'production') {
+      let app = this;
+      register(`${process.env.BASE_URL}service-worker.js`, {
+        updated () {
+          app.log('Terdapat pembaruan, harap memuat ulang aplikasi');
+        },
+        offline () {
+          app.log('Terjadi kesalahan, tidak terhubung ke internet');
+        },
+      });
     }
   },
 }
