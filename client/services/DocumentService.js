@@ -2,29 +2,35 @@ import http from '../plugins/http-common'
 import AuthService from './AuthService'
 
 class DocumentService {
-  findAll() {
-    let headers = { headers: AuthService.header() };
-    return http.get('/api/document', headers);
+  findAll(productionDate) {
+    let address = '/api/document';
+    if (productionDate) {
+      address += `?productionDate=${productionDate}`;
+    }
+
+    let config = { headers: AuthService.header() };
+
+    return http.get(address, config);
   }
 
   create(data) {
-    let headers = { headers: AuthService.header() };
-    return http.post('/api/document', data, headers);
+    let config = { headers: AuthService.header() };
+    return http.post('/api/document', data, config);
   }
 
   findOne(documentId) {
-    let headers = { headers: AuthService.header() };
-    return http.get(`/api/document/${documentId}`, headers);
+    let config = { headers: AuthService.header() };
+    return http.get(`/api/document/${documentId}`, config);
   }
 
   update(documentId, data) {
-    let headers = { headers: AuthService.header() };
-    return http.put(`/api/document/${documentId}`, data, headers);
+    let config = { headers: AuthService.header() };
+    return http.put(`/api/document/${documentId}`, data, config);
   }
 
   remove(documentId) {
-    let headers = { headers: AuthService.header() };
-    return http.delete(`/api/document/${documentId}`, headers);
+    let config = { headers: AuthService.header() };
+    return http.delete(`/api/document/${documentId}`, config);
   }
 }
 

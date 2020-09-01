@@ -1,28 +1,36 @@
 <template>
   <v-container>
-    <v-row justify="center">
-      <v-col class="hidden-md-and-up" cols="12" sm="8">
-        <v-select v-model="selectedFilter" :items="filters" label="Filter Dokumen"
-            :disabled="fetching" hide-details dense outlined/>
-      </v-col>
-      <v-col class="hidden-md-and-up" cols="12" sm="8">
-        <v-btn color="primary" @click="documentAdd = true" :disabled="fetching" block>
-          <v-icon left>mdi-plus-thick</v-icon> Tambah Dokumen
-        </v-btn>
-      </v-col>
+    <v-row :no-gutters="$vuetify.breakpoint.smAndDown" justify="center">
       <v-col class="hidden-sm-and-down" cols="4">
         <DocumentAdd :app="app" :successCallback="onDocumentAddSuccess"/>
       </v-col>
       <v-col cols="12" sm="8" md="6">
-        <v-row :no-gutters="$vuetify.breakpoint.smAndDown">
-          <v-col class="hidden-sm-and-down" cols="12">
-            <v-select v-model="selectedFilter" :items="filters" label="Filter Dokumen"
-                :disabled="fetching" hide-details dense outlined/>
+        <v-row>
+          <v-col cols="12">
+            <v-select v-model="selectedFilter" :items="filters" @change="reset()"
+                label="Filter Dokumen" :disabled="fetching" hide-details dense outlined/>
+          </v-col>
+          <v-col class="hidden-md-and-up" cols="12">
+            <v-btn color="primary" @click="documentAdd = true" :disabled="fetching" block>
+              <v-icon left>mdi-plus-thick</v-icon> Tambah Dokumen
+            </v-btn>
           </v-col>
           <v-col cols="12">
             <v-card>
               <v-toolbar color="primary" dark flat dense>
                 <v-toolbar-title>Daftar Dokumen</v-toolbar-title>
+                <v-spacer/>
+                <v-btn v-if="selectedFilter" @click="filterNavigationPrevious()"
+                    icon dark>
+                  <v-icon>mdi-arrow-left</v-icon>
+                </v-btn>
+                <span v-if="selectedFilter">
+                  {{ filterNavigationValue }}
+                </span>
+                <v-btn v-if="selectedFilter" @click="filterNavigationNext()"
+                    icon dark>
+                  <v-icon>mdi-arrow-right</v-icon>
+                </v-btn>
               </v-toolbar>
               <v-list>
                 <div v-if="fetching">
@@ -104,26 +112,60 @@ export default {
     app: { type: Object, required: true },
   },
   data() {
+    let documentList = JSON.parse(localStorage.getItem('document-list')) || {};
+
     let filters = [
-      { value: 'all', text: 'Tampilkan Semua' },
-      { value: 'day', text: 'Harian' },
-      { value: 'month', text: 'Bulanan' },
+      { value: 'yearly', text: 'Tahunan' },
+      { value: 'monthly', text: 'Bulanan' },
+      { value: 'daily', text: 'Harian' },
     ];
 
     return {
       fetching: true,
       filters: filters,
-      selectedFilter: filters[0],
+      selectedFilter: documentList.selectedFilter || 'monthly',
+      selectedDate: new Date(),
       documentAdd: false,
       documents: [],
     };
+  },
+  computed: {
+    filterNavigationValue() {
+      let options = {};
+      if (this.selectedFilter == 'yearly') {
+        options = { year: 'numeric' };
+      }
+      else if (this.selectedFilter == 'monthly') {
+        options = { year: 'numeric', month: 'long' };
+      }
+      else if (this.selectedFilter == 'daily') {
+        options = { year: 'numeric', month: 'long', day: 'numeric' };
+      }
+
+      return this.selectedDate.toLocaleDateString('id', options);
+    }
   },
   methods: {
     reset() {
       this.documents = [];
       this.fetching = true;
 
-      DocumentService.findAll()
+      let year = this.selectedDate.getFullYear();
+      let month = this.selectedDate.getMonth() + 1;
+      let date = this.selectedDate.getDate();
+
+      let productionDate = '';
+      if (this.selectedFilter == 'yearly') {
+        productionDate = `${year.pad(4)}-[0-9]{2}-[0-9]{2}`;
+      }
+      else if (this.selectedFilter == 'monthly') {
+        productionDate = `${year.pad(4)}-${month.pad(2)}-[0-9]{2}`;
+      }
+      else if (this.selectedFilter == 'daily') {
+        productionDate = `${year.pad(4)}-${month.pad(2)}-${date.pad(2)}`;
+      }
+
+      DocumentService.findAll(productionDate)
         .then((res) => {
           this.documents = res.data;
           this.fetching = false;
@@ -146,6 +188,36 @@ export default {
           }
         });
     },
+    filterNavigationPrevious() {
+      if (this.selectedFilter == 'yearly') {
+        this.selectedDate.setFullYear(this.selectedDate.getFullYear() - 1);
+      }
+      else if (this.selectedFilter == 'monthly') {
+        this.selectedDate.setMonth(this.selectedDate.getMonth() - 1);
+      }
+      else if (this.selectedFilter == 'daily') {
+        this.selectedDate.setDate(this.selectedDate.getDate() - 1);
+      }
+
+      this.selectedDate = new Date(this.selectedDate);
+
+      this.reset();
+    },
+    filterNavigationNext() {
+      if (this.selectedFilter == 'yearly') {
+        this.selectedDate.setFullYear(this.selectedDate.getFullYear() + 1);
+      }
+      else if (this.selectedFilter == 'monthly') {
+        this.selectedDate.setMonth(this.selectedDate.getMonth() + 1);
+      }
+      else if (this.selectedFilter == 'daily') {
+        this.selectedDate.setDate(this.selectedDate.getDate() + 1);
+      }
+
+      this.selectedDate = new Date(this.selectedDate);
+
+      this.reset();
+    },
     onDocumentAddCancel() {
       this.documentAdd = false;
     },
@@ -162,6 +234,11 @@ export default {
   },
   mounted() {
     this.reset();
+  },
+  destroyed() {
+    localStorage.setItem('document-list', JSON.stringify({
+      selectedFilter: this.selectedFilter,
+    }));
   },
 }
 </script>

@@ -6,11 +6,18 @@ const Pallet = models.Pallet;
 const BasketUnload = models.BasketUnload;
 const Basket = models.Basket;
 
-exports.findAll = (_, res) => {
+exports.findAll = (req, res) => {
+  let documentCondition = {};
+  if (req.query.productionDate) {
+    documentCondition = {
+      productionDate: { $regex: new RegExp(req.query.productionDate) },
+    };
+  }
+
   // setTimeout(() => {
     ProductKind.find()
       .then((productKinds) => {
-        Document.find()
+        Document.find(documentCondition)
         .then((documents) => {
           let filteredDocuments = [];
 
