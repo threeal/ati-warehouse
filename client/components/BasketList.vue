@@ -1,8 +1,8 @@
 <template>
   <v-row>
     <v-col cols="12">
-      <v-select v-model="selectedSort" :items="sorts" label="Urutkan Data"
-          :disabled="fetching" hide-details dense outlined/>
+      <v-select v-model="selectedSort" :items="sorts" @change="sort()"
+          label="Urutkan Data" :disabled="fetching" hide-details dense outlined/>
     </v-col>
     <v-col cols="12">
       <v-btn color="primary" @click="basketAdd = true" :disabled="fetching" block>
@@ -68,24 +68,34 @@ export default {
   },
   data() {
     let sorts = [
-      { value: 'time', text: 'Berdasarkan Waktu' },
-      { value: 'name', text: 'Berdasarkan Nama' },
+      { value: 'number', text: 'Berdasarkan Nomor' },
+      { value: 'duration', text: 'Berdasarkan Durasi' },
     ];
 
     return {
       fetching: true,
       sorts: sorts,
-      selectedSort: sorts[0],
+      selectedSort: 'number',
       basketAdd: false,
       baskets: [],
     };
   },
   methods: {
+    sort() {
+      if (this.selectedSort == 'number') {
+        this.baskets.sort((a, b) => (a.basketNumber > b.basketNumber) ? 1 : -1);
+      }
+      else if (this.selectedSort == 'duration') {
+        this.baskets.sort((a, b) => (a.durationTime < b.durationTime) ? 1 : -1);
+      }
+    },
     reset() {
       BasketService.findAll(this.$route.params.documentId)
         .then((res) => {
           this.baskets = res.data;
           this.fetching = false;
+
+          this.sort();
 
           if (typeof this.resetCallback === 'function') {
             this.resetCallback();

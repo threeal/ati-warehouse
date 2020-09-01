@@ -112,8 +112,6 @@ export default {
     app: { type: Object, required: true },
   },
   data() {
-    let documentList = JSON.parse(localStorage.getItem('document-list')) || {};
-
     let filters = [
       { value: 'yearly', text: 'Tahunan' },
       { value: 'monthly', text: 'Bulanan' },
@@ -123,7 +121,7 @@ export default {
     return {
       fetching: true,
       filters: filters,
-      selectedFilter: documentList.selectedFilter || 'monthly',
+      selectedFilter: 'monthly',
       selectedDate: new Date(),
       documentAdd: false,
       documents: [],
@@ -234,11 +232,6 @@ export default {
   },
   mounted() {
     this.reset();
-  },
-  destroyed() {
-    localStorage.setItem('document-list', JSON.stringify({
-      selectedFilter: this.selectedFilter,
-    }));
   },
 }
 </script>
