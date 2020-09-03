@@ -1,4 +1,5 @@
 import Excel from 'exceljs'
+import logo from '../plugins/logo'
 import '../plugins/utility'
 
 import DocumentService from './DocumentService'
@@ -42,6 +43,11 @@ class PalletLoadXlsx {
       });
     }
 
+    const image = workbook.addImage({
+      base64: logo,
+      extension: 'png',
+    });
+
     for (let i = 0; i * 33 < data.pallets.length || i === 0; ++i) {
       let worksheet = workbook.addWorksheet(`Sheet${i+1}`, {
         pageSetup: {
@@ -50,6 +56,11 @@ class PalletLoadXlsx {
         views: [
           { showGridLines: false },
         ],
+      });
+
+      worksheet.addImage(image, {
+        tl: { col: 0.1, row: 0.1 },
+        br: { col: 0.9, row: 0.9 },
       });
 
       this.fillWorksheet(worksheet, {

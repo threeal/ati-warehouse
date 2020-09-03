@@ -4,7 +4,7 @@
       <v-col cols="12" sm="8" md="4">
         <v-card>
           <v-toolbar color="primary" dark flat>
-            <v-toolbar-title>Masuk</v-toolbar-title>
+            <v-toolbar-title>ATI Warehouse | Masuk</v-toolbar-title>
             <v-spacer/>
             <v-btn @click="app.swapTheme()" icon dark>
               <v-icon>mdi-theme-light-dark</v-icon>

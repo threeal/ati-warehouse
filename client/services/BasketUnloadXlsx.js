@@ -1,5 +1,5 @@
 import Excel from 'exceljs'
-import '../plugins/utility'
+import logo from '../plugins/logo'
 
 import DocumentService from './DocumentService'
 import BasketUnloadService from './BasketUnloadService'
@@ -27,6 +27,11 @@ class BasketUnloadXlsx {
     let baskets = await BasketService.findAll(documentId);
     data.baskets = baskets.data || [];
 
+    const image = workbook.addImage({
+      base64: logo,
+      extension: 'png',
+    });
+
     for (let i = 0; i * 48 < data.baskets.length || i === 0; ++i) {
       let worksheet = workbook.addWorksheet(`Sheet${i+1}`, {
         pageSetup: {
@@ -35,6 +40,11 @@ class BasketUnloadXlsx {
         views: [
           { showGridLines: false },
         ],
+      });
+
+      worksheet.addImage(image, {
+        tl: { col: 0.1, row: 0.1 },
+        br: { col: 0.9, row: 0.9 },
       });
 
       this.fillWorksheet(worksheet, {
