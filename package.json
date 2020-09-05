@@ -1,8 +1,8 @@
 {
   "name": "ati-warehouse",
-  "description": "Warehose database internship project for PT ATI",
-  "version": "0.4.0",
-  "author": "Alfi Maulana",
+  "description": "Warehouse management PWA using MEVN stack",
+  "version": "1.0.0",
+  "author": "Alfi Maulana <alfi.maulana.f@gmail.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
