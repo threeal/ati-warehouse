@@ -17,6 +17,54 @@ models.mongoose
   })
   .then(() => {
     console.log('Connected to the MongoDB!');
+
+    const models = require('../server/models');
+    models.User.find({ admin: true })
+      .then((users) => {
+        if (users && users.length > 0) {
+          console.log(`Found ${users.length} admins`);
+        } else {
+          console.log('No admin found, create a new admin');
+
+          const readline = require('readline');
+
+          const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+          });
+
+          rl.question("Username: ", (username) => {
+            rl.question("Full Name: ", (fullname) => {
+              rl.question("Password: ", (password) => {
+                const bcrypt = require("bcryptjs");
+
+                const newUser = new models.User({
+                  username: username,
+                  fullname: fullname,
+                  password: bcrypt.hashSync(password, 8),
+                  verified: true,
+                  admin: true,
+                });
+
+                newUser.save(newUser)
+                  .then(() => {
+                    console.log('Admin created!');
+                  })
+                  .catch((err) => {
+                    console.log('Failed to create admin!');
+                    process.exit();
+                  });
+
+                rl.close();
+              });
+            });
+          });
+        }
+      })
+      .catch(() => {
+        console.log("Unexpected error");
+        process.exit();
+      });
   })
   .catch((err) => {
     console.log('Cannot connect to the MongoDB!', err);
