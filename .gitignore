@@ -4,6 +4,7 @@ dist
 ssl/*.key
 ssl/*.crt
 
+.env
 .env.local
 .env.*.local
 

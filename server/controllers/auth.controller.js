@@ -4,8 +4,6 @@ const bcrypt = require("bcryptjs");
 const models = require("../models");
 const User = models.User;
 
-const config = require("../config/auth.config");
-
 exports.signIn = (req, res) => {
   let username = req.body.username;
   const condition = { username: username };
@@ -21,7 +19,7 @@ exports.signIn = (req, res) => {
                 username: user.username,
                 fullname: user.fullname,
                 admin: user.admin,
-                accessToken: jwt.sign({ id: user.id }, config.secret, {
+                accessToken: jwt.sign({ id: user.id }, 'somesecret', {
                   expiresIn: 12 * 60 * 60,
                 }),
               });

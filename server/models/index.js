@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-const dbConfig = require('../config/db.config.js');
-
 const userModel = require('./user.model.js');
 const productKindModel = require('./product-kind.model');
 const documentModel = require('./document.model.js');
@@ -13,7 +11,6 @@ const basketModel = require('./basket.model.js');
 
 module.exports = {
   mongoose: mongoose,
-  url: dbConfig.url,
   User: userModel(mongoose),
   ProductKind: productKindModel(mongoose),
   Document: documentModel(mongoose),

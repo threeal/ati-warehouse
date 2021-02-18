@@ -21,6 +21,13 @@ Later the central database system could also be included with other calculation 
   ```bash
   $ yarn install
   ```
+- create a `.env` file and fill it using the following options:
+  - `PORT`, the port number used for the HTTP or HTTPS server.
+  - `REDIRECT_PORT`, the port number used for the HTTP redirect server.
+  - `DATABASE_URI`, the full URI of the MongoDB database (ex. `mongodb://user:pass@localhost:27017/db`).
+  - `ADMIN_USERNAME`, the default admin's username.
+  - `ADMIN_FULLNAME`, the default admin's fullname.
+  - `ADMIN_PASSWORD`, the default admin's password.
 
 ## Usage
 
@@ -32,16 +39,14 @@ Later the central database system could also be included with other calculation 
   ```bash
   $ yarn build
   ```
-  > As an alternative, you may hot reload the front-end for debug purpose using `$ yarn serve`.
+  > As an alternative, you may hot reload the client app for debug purpose using `$ yarn serve`.
 - Run the server using the following command:
   ```bash
   $ yarn start
   ```
-  > As an alternative, you may provide additional arguments for the HTTP and HTTPS ports.
-  > Example `$ yarn start 8080 4343`.
 
 ## Using HTTPS
 
 This project will automatically use HTTPS if there are both private key file (`ssl.key`) and certificate file (`ssl.crt`) inside the `ssl` folder.
 Else, it will switched to use HTTP instead.
-Alternatively, you could generate a custom private key and certificate file using the `sslgen.bash` script that has been provided in this project.
+To generate a custom private key and certificate file, you may use the `sslgen.bash` script that has been provided in this project.
