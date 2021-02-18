@@ -206,6 +206,7 @@ export default {
         this.name = res.data.name;
         this.cansPerBasketTray = res.data.cansPerBasketTray;
         this.cansPerPalletLayer = res.data.cansPerPalletLayer;
+        this.cansPerCase = res.data.cansPerCase;
 
         this.fetching = false;
       })
