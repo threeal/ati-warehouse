@@ -10,17 +10,20 @@ Some weakness of using paper-based documents are it's not durable and it will re
 That's why we provide a solution to replace the paper-based documents with a PWA based management application which integrated into a central database system.
 Later the central database system could also be included with other calculation systems like the performance calculations that we mention earlier.
 
-## Project setup
+## Project Setup
 
-- Install Node.js as in their [official guide](https://nodejs.org/en/download/).
-  > As an alternative, you could install Node.js using the [NVM](https://github.com/nvm-sh/nvm).
-- Install MongoDB as in their [official guide](https://docs.mongodb.com/manual/installation/).
-- Install Yarn as in their [official guide](https://classic.yarnpkg.com/en/docs/install/).
-  > If you don't want to use Yarn, you may skip this step and use NPM instead.
+- Install [Node.js](https://nodejs.org/en/) as in their [official guide](https://nodejs.org/en/download/).
+  > As an alternative, you may install Node.js using the [NVM](https://github.com/nvm-sh/nvm).
+- Install [MongoDB](https://www.mongodb.com/) as in their [official guide](https://docs.mongodb.com/manual/installation/).
+- Install [Yarn](https://yarnpkg.com/) as in their [official guide](https://classic.yarnpkg.com/en/docs/install/).
+  > If you don't want to use Yarn, you may skip this step and use  (the default of Node.js) instead.
 - Open this project directory in terminal, and initialize the dependencies.
   ```bash
   ~$ yarn install
   ```
+
+## Usage
+
 - Compiles and minifes the client app for production.
   ```bash
   ~$ yarn build
@@ -29,7 +32,7 @@ Later the central database system could also be included with other calculation 
   ```bash
   ~$ yarn start
   ```
-  > As alternative, you may provide additional arguments for the HTTP and HTTPS port.
+  > As an alternative, you may provide additional arguments for the HTTP and HTTPS ports.
   > Example `~$ yarn start 8080 4343`.
 
 ## Using HTTPS
