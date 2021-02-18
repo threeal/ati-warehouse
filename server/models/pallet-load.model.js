@@ -1,5 +1,3 @@
-const { Schema } = require("mongoose");
-
 require('../../client/plugins/utility.js');
 
 module.exports = (mongoose) => {
@@ -13,7 +11,7 @@ module.exports = (mongoose) => {
   );
 
   schema.method('toJSON', function() {
-    const { __v, _id, ...object } = this.toObject();
+    const { _id, ...object } = this.toObject();
     object.id = _id;
     return object;
   });

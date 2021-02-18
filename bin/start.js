@@ -50,7 +50,7 @@ models.mongoose
                   .then(() => {
                     console.log('Admin created!');
                   })
-                  .catch((err) => {
+                  .catch(() => {
                     console.log('Failed to create admin!');
                     process.exit();
                   });

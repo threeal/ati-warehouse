@@ -1,5 +1,4 @@
 const models = require('../models');
-const { model } = require('mongoose');
 const ProductKind = models.ProductKind;
 const Document = models.Document;
 const BasketUnload = models.BasketUnload;
