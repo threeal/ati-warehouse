@@ -1,26 +1,26 @@
-require('../../client/plugins/utility.js');
+require("../../client/plugins/utility.js");
 
-module.exports = (mongoose) => {
+module.exports = mongoose => {
   let schema = mongoose.Schema(
     {
       documentId: String,
       loadDate: String,
-      brand: String,
+      brand: String
     },
-    { timestamp: true },
+    { timestamp: true }
   );
 
-  schema.method('toJSON', function() {
+  schema.method("toJSON", function() {
     const { _id, ...object } = this.toObject();
     object.id = _id;
     return object;
   });
 
-  schema.method('layerQuantity', function(pallets) {
+  schema.method("layerQuantity", function(pallets) {
     let quantity = 0;
 
     if (pallets) {
-      pallets.forEach((pallet) => {
+      pallets.forEach(pallet => {
         if (pallet.layerQuantity) {
           quantity += pallet.layerQuantity;
         }
@@ -30,11 +30,11 @@ module.exports = (mongoose) => {
     return quantity;
   });
 
-  schema.method('canQuantity', function(pallets) {
+  schema.method("canQuantity", function(pallets) {
     let quantity = 0;
 
     if (pallets) {
-      pallets.forEach((pallet) => {
+      pallets.forEach(pallet => {
         if (pallet.canQuantity) {
           quantity += pallet.canQuantity;
         }
@@ -44,7 +44,7 @@ module.exports = (mongoose) => {
     return quantity;
   });
 
-  schema.method('totalCan', function(pallets, productKind) {
+  schema.method("totalCan", function(pallets, productKind) {
     let total = this.canQuantity(pallets);
 
     if (productKind) {
@@ -56,20 +56,20 @@ module.exports = (mongoose) => {
     return total;
   });
 
-  schema.method('totalDuration', function(pallets) {
+  schema.method("totalDuration", function(pallets) {
     let total = 0;
 
     if (pallets) {
-      pallets.forEach((pallet) => {
+      pallets.forEach(pallet => {
         let duration = pallet.durationTime();
-        total += (duration) ? duration.toTimeNumber() : 0;
+        total += duration ? duration.toTimeNumber() : 0;
       });
     }
 
     return total.toTimeInput();
   });
 
-  schema.method('averageDuration', function(pallets) {
+  schema.method("averageDuration", function(pallets) {
     if (pallets) {
       if (pallets.length > 0) {
         let totalDuration = this.totalDuration(pallets).toTimeNumber();
@@ -82,7 +82,7 @@ module.exports = (mongoose) => {
     return null;
   });
 
-  schema.method('totalCase', function(pallets, productKind) {
+  schema.method("totalCase", function(pallets, productKind) {
     if (productKind) {
       if (productKind.cansPerCase > 0) {
         let total = this.totalCan(pallets, productKind);
@@ -93,7 +93,7 @@ module.exports = (mongoose) => {
     return null;
   });
 
-  schema.method('casePerHour', function(pallets, productKind) {
+  schema.method("casePerHour", function(pallets, productKind) {
     let duration = this.totalDuration(pallets).toTimeNumber();
     if (duration > 0) {
       let total = this.totalCase(pallets, productKind);
@@ -104,5 +104,5 @@ module.exports = (mongoose) => {
     return null;
   });
 
-  return mongoose.model('pallet-load', schema);
+  return mongoose.model("pallet-load", schema);
 };

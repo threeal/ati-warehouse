@@ -1,117 +1,113 @@
-const models = require('../models');
+const models = require("../models");
 const Pallet = models.Pallet;
 
 exports.findAll = (req, res) => {
   const documentId = req.params.documentId;
   const condition = { documentId: documentId };
 
-  // setTimeout(() => {
-    Pallet.find(condition)
-      .then((pallets) => {
-        let filteredPallets = [];
+  Pallet.find(condition)
+    .then(pallets => {
+      let filteredPallets = [];
 
-        pallets.forEach((pallet) => {
-          filteredPallets.push({
-            id: pallet._id,
-            palletNumber: pallet.palletNumber,
-            basketNumbers: pallet.basketNumbers,
-            startTime: pallet.startTime,
-            endTime: pallet.endTime,
-            durationTime: pallet.durationTime(),
-            layerQuantity: pallet.layerQuantity,
-            canQuantity: pallet.canQuantity,
-            loader: pallet.loader,
-            seamingCondition: pallet.seamingCondition,
-            cleanCondition: pallet.cleanCondition,
-            noRustCondition: pallet.noRustCondition,
-            noOilyCondition: pallet.noOilyCondition,
-            bottomPrintResult: pallet.bottomPrintResult,
-            middlePrintResult: pallet.middlePrintResult,
-            topPrintResult: pallet.topPrintResult,
-            remarks: pallet.remarks,
-          });
+      pallets.forEach(pallet => {
+        filteredPallets.push({
+          id: pallet._id,
+          palletNumber: pallet.palletNumber,
+          basketNumbers: pallet.basketNumbers,
+          startTime: pallet.startTime,
+          endTime: pallet.endTime,
+          durationTime: pallet.durationTime(),
+          layerQuantity: pallet.layerQuantity,
+          canQuantity: pallet.canQuantity,
+          loader: pallet.loader,
+          seamingCondition: pallet.seamingCondition,
+          cleanCondition: pallet.cleanCondition,
+          noRustCondition: pallet.noRustCondition,
+          noOilyCondition: pallet.noOilyCondition,
+          bottomPrintResult: pallet.bottomPrintResult,
+          middlePrintResult: pallet.middlePrintResult,
+          topPrintResult: pallet.topPrintResult,
+          remarks: pallet.remarks
         });
-
-        res.send(filteredPallets);
-      })
-      .catch((err) => {
-        res.status(500).send({ message: err.message });
       });
-  // }, 299);
+
+      res.send(filteredPallets);
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
+    });
 };
 
 exports.create = (req, res) => {
   const documentId = req.params.documentId;
 
   if (!req.body) {
-    return res.status(400).send({ message: 'content could not be empty!' });
+    return res.status(400).send({ message: "content could not be empty!" });
   }
 
   const pallet = new Pallet({
-      documentId: documentId,
-      palletNumber: req.body.palletNumber,
-      basketNumbers: req.body.basketNumbers,
-      startTime: req.body.startTime,
-      endTime: req.body.endTime,
-      layerQuantity: req.body.layerQuantity,
-      canQuantity: req.body.canQuantity,
-      loader: req.body.loader,
-      seamingCondition: req.body.seamingCondition,
-      cleanCondition: req.body.cleanCondition,
-      noRustCondition: req.body.noRustCondition,
-      noOilyCondition: req.body.noOilyCondition,
-      bottomPrintResult: req.body.bottomPrintResult,
-      middlePrintResult: req.body.middlePrintResult,
-      topPrintResult: req.body.topPrintResult,
-      remarks: req.body.remarks,
+    documentId: documentId,
+    palletNumber: req.body.palletNumber,
+    basketNumbers: req.body.basketNumbers,
+    startTime: req.body.startTime,
+    endTime: req.body.endTime,
+    layerQuantity: req.body.layerQuantity,
+    canQuantity: req.body.canQuantity,
+    loader: req.body.loader,
+    seamingCondition: req.body.seamingCondition,
+    cleanCondition: req.body.cleanCondition,
+    noRustCondition: req.body.noRustCondition,
+    noOilyCondition: req.body.noOilyCondition,
+    bottomPrintResult: req.body.bottomPrintResult,
+    middlePrintResult: req.body.middlePrintResult,
+    topPrintResult: req.body.topPrintResult,
+    remarks: req.body.remarks
   });
 
-  // setTimeout(() => {
-    pallet.save(pallet)
-      .then(() => {
-        res.send({ message: 'pallet was created successfully' });
-      })
-      .catch((err) => {
-        res.status(500).send({ message: err.message });
-      });
-  // }, 299);
+  pallet
+    .save(pallet)
+    .then(() => {
+      res.send({ message: "pallet was created successfully" });
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
+    });
 };
 
 exports.findOne = (req, res) => {
   const palletId = req.params.palletId;
 
-  // setTimeout(() => {
-    Pallet.findById(palletId)
-      .then((pallet) => {
-        if (pallet) {
-          res.send({
-            id: pallet._id,
-            palletNumber: pallet.palletNumber,
-            basketNumbers: pallet.basketNumbers,
-            startTime: pallet.startTime,
-            endTime: pallet.endTime,
-            durationTime: pallet.durationTime(),
-            layerQuantity: pallet.layerQuantity,
-            canQuantity: pallet.canQuantity,
-            loader: pallet.loader,
-            seamingCondition: pallet.seamingCondition,
-            cleanCondition: pallet.cleanCondition,
-            noRustCondition: pallet.noRustCondition,
-            noOilyCondition: pallet.noOilyCondition,
-            bottomPrintResult: pallet.bottomPrintResult,
-            middlePrintResult: pallet.middlePrintResult,
-            topPrintResult: pallet.topPrintResult,
-            remarks: pallet.remarks,
-          });
-        }
-        else {
-          res.status(404).send({ message: `pallet with id ${palletId} not found` });
-        }
-      })
-      .catch((err) => {
-        res.status(500).send({ message: err.message });
-      });
-  // }, 299);
+  Pallet.findById(palletId)
+    .then(pallet => {
+      if (pallet) {
+        res.send({
+          id: pallet._id,
+          palletNumber: pallet.palletNumber,
+          basketNumbers: pallet.basketNumbers,
+          startTime: pallet.startTime,
+          endTime: pallet.endTime,
+          durationTime: pallet.durationTime(),
+          layerQuantity: pallet.layerQuantity,
+          canQuantity: pallet.canQuantity,
+          loader: pallet.loader,
+          seamingCondition: pallet.seamingCondition,
+          cleanCondition: pallet.cleanCondition,
+          noRustCondition: pallet.noRustCondition,
+          noOilyCondition: pallet.noOilyCondition,
+          bottomPrintResult: pallet.bottomPrintResult,
+          middlePrintResult: pallet.middlePrintResult,
+          topPrintResult: pallet.topPrintResult,
+          remarks: pallet.remarks
+        });
+      } else {
+        res
+          .status(404)
+          .send({ message: `pallet with id ${palletId} not found` });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
+    });
 };
 
 exports.update = (req, res) => {
@@ -119,7 +115,7 @@ exports.update = (req, res) => {
 
   if (!req.body) {
     return res.status(400).send({
-      message: 'content could not be empty!',
+      message: "content could not be empty!"
     });
   }
 
@@ -138,40 +134,38 @@ exports.update = (req, res) => {
     bottomPrintResult: req.body.bottomPrintResult,
     middlePrintResult: req.body.middlePrintResult,
     topPrintResult: req.body.topPrintResult,
-    remarks: req.body.remarks,
+    remarks: req.body.remarks
   };
 
-  // setTimeout(() => {
-    Pallet.findByIdAndUpdate(palletId, newPallet, { useFindAndModify: false })
-      .then((pallet) => {
-        if (pallet) {
-          res.send({ message: 'pallet was updated successfully' });
-        }
-        else {
-          res.status(404).send({ message: `cannot update pallet with id ${palletId}` });
-        }
-      })
-      .catch((err) => {
-        res.status(500).send({ message: err.message });
-      });
-  // }, 299);
+  Pallet.findByIdAndUpdate(palletId, newPallet, { useFindAndModify: false })
+    .then(pallet => {
+      if (pallet) {
+        res.send({ message: "pallet was updated successfully" });
+      } else {
+        res
+          .status(404)
+          .send({ message: `cannot update pallet with id ${palletId}` });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
+    });
 };
 
 exports.remove = (req, res) => {
   const palletId = req.params.palletId;
 
-  // setTimeout(() => {
-    Pallet.findByIdAndDelete(palletId)
-      .then((pallet) => {
-        if (pallet) {
-          res.send({ message: 'pallet was removed successfully' });
-        }
-        else {
-          res.status(404).send({ message: `cannot remove pallet with id ${palletId}` });
-        }
-      })
-      .catch((err) => {
-        res.status(500).send({ message: err.message });
-      });
-  // }, 299);
+  Pallet.findByIdAndDelete(palletId)
+    .then(pallet => {
+      if (pallet) {
+        res.send({ message: "pallet was removed successfully" });
+      } else {
+        res
+          .status(404)
+          .send({ message: `cannot remove pallet with id ${palletId}` });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
+    });
 };

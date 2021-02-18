@@ -1,19 +1,19 @@
-module.exports = (mongoose) => {
+module.exports = mongoose => {
   let schema = mongoose.Schema(
     {
       name: String,
       cansPerBasketTray: Number,
       cansPerPalletLayer: Number,
-      cansPerCase: Number,
+      cansPerCase: Number
     },
-    { timestamp: true },
+    { timestamp: true }
   );
 
-  schema.method('toJSON', function() {
+  schema.method("toJSON", function() {
     const { _id, ...object } = this.toObject();
     object.id = _id;
     return object;
   });
 
-  return mongoose.model('product-kind', schema);
+  return mongoose.model("product-kind", schema);
 };

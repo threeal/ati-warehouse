@@ -1,5 +1,5 @@
-import http from '../plugins/http-common'
-import AuthService from './AuthService'
+import http from "../plugins/http-common";
+import AuthService from "./AuthService";
 
 class BasketService {
   findAll(documentId) {
@@ -19,13 +19,20 @@ class BasketService {
 
   update(documentId, basketId, data) {
     let headers = { headers: AuthService.header() };
-    return http.put(`/api/document/${documentId}/basket/${basketId}`, data, headers);
+    return http.put(
+      `/api/document/${documentId}/basket/${basketId}`,
+      data,
+      headers
+    );
   }
 
   remove(documentId, basketId) {
     let headers = { headers: AuthService.header() };
-    return http.delete(`/api/document/${documentId}/basket/${basketId}`, headers);
+    return http.delete(
+      `/api/document/${documentId}/basket/${basketId}`,
+      headers
+    );
   }
 }
 
-export default new BasketService()
+export default new BasketService();

@@ -18,8 +18,10 @@
             <span>{{ basket.startTime }} - {{ basket.endTime }}</span>
             <i>{{ durationString }}</i>
           </div>
-          <div v-if="basket.rejectQuantity && basket.rejectQuantity > 0"
-              class="error--text">
+          <div
+            v-if="basket.rejectQuantity && basket.rejectQuantity > 0"
+            class="error--text"
+          >
             <span>{{ basket.rejectQuantity }} Rijek</span>
             <span v-if="basket.rejectKind"> ({{ basket.rejectKind }})</span>
           </div>
@@ -32,10 +34,10 @@
 
 <script>
 export default {
-  name: 'basket-list-item',
+  name: "basket-list-item",
   props: {
     basket: { type: Object, required: true },
-    onClick: { type: Function, required: true },
+    onClick: { type: Function, required: true }
   },
   computed: {
     quantityString() {
@@ -51,12 +53,9 @@ export default {
       }
 
       if (basket) {
-        if (can)
-          return `${basket} ${can}`;
-        else
-          return basket;
-      }
-      else if (can) {
+        if (can) return `${basket} ${can}`;
+        else return basket;
+      } else if (can) {
         return can;
       }
 
@@ -70,7 +69,7 @@ export default {
       return null;
     },
     problemsString() {
-      let string = '';
+      let string = "";
       let first = true;
 
       if (!this.basket.seamingCondition) {
@@ -78,33 +77,31 @@ export default {
           first = false;
         }
 
-        string += 'seaming gagal';
+        string += "seaming gagal";
       }
 
       if (!this.basket.canMarkCondition) {
         if (first) {
           first = false;
-        }
-        else {
-          string += ', ';
+        } else {
+          string += ", ";
         }
 
-        string += 'can mark gagal';
+        string += "can mark gagal";
       }
 
       if (!this.basket.indicatorCondition) {
         if (first) {
           first = false;
-        }
-        else {
-          string += ', ';
+        } else {
+          string += ", ";
         }
 
-        string += 'indikator gagal';
+        string += "indikator gagal";
       }
 
       return string;
-    },
-  },
-}
+    }
+  }
+};
 </script>

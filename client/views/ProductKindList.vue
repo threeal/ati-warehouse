@@ -2,12 +2,17 @@
   <v-container>
     <v-row justify="center">
       <v-col class="hidden-md-and-up" cols="12" sm="8" md="4">
-        <v-btn color="primary" @click="productKindAdd = true" :disabled="fetching" block>
+        <v-btn
+          color="primary"
+          @click="productKindAdd = true"
+          :disabled="fetching"
+          block
+        >
           <v-icon left>mdi-plus-thick</v-icon> Tambah Jenis Produk
         </v-btn>
       </v-col>
       <v-col class="hidden-sm-and-down" cols="4">
-        <ProductKindAdd :app="app" :successCallback="onProductKindAddSuccess"/>
+        <ProductKindAdd :app="app" :successCallback="onProductKindAddSuccess" />
       </v-col>
       <v-col cols="12" sm="8" md="6">
         <v-card>
@@ -18,14 +23,18 @@
             <div v-if="fetching">
               <v-list-item two-line>
                 <v-list-item-content>
-                  <v-progress-circular color="primary" indeterminate/>
+                  <v-progress-circular color="primary" indeterminate />
                 </v-list-item-content>
               </v-list-item>
             </div>
             <div v-else-if="productKinds.length > 0">
               <div v-for="(productKind, index) in productKinds" :key="index">
-                <v-divider v-if="index > 0"/>
-                <v-list-item  @click="onProductKindClick(productKind.id)" two-line link>
+                <v-divider v-if="index > 0" />
+                <v-list-item
+                  @click="onProductKindClick(productKind.id)"
+                  two-line
+                  link
+                >
                   <v-list-item-content>
                     <v-list-item-title>
                       {{ productKind.name }}
@@ -33,14 +42,16 @@
                     <v-list-item-subtitle>
                       <div class="d-flex justify-space-between">
                         <span>
-                          {{ productKind.cansPerBasketTray || 0 }} Kaleng per Tray Basket
+                          {{ productKind.cansPerBasketTray || 0 }} Kaleng per
+                          Tray Basket
                         </span>
                         <span>
                           {{ productKind.cansPerCase || 0 }} Kaleng per Case
                         </span>
                       </div>
                       <span>
-                        {{ productKind.cansPerPalletLayer || 0 }} Kaleng per Layer Pallet
+                        {{ productKind.cansPerPalletLayer || 0 }} Kaleng per
+                        Layer Pallet
                       </span>
                     </v-list-item-subtitle>
                   </v-list-item-content>
@@ -60,32 +71,40 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-dialog v-if="$vuetify.breakpoint.smAndDown" v-model="productKindAdd"
-        :fullscreen="$vuetify.breakpoint.xsOnly" max-width="65%" scrollable>
-      <ProductKindAdd :app="app" :cancelCallback="onProductKIndAddCancel"
-          :successCallback="onProductKindAddSuccess"/>
+    <v-dialog
+      v-if="$vuetify.breakpoint.smAndDown"
+      v-model="productKindAdd"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+      max-width="65%"
+      scrollable
+    >
+      <ProductKindAdd
+        :app="app"
+        :cancelCallback="onProductKIndAddCancel"
+        :successCallback="onProductKindAddSuccess"
+      />
     </v-dialog>
   </v-container>
 </template>
 
 <script>
-import ProductKindAdd from '../components/ProductKindAdd'
-import ProductKindService from '../services/ProductKindService'
-import AuthService from '../services/AuthService'
+import ProductKindAdd from "../components/ProductKindAdd";
+import ProductKindService from "../services/ProductKindService";
+import AuthService from "../services/AuthService";
 
 export default {
-  name: 'product-kind-list',
+  name: "product-kind-list",
   components: {
-    ProductKindAdd,
+    ProductKindAdd
   },
   props: {
-    app: { type: Object, required: true },
+    app: { type: Object, required: true }
   },
   data() {
     return {
       fetching: true,
       productKindAdd: false,
-      productKinds: [],
+      productKinds: []
     };
   },
   methods: {
@@ -94,25 +113,27 @@ export default {
       this.fetching = true;
 
       ProductKindService.findAll()
-        .then((res) => {
+        .then(res => {
           this.productKinds = res.data;
           this.fetching = false;
         })
-        .catch((err) => {
+        .catch(err => {
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Sesi habis, harap masuk kembali');
+              this.app.log("Sesi habis, harap masuk kembali");
 
               AuthService.signOut();
-              this.app.routeReplace('/login');
+              this.app.routeReplace("/login");
+            } else {
+              this.app.log(
+                "Gagal mengambil daftar jenis produk," +
+                  ` kesalahan server (${err.response.status})`
+              );
             }
-            else {
-              this.app.log('Gagal mengambil daftar jenis produk,'
-                + ` kesalahan server (${err.response.status})`);
-            }
-          }
-          else {
-            this.app.log('Gagal mengambil daftar jenis produk, tidak ada jaringan');
+          } else {
+            this.app.log(
+              "Gagal mengambil daftar jenis produk, tidak ada jaringan"
+            );
           }
         });
     },
@@ -125,13 +146,13 @@ export default {
     },
     onProductKindClick(productKindId) {
       this.app.routePush(`/product-kind/${productKindId}`);
-    },
+    }
   },
   created() {
-    this.app.setAppBar(true, 'Daftar Jenis Produk');
+    this.app.setAppBar(true, "Daftar Jenis Produk");
   },
   mounted() {
     this.reset();
-  },
-}
+  }
+};
 </script>

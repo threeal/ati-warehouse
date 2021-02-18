@@ -1,4 +1,4 @@
-module.exports = (mongoose) => {
+module.exports = mongoose => {
   let schema = mongoose.Schema(
     {
       documentId: String,
@@ -12,12 +12,12 @@ module.exports = (mongoose) => {
       rejectKind: String,
       seamingCondition: Boolean,
       canMarkCondition: Boolean,
-      indicatorCondition: Boolean,
+      indicatorCondition: Boolean
     },
-    { timestamp: true },
+    { timestamp: true }
   );
 
-  schema.method('toJSON', function() {
+  schema.method("toJSON", function() {
     const { _id, ...object } = this.toObject();
 
     object.id = _id;
@@ -26,10 +26,11 @@ module.exports = (mongoose) => {
     return object;
   });
 
-  schema.method('durationTime', function() {
+  schema.method("durationTime", function() {
     if (this.startTime) {
       if (this.endTime) {
-        let duration = this.endTime.toTimeNumber() - this.startTime.toTimeNumber();
+        let duration =
+          this.endTime.toTimeNumber() - this.startTime.toTimeNumber();
         return duration.toTimeInput();
       }
     }
@@ -37,5 +38,5 @@ module.exports = (mongoose) => {
     return null;
   });
 
-  return mongoose.model('basket', schema);
+  return mongoose.model("basket", schema);
 };

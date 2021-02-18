@@ -10,17 +10,17 @@
             <div v-if="fetching">
               <v-list-item two-line>
                 <v-list-item-content>
-                  <v-progress-circular color="primary" indeterminate/>
+                  <v-progress-circular color="primary" indeterminate />
                 </v-list-item-content>
               </v-list-item>
             </div>
             <div v-else-if="users.length > 0">
               <div v-for="(user, index) in users" :key="index">
-                <v-divider v-if="index > 0"/>
-                <v-list-item  @click="onUserClick(user.id)" link>
+                <v-divider v-if="index > 0" />
+                <v-list-item @click="onUserClick(user.id)" link>
                   <v-list-item-content>
                     <v-list-item-title>
-                      {{ user.fullname || 'Anonim' }}
+                      {{ user.fullname || "Anonim" }}
                     </v-list-item-title>
                     <v-list-item-subtitle>
                       {{ user.username }}
@@ -52,18 +52,18 @@
 </template>
 
 <script>
-import UserService from '../services/UserService'
-import AuthService from '../services/AuthService'
+import UserService from "../services/UserService";
+import AuthService from "../services/AuthService";
 
 export default {
-  name: 'user-list',
+  name: "user-list",
   props: {
-    app: { type: Object, required: true },
+    app: { type: Object, required: true }
   },
   data() {
     return {
       fetching: true,
-      users: [],
+      users: []
     };
   },
   methods: {
@@ -72,42 +72,41 @@ export default {
       this.fetching = true;
 
       UserService.findAll()
-        .then((res) => {
+        .then(res => {
           this.users = res.data;
           this.fetching = false;
         })
-        .catch((err) => {
+        .catch(err => {
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Sesi habis, harap masuk kembali');
+              this.app.log("Sesi habis, harap masuk kembali");
 
               AuthService.signOut();
-              this.app.routeReplace('/login');
-            }
-            else if (err.response.status === 403) {
-              this.app.log('Akses tidak diijinkan');
+              this.app.routeReplace("/login");
+            } else if (err.response.status === 403) {
+              this.app.log("Akses tidak diijinkan");
 
-              this.app.routeReplace('/login');
+              this.app.routeReplace("/login");
+            } else {
+              this.app.log(
+                "Gagal mengambil daftar pengguna," +
+                  ` kesalahan server (${err.response.status})`
+              );
             }
-            else {
-              this.app.log('Gagal mengambil daftar pengguna,'
-                + ` kesalahan server (${err.response.status})`);
-            }
-          }
-          else {
-            this.app.log('Gagal mengambil daftar pengguna, tidak ada jaringan');
+          } else {
+            this.app.log("Gagal mengambil daftar pengguna, tidak ada jaringan");
           }
         });
     },
     onUserClick(userId) {
       this.app.routePush(`/user/${userId}`);
-    },
+    }
   },
   created() {
-    this.app.setAppBar(true, 'Daftar Pengguna');
+    this.app.setAppBar(true, "Daftar Pengguna");
   },
   mounted() {
     this.reset();
-  },
-}
+  }
+};
 </script>

@@ -15,8 +15,13 @@
             </v-btn>
           </v-col>
           <v-col cols="6">
-            <v-btn @click="onYes()" :disabled="submitting"
-                :loading="submitting" color="success" block>
+            <v-btn
+              @click="onYes()"
+              :disabled="submitting"
+              :loading="submitting"
+              color="success"
+              block
+            >
               <v-icon left>mdi-check-bold</v-icon> Ya
             </v-btn>
           </v-col>
@@ -28,9 +33,9 @@
 
 <script>
 export default {
-  name: 'Confirmation',
+  name: "Confirmation",
   props: {
-    app: { type: Object, required: true },
+    app: { type: Object, required: true }
   },
   data() {
     return {
@@ -39,14 +44,16 @@ export default {
       description: null,
       promiseCallback: null,
       thenCallback: null,
-      catchCallback: null,
+      catchCallback: null
     };
   },
   methods: {
     onYes() {
-      if (typeof this.promiseCallback === 'function') {
-        if (typeof this.thenCallback === 'function'
-            || typeof this.catchCallback === 'function') {
+      if (typeof this.promiseCallback === "function") {
+        if (
+          typeof this.thenCallback === "function" ||
+          typeof this.catchCallback === "function"
+        ) {
           this.submitting = true;
           this.promiseCallback()
             .then((...args) => {
@@ -59,23 +66,21 @@ export default {
               this.submitting = false;
               this.dialog = false;
             });
-        }
-        else {
+        } else {
           this.promiseCallback();
           this.dialog = false;
         }
-      }
-      else {
+      } else {
         this.dialog = false;
       }
     },
     onNo() {
       this.dialog = false;
-    },
+    }
   },
   mounted() {
-    if (typeof this.app !== 'undefined') {
-      this.app.confirm = (options) => {
+    if (typeof this.app !== "undefined") {
+      this.app.confirm = options => {
         this.description = options.description;
         this.promiseCallback = options.promiseCallback;
         this.thenCallback = options.thenCallback;
@@ -86,5 +91,5 @@ export default {
       };
     }
   }
-}
+};
 </script>

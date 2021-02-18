@@ -5,7 +5,7 @@
         <v-card>
           <v-toolbar color="primary" dark flat>
             <v-toolbar-title>ATI Warehouse | Masuk</v-toolbar-title>
-            <v-spacer/>
+            <v-spacer />
             <v-btn @click="app.swapTheme()" icon dark>
               <v-icon>mdi-theme-light-dark</v-icon>
             </v-btn>
@@ -13,20 +13,38 @@
           <v-card-text>
             <v-row>
               <v-col>
-                <v-text-field v-model="username" label="Nama Pengguna"
-                    :disabled="submitting" dense hide-details outlined/>
+                <v-text-field
+                  v-model="username"
+                  label="Nama Pengguna"
+                  :disabled="submitting"
+                  dense
+                  hide-details
+                  outlined
+                />
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-text-field v-model="password" label="Kata Sandi" type="password"
-                    :disabled="submitting" dense hide-details outlined/>
+                <v-text-field
+                  v-model="password"
+                  label="Kata Sandi"
+                  type="password"
+                  :disabled="submitting"
+                  dense
+                  hide-details
+                  outlined
+                />
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-btn @click="onLogin()" :disabled="loginDisabled"
-                    :loading="submitting" color="success" block>
+                <v-btn
+                  @click="onLogin()"
+                  :disabled="loginDisabled"
+                  :loading="submitting"
+                  color="success"
+                  block
+                >
                   <v-icon left>mdi-login</v-icon> Masuk
                 </v-btn>
               </v-col>
@@ -42,24 +60,24 @@
 </template>
 
 <script>
-import AuthService from '../services/AuthService';
+import AuthService from "../services/AuthService";
 
 export default {
-  name: 'login',
+  name: "login",
   props: {
-    app: { type: Object, required: true },
+    app: { type: Object, required: true }
   },
   data() {
     return {
       username: null,
       password: null,
-      submitting: false,
+      submitting: false
     };
   },
   computed: {
     loginDisabled() {
       return !this.username || !this.password;
-    },
+    }
   },
   methods: {
     onLogin() {
@@ -67,46 +85,44 @@ export default {
 
       let data = {
         username: this.username,
-        password: this.password,
+        password: this.password
       };
 
       AuthService.signIn(data)
-        .then((res) => {
+        .then(res => {
           if (res.data.accessToken) {
-            localStorage.setItem('user', JSON.stringify(res.data));
+            localStorage.setItem("user", JSON.stringify(res.data));
 
             this.app.user = res.data;
-            this.app.routeReplace('/document');
-          }
-          else {
-            this.app.log('Gagal masuk, akses tidak diijinkan');
+            this.app.routeReplace("/document");
+          } else {
+            this.app.log("Gagal masuk, akses tidak diijinkan");
           }
         })
-        .catch((err) => {
+        .catch(err => {
           if (err.response) {
             if (err.response.status === 401) {
-              this.app.log('Gagal masuk, akun belum diverifikasi, harap hubungi admin');
-            }
-            else if (err.response.status === 404) {
-              this.app.log('Gagal masuk, nama pengguna atau kata sandi salah');
-            }
-            else {
+              this.app.log(
+                "Gagal masuk, akun belum diverifikasi, harap hubungi admin"
+              );
+            } else if (err.response.status === 404) {
+              this.app.log("Gagal masuk, nama pengguna atau kata sandi salah");
+            } else {
               this.app.log(`Gagal masuk, kesalahan server (${err.message})`);
             }
-          }
-          else {
-            this.app.log('Gagal masuk, tidak ada jaringan');
+          } else {
+            this.app.log("Gagal masuk, tidak ada jaringan");
           }
 
           this.submitting = false;
         });
     },
     onRegister() {
-      this.app.routePush('/register');
-    },
+      this.app.routePush("/register");
+    }
   },
   created() {
-    this.app.setAppBar(false, 'Masuk');
-  },
-}
+    this.app.setAppBar(false, "Masuk");
+  }
+};
 </script>

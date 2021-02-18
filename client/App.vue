@@ -1,92 +1,99 @@
 <template>
   <v-app>
     <v-app-bar v-if="appBar" app color="primary" dark>
-      <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = true"/>
+      <v-app-bar-nav-icon class="hidden-md-and-up" @click="drawer = true" />
       <v-toolbar-title>
         <b class="hidden-sm-and-down">ATI Warehouse | </b>{{ title }}
       </v-toolbar-title>
-      <v-spacer class="hidden-sm-and-down"/>
+      <v-spacer class="hidden-sm-and-down" />
       <div v-for="link in links" :key="link.title">
-        <v-btn v-if="!link.admin || user.admin" class="hidden-sm-and-down"
-            @click="link.onClick()" text>
+        <v-btn
+          v-if="!link.admin || user.admin"
+          class="hidden-sm-and-down"
+          @click="link.onClick()"
+          text
+        >
           <v-icon left>{{ link.icon }}</v-icon> {{ link.title }}
         </v-btn>
       </div>
     </v-app-bar>
-    <Drawer v-if="appBar && $vuetify.breakpoint.smAndDown" class="hidden-md-and-up"
-        :app="this" :links="links"/>
-    <Toast :app="this"/>
-    <Confirmation :app="this"/>
+    <Drawer
+      v-if="appBar && $vuetify.breakpoint.smAndDown"
+      class="hidden-md-and-up"
+      :app="this"
+      :links="links"
+    />
+    <Toast :app="this" />
+    <Confirmation :app="this" />
     <v-content>
-      <router-view :app="this"/>
+      <router-view :app="this" />
     </v-content>
   </v-app>
 </template>
 
 <script>
-import { register } from 'register-service-worker'
-import Drawer from './components/Drawer'
-import Toast from './components/Toast'
-import Confirmation from './components/Confirmation'
-import AuthService from './services/AuthService'
+import { register } from "register-service-worker";
+import Drawer from "./components/Drawer";
+import Toast from "./components/Toast";
+import Confirmation from "./components/Confirmation";
+import AuthService from "./services/AuthService";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
     Drawer,
     Toast,
-    Confirmation,
+    Confirmation
   },
   data() {
     return {
-      title: '',
+      title: "",
       drawer: false,
       appBar: false,
       user: {},
       links: [
         {
-          title: 'Daftar Dokumen',
-          icon: 'mdi-view-list',
+          title: "Daftar Dokumen",
+          icon: "mdi-view-list",
           onClick: () => {
-            this.routePush('/document');
-          },
+            this.routePush("/document");
+          }
         },
         {
-          title: 'Daftar Jenis Produk',
-          icon: 'mdi-view-list',
+          title: "Daftar Jenis Produk",
+          icon: "mdi-view-list",
           onClick: () => {
-            this.routePush('/product-kind');
-          },
+            this.routePush("/product-kind");
+          }
         },
         {
           admin: true,
-          title: 'Daftar Pengguna',
-          icon: 'mdi-view-list',
+          title: "Daftar Pengguna",
+          icon: "mdi-view-list",
           onClick: () => {
-            this.routePush('/user');
-          },
+            this.routePush("/user");
+          }
         },
         {
-          title: 'Tema',
-          icon: 'mdi-theme-light-dark',
+          title: "Tema",
+          icon: "mdi-theme-light-dark",
           onClick: () => {
             this.swapTheme();
-          },
+          }
         },
         {
-          title: 'Keluar',
-          icon: 'mdi-logout',
+          title: "Keluar",
+          icon: "mdi-logout",
           onClick: () => {
             AuthService.signOut();
-            this.routeReplace('/login');
-          },
-        },
-      ],
+            this.routeReplace("/login");
+          }
+        }
+      ]
     };
   },
   methods: {
-    confirm() {
-    },
+    confirm() {},
     setAppBar(enable, title) {
       this.appBar = enable;
       this.title = title;
@@ -104,30 +111,30 @@ export default {
     },
     swapTheme() {
       let theme = {
-        dark: !this.$vuetify.theme.dark,
+        dark: !this.$vuetify.theme.dark
       };
 
       this.$vuetify.theme.dark = theme.dark || false;
-      localStorage.setItem('theme', JSON.stringify(theme));
-    },
+      localStorage.setItem("theme", JSON.stringify(theme));
+    }
   },
   mounted() {
-    const theme = JSON.parse(localStorage.getItem('theme'));
+    const theme = JSON.parse(localStorage.getItem("theme"));
     if (theme) {
       this.$vuetify.theme.dark = theme.dark || false;
     }
 
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       let app = this;
       register(`${process.env.BASE_URL}service-worker.js`, {
-        updated () {
-          app.log('Terdapat pembaruan, harap memuat ulang aplikasi');
+        updated() {
+          app.log("Terdapat pembaruan, harap memuat ulang aplikasi");
         },
-        offline () {
-          app.log('Terjadi kesalahan, tidak terhubung ke internet');
-        },
+        offline() {
+          app.log("Terjadi kesalahan, tidak terhubung ke internet");
+        }
       });
     }
-  },
-}
+  }
+};
 </script>

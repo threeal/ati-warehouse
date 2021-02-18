@@ -1,7 +1,7 @@
 <template>
   <v-snackbar v-model="snackbar" timeout="-1" top>
     {{ message }}
-    <template v-slot:action="{attrs}">
+    <template v-slot:action="{ attrs }">
       <v-btn text v-bind="attrs" @click="close()">
         <span v-if="queue.length > 0">Berikut ({{ queue.length }})</span>
         <span v-else>Tutup</span>
@@ -12,22 +12,22 @@
 
 <script>
 export default {
-  name: 'toast',
+  name: "toast",
   props: {
-    app: { type: Object, required: true },
+    app: { type: Object, required: true }
   },
   data() {
     return {
       snackbar: false,
-      message: '',
-      queue: [],
+      message: "",
+      queue: []
     };
   },
   methods: {
     show(message) {
       this.message = message;
       this.snackbar = true;
-      if (typeof this.timeout !== 'undefined') {
+      if (typeof this.timeout !== "undefined") {
         clearTimeout(this.timeout);
       }
       this.timeout = setTimeout(() => {
@@ -38,7 +38,7 @@ export default {
     },
     close() {
       this.snackbar = false;
-      if (typeof this.timeout !== 'undefined') {
+      if (typeof this.timeout !== "undefined") {
         clearTimeout(this.timeout);
       }
       if (this.queue.length > 0) {
@@ -48,19 +48,18 @@ export default {
           }
         }, 200);
       }
-    },
+    }
   },
   mounted() {
-    if (typeof this.app !== 'undefined') {
-      this.app.log = (message) => {
+    if (typeof this.app !== "undefined") {
+      this.app.log = message => {
         if (this.snackbar) {
           this.queue.push(message);
-        }
-        else {
+        } else {
           this.show(message);
         }
       };
     }
   }
-}
+};
 </script>

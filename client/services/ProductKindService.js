@@ -1,15 +1,15 @@
-import http from '../plugins/http-common'
-import AuthService from './AuthService'
+import http from "../plugins/http-common";
+import AuthService from "./AuthService";
 
 class ProductKindService {
   findAll() {
     let headers = { headers: AuthService.header() };
-    return http.get('/api/product-kind', headers);
+    return http.get("/api/product-kind", headers);
   }
 
   create(data) {
     let headers = { headers: AuthService.header() };
-    return http.post('/api/product-kind', data, headers);
+    return http.post("/api/product-kind", data, headers);
   }
 
   findOne(productKindId) {
@@ -28,4 +28,4 @@ class ProductKindService {
   }
 }
 
-export default new ProductKindService()
+export default new ProductKindService();

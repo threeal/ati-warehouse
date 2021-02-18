@@ -1,5 +1,5 @@
-import http from '../plugins/http-common'
-import AuthService from './AuthService'
+import http from "../plugins/http-common";
+import AuthService from "./AuthService";
 
 class PalletLoadService {
   find(documentId) {
@@ -23,4 +23,4 @@ class PalletLoadService {
   }
 }
 
-export default new PalletLoadService()
+export default new PalletLoadService();

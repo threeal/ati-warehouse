@@ -1,10 +1,10 @@
-import http from '../plugins/http-common'
-import AuthService from './AuthService'
+import http from "../plugins/http-common";
+import AuthService from "./AuthService";
 
 class UserService {
   findAll() {
     let headers = { headers: AuthService.header() };
-    return http.get('/api/user', headers);
+    return http.get("/api/user", headers);
   }
 
   findOne(userId) {
@@ -38,4 +38,4 @@ class UserService {
   }
 }
 
-export default new UserService()
+export default new UserService();

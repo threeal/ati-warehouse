@@ -1,5 +1,5 @@
-import http from '../plugins/http-common'
-import AuthService from './AuthService'
+import http from "../plugins/http-common";
+import AuthService from "./AuthService";
 
 class BasketUnloadService {
   find(documentId) {
@@ -9,7 +9,11 @@ class BasketUnloadService {
 
   create(documentId, data) {
     let headers = { headers: AuthService.header() };
-    return http.post(`/api/document/${documentId}/basket-unload`, data, headers);
+    return http.post(
+      `/api/document/${documentId}/basket-unload`,
+      data,
+      headers
+    );
   }
 
   update(documentId, data) {
@@ -23,4 +27,4 @@ class BasketUnloadService {
   }
 }
 
-export default new BasketUnloadService()
+export default new BasketUnloadService();

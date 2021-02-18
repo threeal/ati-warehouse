@@ -1,5 +1,5 @@
-import http from '../plugins/http-common'
-import AuthService from './AuthService'
+import http from "../plugins/http-common";
+import AuthService from "./AuthService";
 
 class PalletService {
   findAll(documentId) {
@@ -19,13 +19,20 @@ class PalletService {
 
   update(documentId, palletId, data) {
     let headers = { headers: AuthService.header() };
-    return http.put(`/api/document/${documentId}/pallet/${palletId}`, data, headers);
+    return http.put(
+      `/api/document/${documentId}/pallet/${palletId}`,
+      data,
+      headers
+    );
   }
 
   remove(documentId, palletId) {
     let headers = { headers: AuthService.header() };
-    return http.delete(`/api/document/${documentId}/pallet/${palletId}`, headers);
+    return http.delete(
+      `/api/document/${documentId}/pallet/${palletId}`,
+      headers
+    );
   }
 }
 
-export default new PalletService()
+export default new PalletService();

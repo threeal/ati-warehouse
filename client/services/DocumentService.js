@@ -1,9 +1,9 @@
-import http from '../plugins/http-common'
-import AuthService from './AuthService'
+import http from "../plugins/http-common";
+import AuthService from "./AuthService";
 
 class DocumentService {
   findAll(productionDate) {
-    let address = '/api/document';
+    let address = "/api/document";
     if (productionDate) {
       address += `?productionDate=${productionDate}`;
     }
@@ -15,7 +15,7 @@ class DocumentService {
 
   create(data) {
     let config = { headers: AuthService.header() };
-    return http.post('/api/document', data, config);
+    return http.post("/api/document", data, config);
   }
 
   findOne(documentId) {
@@ -34,4 +34,4 @@ class DocumentService {
   }
 }
 
-export default new DocumentService()
+export default new DocumentService();

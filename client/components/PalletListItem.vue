@@ -3,9 +3,7 @@
     <v-list-item-content eager>
       <v-list-item-title>
         <div class="d-flex justify-space-between">
-          <div>
-            No. {{ pallet.palletNumber }} {{ basketNumbersString }}
-          </div>
+          <div>No. {{ pallet.palletNumber }} {{ basketNumbersString }}</div>
           <div>
             {{ quantityString }}
           </div>
@@ -17,31 +15,31 @@
             <span>{{ pallet.startTime }} - {{ pallet.endTime }}</span>
             <i>{{ durationString }}</i>
           </div>
-          <div>
-            Loader {{ pallet.loader }}
-          </div>
+          <div>Loader {{ pallet.loader }}</div>
         </div>
-        <div>{{ pallet.remarks }}</div >
-        <div class="error--text">{{ conditionString }}</div >
-        <div class="error--text">{{ printResultString }}</div >
+        <div>{{ pallet.remarks }}</div>
+        <div class="error--text">{{ conditionString }}</div>
+        <div class="error--text">{{ printResultString }}</div>
       </v-list-item-subtitle>
     </v-list-item-content>
   </v-list-item>
 </template>
 
 <script>
-import '../plugins/utility'
+import "../plugins/utility";
 
 export default {
-  name: 'pallet-list-item',
+  name: "pallet-list-item",
   props: {
     pallet: { type: Object, required: true },
-    onClick: { type: Function, required: true },
+    onClick: { type: Function, required: true }
   },
   computed: {
     basketNumbersString() {
-      if (typeof this.pallet.basketNumbers === 'object'
-          && this.pallet.basketNumbers.length > 0) {
+      if (
+        typeof this.pallet.basketNumbers === "object" &&
+        this.pallet.basketNumbers.length > 0
+      ) {
         return `(Basket ${this.pallet.basketNumbers.toListString()})`;
       }
 
@@ -67,19 +65,16 @@ export default {
       }
 
       if (stack) {
-        if (can)
-          return `${stack} ${can}`;
-        else
-          return stack;
-      }
-      else if (can) {
+        if (can) return `${stack} ${can}`;
+        else return stack;
+      } else if (can) {
         return can;
       }
 
       return null;
     },
     conditionString() {
-      let string = '';
+      let string = "";
       let first = true;
 
       if (!this.pallet.seamingCondition) {
@@ -87,77 +82,71 @@ export default {
           first = false;
         }
 
-        string += 'seaming gagal';
+        string += "seaming gagal";
       }
 
       if (!this.pallet.cleanCondition) {
         if (first) {
           first = false;
-        }
-        else {
-          string += ', ';
+        } else {
+          string += ", ";
         }
 
-        string += 'tidak bersih';
+        string += "tidak bersih";
       }
 
       if (!this.pallet.noRustCondition) {
         if (first) {
           first = false;
-        }
-        else {
-          string += ', ';
+        } else {
+          string += ", ";
         }
 
-        string += 'berkarat';
+        string += "berkarat";
       }
 
       if (!this.pallet.noOilyCondition) {
         if (first) {
           first = false;
-        }
-        else {
-          string += ', ';
+        } else {
+          string += ", ";
         }
 
-        string += 'berminyak';
+        string += "berminyak";
       }
 
       return string;
     },
     printResultString() {
-      let string = '';
+      let string = "";
       let first = true;
-
 
       if (!this.pallet.bottomPrintResult) {
         if (first) {
           first = false;
         }
 
-        string += 'bawah';
+        string += "bawah";
       }
 
       if (!this.pallet.middlePrintResult) {
         if (first) {
           first = false;
-        }
-        else {
-          string += ', ';
+        } else {
+          string += ", ";
         }
 
-        string += 'tengah';
+        string += "tengah";
       }
 
       if (!this.pallet.topPrintResult) {
         if (first) {
           first = false;
-        }
-        else {
-          string += ', ';
+        } else {
+          string += ", ";
         }
 
-        string += 'atas';
+        string += "atas";
       }
 
       if (string.length > 0) {
@@ -165,7 +154,7 @@ export default {
       }
 
       return null;
-    },
-  },
-}
+    }
+  }
+};
 </script>

@@ -5,7 +5,7 @@
         <v-card>
           <v-toolbar color="primary" dark flat>
             <v-toolbar-title>ATI Warehouse | Daftar</v-toolbar-title>
-            <v-spacer/>
+            <v-spacer />
             <v-btn @click="app.swapTheme()" icon dark>
               <v-icon>mdi-theme-light-dark</v-icon>
             </v-btn>
@@ -13,42 +13,71 @@
           <v-card-text>
             <v-row>
               <v-col>
-                <v-text-field v-model="username" label="Nama Pengguna"
-                    :error-messages="usernameError" :disabled="submitting"
-                    dense hide-details="auto" outlined/>
+                <v-text-field
+                  v-model="username"
+                  label="Nama Pengguna"
+                  :error-messages="usernameError"
+                  :disabled="submitting"
+                  dense
+                  hide-details="auto"
+                  outlined
+                />
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-text-field v-model="fullname" label="Nama Lengkap"
-                    :disabled="submitting" dense hide-details="auto" outlined/>
+                <v-text-field
+                  v-model="fullname"
+                  label="Nama Lengkap"
+                  :disabled="submitting"
+                  dense
+                  hide-details="auto"
+                  outlined
+                />
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-text-field v-model="password" label="Kata Sandi" type="password"
-                    :error-messages="passwordError" :disabled="submitting"
-                    dense hide-details="auto" outlined/>
+                <v-text-field
+                  v-model="password"
+                  label="Kata Sandi"
+                  type="password"
+                  :error-messages="passwordError"
+                  :disabled="submitting"
+                  dense
+                  hide-details="auto"
+                  outlined
+                />
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-text-field v-model="passwordConfirm" label="Konfirmasi Kata Sandi"
-                    type="password" :error-messages="passwordConfirmError"
-                    :disabled="submitting" dense hide-details="auto" outlined/>
+                <v-text-field
+                  v-model="passwordConfirm"
+                  label="Konfirmasi Kata Sandi"
+                  type="password"
+                  :error-messages="passwordConfirmError"
+                  :disabled="submitting"
+                  dense
+                  hide-details="auto"
+                  outlined
+                />
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-btn @click="onRegister()" :disabled="registerDisabled"
-                    :loading="submitting" color="success" block>
+                <v-btn
+                  @click="onRegister()"
+                  :disabled="registerDisabled"
+                  :loading="submitting"
+                  color="success"
+                  block
+                >
                   <v-icon left>mdi-file-document-edit</v-icon> Daftar
                 </v-btn>
               </v-col>
             </v-row>
-            <center>
-              Sudah punya akun? <a @click="onLogin()">Masuk</a>
-            </center>
+            <center>Sudah punya akun? <a @click="onLogin()">Masuk</a></center>
           </v-card-text>
         </v-card>
       </v-col>
@@ -57,12 +86,12 @@
 </template>
 
 <script>
-import AuthService from '../services/AuthService';
+import AuthService from "../services/AuthService";
 
 export default {
-  name: 'register',
+  name: "register",
   props: {
-    app: { type: Object, required: true },
+    app: { type: Object, required: true }
   },
   data() {
     return {
@@ -70,18 +99,18 @@ export default {
       fullname: null,
       password: null,
       passwordConfirm: null,
-      submitting: false,
+      submitting: false
     };
   },
   computed: {
     usernameError() {
-      if (this.username){
+      if (this.username) {
         if (this.username.length < 6) {
-          return 'Nama pengguna minimal 6 karakter';
+          return "Nama pengguna minimal 6 karakter";
         }
 
-        if (this.username.includes(' ')) {
-          return 'Nama pengguna tidak boleh mengandung spasi';
+        if (this.username.includes(" ")) {
+          return "Nama pengguna tidak boleh mengandung spasi";
         }
       }
 
@@ -89,23 +118,29 @@ export default {
     },
     passwordError() {
       if (this.password && this.password.length < 8) {
-        return 'Kata sandi minimal 8 karakter';
+        return "Kata sandi minimal 8 karakter";
       }
 
       return null;
     },
     passwordConfirmError() {
       if (this.passwordConfirm && this.passwordConfirm !== this.password) {
-        return 'Kata sandi berbeda';
+        return "Kata sandi berbeda";
       }
 
       return null;
     },
     registerDisabled() {
-      return !this.username || !this.fullname || !this.password || !this.passwordConfirm
-        || this.usernameError !== null || this.passwordError !== null
-        || this.passwordConfirmError !== null;
-    },
+      return (
+        !this.username ||
+        !this.fullname ||
+        !this.password ||
+        !this.passwordConfirm ||
+        this.usernameError !== null ||
+        this.passwordError !== null ||
+        this.passwordConfirmError !== null
+      );
+    }
   },
   methods: {
     onRegister() {
@@ -114,36 +149,38 @@ export default {
       let data = {
         username: this.username,
         fullname: this.fullname,
-        password: this.password,
+        password: this.password
       };
 
       AuthService.signUp(data)
         .then(() => {
-          this.app.log('Akun berhasil didaftarkan, harap hubungi admin untuk verifikasi');
-          this.app.routePush('/login');
+          this.app.log(
+            "Akun berhasil didaftarkan, harap hubungi admin untuk verifikasi"
+          );
+          this.app.routePush("/login");
         })
-        .catch((err) => {
+        .catch(err => {
           if (err.response) {
             if (err.response.status === 400) {
-              this.app.log('Pendaftaran gagal, nama pengguna sudah terdaftar');
+              this.app.log("Pendaftaran gagal, nama pengguna sudah terdaftar");
+            } else {
+              this.app.log(
+                `Pendaftaran gagal, kesalahan server (${err.response.status})`
+              );
             }
-            else {
-              this.app.log(`Pendaftaran gagal, kesalahan server (${err.response.status})`);
-            }
-          }
-          else {
-            this.app.log('Pendaftaran gagal, tidak ada jaringan');
+          } else {
+            this.app.log("Pendaftaran gagal, tidak ada jaringan");
           }
 
           this.submitting = false;
         });
     },
     onLogin() {
-      this.app.routePush('/login');
-    },
+      this.app.routePush("/login");
+    }
   },
   created() {
-    this.app.setAppBar(false, 'Daftar');
-  },
-}
+    this.app.setAppBar(false, "Daftar");
+  }
+};
 </script>

@@ -1,6 +1,6 @@
-require('../../client/plugins/utility.js');
+require("../../client/plugins/utility.js");
 
-module.exports = (mongoose) => {
+module.exports = mongoose => {
   let schema = mongoose.Schema(
     {
       documentId: String,
@@ -18,12 +18,12 @@ module.exports = (mongoose) => {
       bottomPrintResult: Boolean,
       middlePrintResult: Boolean,
       topPrintResult: Boolean,
-      remarks: String,
+      remarks: String
     },
-    { timestamp: true },
+    { timestamp: true }
   );
 
-  schema.method('toJSON', function() {
+  schema.method("toJSON", function() {
     const { _id, ...object } = this.toObject();
 
     object.id = _id;
@@ -32,10 +32,11 @@ module.exports = (mongoose) => {
     return object;
   });
 
-  schema.method('durationTime', function() {
+  schema.method("durationTime", function() {
     if (this.startTime) {
       if (this.endTime) {
-        let duration = this.endTime.toTimeNumber() - this.startTime.toTimeNumber();
+        let duration =
+          this.endTime.toTimeNumber() - this.startTime.toTimeNumber();
         return duration.toTimeInput();
       }
     }
@@ -43,5 +44,5 @@ module.exports = (mongoose) => {
     return null;
   });
 
-  return mongoose.model('pallet', schema);
+  return mongoose.model("pallet", schema);
 };
