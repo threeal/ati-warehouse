@@ -1,7 +1,7 @@
 {
   "name": "ati-warehouse",
   "description": "Warehouse management PWA using MEVN stack",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Alfi Maulana <alfi.maulana.f@gmail.com>",
   "license": "MIT",
   "private": true,

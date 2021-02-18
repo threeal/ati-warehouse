@@ -42,8 +42,8 @@ models.mongoose
         if (user) {
           models.User.findByIdAndUpdate(user._id, newUserData,
             { useFindAndModify: false })
-            .then(() => {
-              console.log('Admin updated!');
+            .then(user => {
+              console.log(`Admin ${user.username} updated!`);
             })
             .catch(() => {
               console.error('Failed to update admin!');
@@ -52,8 +52,8 @@ models.mongoose
         } else {
           const newUser = new models.User(newUserData);
           newUser.save(newUser)
-            .then(() => {
-              console.log('Admin created!');
+            .then(user => {
+              console.log(`Admin ${user.username} created!`);
             })
             .catch(() => {
               console.log('Failed to create admin!');
