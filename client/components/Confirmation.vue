@@ -44,22 +44,17 @@ export default {
   },
   methods: {
     onYes() {
-      console.log('yes');
       if (typeof this.promiseCallback === 'function') {
-        console.log('promise');
         if (typeof this.thenCallback === 'function'
             || typeof this.catchCallback === 'function') {
-          console.log('with return');
           this.submitting = true;
           this.promiseCallback()
             .then((...args) => {
-              console.log('then');
               this.thenCallback(...args);
               this.submitting = false;
               this.dialog = false;
             })
             .catch((...args) => {
-              console.log('catch');
               this.catchCallback(...args);
               this.submitting = false;
               this.dialog = false;

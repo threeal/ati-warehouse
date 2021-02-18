@@ -85,9 +85,6 @@ export default {
     };
   },
   methods: {
-    log(message) {
-      console.log(message);
-    },
     confirm() {
     },
     setAppBar(enable, title) {

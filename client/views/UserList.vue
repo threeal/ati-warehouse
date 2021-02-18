@@ -73,7 +73,6 @@ export default {
 
       UserService.findAll()
         .then((res) => {
-          console.log(res.data);
           this.users = res.data;
           this.fetching = false;
         })
